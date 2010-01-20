@@ -1,0 +1,62 @@
+setup table
+---------------------
+id
+created_by
+setup
+times_used
+
+setup only needs to hold silver piece placements
+as red is reflected through the origin.
+(if red pieces are given, don't dissallow, some setups
+may not need be reflected)
+
+
+board layout (silver, red is lowercase)
+P - pharaoh (target)
+A - pyramid (1-sided mirror, NE .\ ) - needs 4 characters to show orientation
+	B - SE `/
+	C - SW \`
+	D - NW /.
+X - djed (2-sided mirror, NE-SW \ ) - needs 2 characters to show orientation
+	Y - NW-SE /
+V - Obelisk (defense block) - needs 2 characters to show stacking
+	W - double stacked obelisks
+H - eye of horus (splitter, NE-SW \ ) - needs 2 characters to show orientation
+	I - NW-SE /
+T - Tower of Kadesh base ( x4 )
+
+ABCDEFGHIJKLMNOPQRSTUVWXYZ
+----   --      -   - ----
+
+set up and use the FEN notation for the board
+    1   2   3   4   5   6   7   8   9   0
+  +---+---+---+---+---+---+---+---+---+---+
+A | R | S |   |   |   |   |   |   | R | S | A
+  +---+---+---+---+---+---+---+---+---+---+
+B | R |   |   |   |   |   |   |   |   | S | B
+  +---+---+---+---+---+---+---+---+---+---+
+C | R |   |   |   |   |   |   |   |   | S | C
+  +---+---+---+---+---+---+---+---+---+---+
+D | R |   |   |   |   |   |   |   |   | S | D
+  +---+---+---+---+---o---+---+---+---+---+
+E | R |   |   |   |   |   |   |   |   | S | E
+  +---+---+---+---+---+---+---+---+---+---+
+F | R |   |   |   |   |   |   |   |   | S | F
+  +---+---+---+---+---+---+---+---+---+---+
+G | R |   |   |   |   |   |   |   |   | S | G
+  +---+---+---+---+---+---+---+---+---+---+
+H | R | S |   |   |   |   |   |   | R | S | H
+  +---+---+---+---+---+---+---+---+---+---+
+    1   2   3   4   5   6   7   8   9   0
+
+red laser comes down from above A1
+silver laser comes up from below H0
+
+A1 = 00 -> A0 = 09
+B1 = 10 -> B0 = 19
+...
+H1 = 70 -> H0 = 79
+
+origin reflect function:
+
+reflect = 79 - origin
