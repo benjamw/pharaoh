@@ -314,89 +314,130 @@ debug($move);
 		);
 
 		// fire the laser
-		// red
-		$start = 0;
-		$dir = I_DOWN;
+
 		if ('silver' == $color) {
-			$start = 79;
-			$dir = I_UP;
+			$this->_laser_path = array(array(array(79, I_UP)));
+		}
+		else { // red
+			$this->_laser_path = array(array(array(0, I_DOWN)));
 		}
 
-		$i = 0; // infinite loop protection
-		$current = $start;
-		$used = array( );
-		$queue = array( );
-		$queue_used = array( );
-		$hit = array( );
-		$this->_laser_path = array( );
-		while ($i < 99) { // no ad infinitum here
-			// check if we hit a wall
-			$long_wall = (0 > $current) || (80 <= $current);
-			$short_wall = (1 == abs($dir)) && (floor($current / 10) !== floor(($current - $dir) / 10));
-			if ($long_wall || $short_wall) {
-				if ( ! (list($current, $dir) = $this->_check_queue($queue))) {
-					break;
-				}
-				else {
-					$current += $dir;
-					continue;
-				}
-			}
 
-			// make sure we haven't been here before
-			if (in_array(array($current, $dir), $used, true)) {
-				if ( ! (list($current, $dir) = $this->_check_queue($queue))) {
-					break;
-				}
-				else {
-					$current += $dir;
+		$i = 0; // infinite loop protection
+		$paths = $this->_laser_path[0];
+		$used = array( );
+		$next = array( );
+		$hit = array( );
+		while ($i < 999) { // no ad infinitum here
+			$split = 0;
+			$continue = false;
+
+debug($this->_get_laser_ascii( ));
+
+			foreach ($paths as $key => $node) {
+				if ((false == $node) || (true === $node)) {
+					$next[$key] = $node; // propagate the index
 					continue;
 				}
+
+				// let the loop know we still have valid nodes
+				$continue = true;
+
+				list($current, $dir) = $node;
+
+				// check the current location for a piece
+				if ('0' != ($piece = $this->_board[$current])) {
+					// check for hit or reflection
+					if ( ! isset($reflections[strtoupper($piece)][$dir])) {
+						$hit[] = $current;
+
+						$next[$key] = true; // stop this path
+						continue;
+					}
+
+					$dir = $reflections[strtoupper($piece)][$dir];
+				}
+
+				// this is where we split off in two directions through the beam splitter
+				if (is_array($dir)) {
+					// add a new entry in the paths for the reflection
+					// and change dir to be the pass-through beam
+
+					// if we've already split a beam once,
+					// we'll need to add a few more to the index
+					// (it is possible to hit a single splitter from two sides,
+					// as well as hit both splitter from two sides, so...)
+
+					// also note: if there are no beam splitters, there is no way
+					// of doubling back or going over the same path again, ever
+
+					// before we add to $next, make sure we haven't been here, or hit any walls
+					// check if we hit a wall
+					$do_split = true;
+					$split_dir = $dir[1];
+					$split_current = $current + $split_dir;
+					$long_wall = (0 > $split_current) || (80 <= $split_current);
+					$short_wall = (1 == abs($split_dir)) && (floor($split_current / 10) !== floor(($split_current - $split_dir) / 10));
+					if ($long_wall || $short_wall) {
+						// don't even create a new path
+						$do_split = false;
+					}
+
+					// make sure we haven't been here before
+					if (in_array(array($split_current, $split_dir), $used, true)) {
+						// don't even create a new path
+						$do_split = false;
+					}
+
+					if ($do_split) {
+						$next[count($paths) + $split] = array($current + $dir[1], $dir[1]);
+						$used[] = array($current + $dir[1], $dir[1]);
+						$split += 1;
+					}
+
+					$dir = $dir[0];
+				}
+
+				// increment $current and run a few tests
+				// so we don't shoot through walls
+				// or loop back on ourselves forever
+				$current += $dir;
+
+				// check if we hit a wall
+				$long_wall = (0 > $current) || (80 <= $current);
+				$short_wall = (1 == abs($dir)) && (floor($current / 10) !== floor(($current - $dir) / 10));
+				if ($long_wall || $short_wall) {
+					$next[$key] = false; // stop this path
+					continue;
+				}
+
+				// make sure we haven't been here before
+				if (in_array(array($current, $dir), $used, true)) {
+					$next[$key] = false; // stop this path
+					continue;
+				}
+
+				$next[$key] = array($current, $dir);
+				$used[] = array($current, $dir);
+			} // end foreach $current
+
+			// if we have no valid nodes left
+			// break the loop
+			if ( ! $continue) {
+debug('NO MORE NODES');
+				break;
 			}
 
 			// add to our laser path
-			$this->_laser_path[] = array($current, $dir);
-			$used[] = array($current, $dir);
-
-			// check the current location for a piece
-			if ('0' != ($piece = $this->_board[$current])) {
-				// check for hit or reflection
-				if ( ! isset($reflections[strtoupper($piece)][$dir])) {
-					$hit[] = $current;
-					if ( ! (list($current, $dir) = $this->_check_queue($queue))) {
-						break;
-					}
-					else {
-						$current += $dir;
-						continue;
-					}
-				}
-
-				$dir = $reflections[strtoupper($piece)][$dir];
-			}
-
-			// this is where we split off in two directions through the beam splitter
-			if (is_array($dir)) {
-				// place the second element (the reflection) in the queue
-				// and run the first element (the pass through)
-				// because if we put the pass through in the queue
-				// it causes problems with the $used array
-				// because that value is already in there
-				if ( ! in_array(array($current, $dir[1]), $queue_used, true)) {
-					$queue[] = array($current, $dir[1]);
-					$queue_used[] = array($current, $dir[1]);
-				}
-
-				$dir = $dir[0];
-			}
-
-			// increment for the next round
-			$current += $dir;
+			// and pass along to the next round
+			$paths = $next;
+			$this->_laser_path[] = $paths;
 
 			++$i; // keep those pesky infinite loops at bay
-		}
+		} // end while
 
 debug($this->_laser_path);
+debug(json_encode($this->_laser_path));
 call($this->_get_laser_ascii( ));
 call($hit);
 		return $hit;
@@ -544,7 +585,7 @@ call($hit);
 			$char = $board[$i];
 
 			if (0 == ($i % 10)) {
-				$ascii .= "\n ".(floor($i / 10) + 1).' |';
+				$ascii .= "\n ".(8 - floor($i / 10)).' |';
 			}
 
 			if ('0' == $char) {
@@ -554,7 +595,7 @@ call($hit);
 			$ascii .= ' '.$char.' |';
 
 			if (9 == ($i % 10)) {
-				$ascii .= ' '.(floor($i / 10) + 1).'
+				$ascii .= ' '.(8 - floor($i / 10)).'
    +---+---+---+---+---+---+---+---+---+---+';
   			}
 		}
@@ -566,21 +607,21 @@ call($hit);
 /*
      A   B   C   D   E   F   G   H   I   J
   +---+---+---+---+---+---+---+---+---+---+
-1 | R | S |   |   |   |   |   |   | R | S | 1
-  +---+---+---+---+---+---+---+---+---+---+
-2 | R |   |   |   |   |   |   |   |   | S | 2
-  +---+---+---+---+---+---+---+---+---+---+
-3 | R |   |   |   |   |   |   |   |   | S | 3
-  +---+---+---+---+---+---+---+---+---+---+
-4 | R |   |   |   |   |   |   |   |   | S | 4
-  +---+---+---+---+---o---+---+---+---+---+
-5 | R |   |   |   |   |   |   |   |   | S | 5
-  +---+---+---+---+---+---+---+---+---+---+
-6 | R |   |   |   |   |   |   |   |   | S | 6
+8 | R | S |   |   |   |   |   |   | R | S | 8
   +---+---+---+---+---+---+---+---+---+---+
 7 | R |   |   |   |   |   |   |   |   | S | 7
   +---+---+---+---+---+---+---+---+---+---+
-8 | R | S |   |   |   |   |   |   | R | S | 8
+6 | R |   |   |   |   |   |   |   |   | S | 6
+  +---+---+---+---+---+---+---+---+---+---+
+5 | R |   |   |   |   |   |   |   |   | S | 5
+  +---+---+---+---+---o---+---+---+---+---+
+4 | R |   |   |   |   |   |   |   |   | S | 4
+  +---+---+---+---+---+---+---+---+---+---+
+3 | R |   |   |   |   |   |   |   |   | S | 3
+  +---+---+---+---+---+---+---+---+---+---+
+2 | R |   |   |   |   |   |   |   |   | S | 2
+  +---+---+---+---+---+---+---+---+---+---+
+1 | R | S |   |   |   |   |   |   | R | S | 1
   +---+---+---+---+---+---+---+---+---+---+
      A   B   C   D   E   F   G   H   I   J
 */
@@ -601,9 +642,21 @@ call($hit);
 
 	static public function get_laser_ascii($board, $laser_path)
 	{
-		foreach ($laser_path as $node) {
-			if ('0' == $board[$node[0]]) {
-				$board[$node[0]] = (1 == abs($node[1])) ? '-' : '|';
+		foreach ($laser_path as $paths) {
+			foreach ($paths as $node) {
+				if (is_array($node)) {
+					if ('0' == $board[$node[0]]) {
+						$board[$node[0]] = (1 == abs($node[1])) ? '-' : '|';
+					}
+				}
+			}
+		}
+
+		// convert the endpoint to an asterisk, so we can follow the beam
+		$final = end($laser_path);
+		foreach ($final as $node) {
+			if (is_array($node)) {
+				$board[$node[0]] = '*';
 			}
 		}
 
@@ -644,7 +697,7 @@ call($hit);
 		$chars = array('A','B','C','D','E','F','G','H','I','J');
 		$index = array_search($target[0], $chars);
 
-		$index += 10 * ((int) $target[1] - 1);
+		$index += 10 * (8 - (int) $target[1]);
 
 		return $index;
 	}
@@ -679,7 +732,7 @@ call($hit);
 		$target = substr($target, 0, 2);
 
 		// test the format
-		if ( ! preg_match('/[A-H]\d/', $target)) {
+		if ( ! preg_match('/[A-J]\d/', $target)) {
 			throw new MyException(__METHOD__.': Invalid target format');
 		}
 
