@@ -179,44 +179,116 @@ function create_board(xFEN, flip) {
 }
 
 
-function fire_laser(path) {
-	var i,j,
-		dir,next_dir,nodes,
+function fire_laser(path, i) {
+	var j,
+		dir,next_dir,add_dir,nodes,
+		timeout = 200,
 		length = path.length;
+
+	if (undefined == i) {
+		i = 0;
+	}
 
 	if ( ! length) {
 		return false;
 	}
 
-	for (i = 0; i < length; ++i) {
-		nodes = path[i].length;
-		for (j = 0; j < nodes; ++j) {
-			// grab the next node and see where we went
-			if (path[i][j]) {
-				dir = path[i][j][1];
-				if (path[i + 1]) {
-					next_dir = path[i + 1][j][1];
+	nodes = path[i].length;
+	for (j = 0; j < nodes; ++j) {
+		// grab the next node and see where we went
+		// if it's an actual node, and not an endpoint
+		if ('boolean' != typeof path[i][j]) {
+			dir = -path[i][j][1];
+
+			// if the next node is an endpoint (hit, wall, or looped)
+			if ('boolean' == typeof path[i + 1][j]) {
+				// if it's a hit
+				if (true === path[i + 1][j]) {
+					// show the hit (only one direction)
+					next_dir = 0;
 				}
 				else {
-					next_dir = dir;
+					// just run it into the wall
+					next_dir = -dir;
 				}
-				alert(dir+'-'+dc(dir));
-				alert(next_dir+'-'+dc(next_dir));
 			}
+			else { // the next node is a valid node
+				next_dir = path[i + 1][j][1];
+
+				// check if we split here, and add the third direction
+				add_dir = 0;
+				if (path[i + 1][j][2]) {
+					add_dir = path[i + 1][path[i + 1][j][2]][1];
+				}
+			}
+
+			// add the laser image
+			$('#idx_'+path[i][j][0]).append('<img src="../images/laser/new_'+c_sort(dc(dir) + dc(next_dir) + dc(add_dir))+'.png" />');
 		}
+	}
+
+	if (++i < length) { // increment then read
+		path = JSON.stringify(path);
+		setTimeout('fade_laser( ); fire_laser('+path+', '+i+');', timeout);
+	}
+	else {
+		setTimeout('fade_laser( );', timeout);
 	}
 
 	return false;
 }
+
+
+function fade_laser( ) {
+	// find the greatest common multiple and use that image
+	// but we only need to search divs with new images
+	// (old images are already minified and faded)
+	$('div[id^=idx]:has(img[src*=laser/new_])').each( function( ) {
+		var $div = $(this),
+			dirs = '';
+
+		$('img', $div).each( function( ) {
+			var match,
+				$img = $(this);
+
+			//make a list of all the directions shown (excluding hits, but not new hits)
+			if ((match = $img.attr('src').match(/laser\/(?:new_)?([nwse]{2,4})\.png/i))
+				|| (match = $img.attr('src').match(/laser\/new_([nwse])\.png/i)))
+			{
+				dirs += match[1];
+				$img.remove( );
+			}
+		});
+
+		if (dirs) {
+			$div.append('<img src="../images/laser/'+c_sort(dirs)+'.png" />');
+		}
+	});
+}
+
 
 // converts dir index to cardinal point
 function dc(dir) {
 	switch (dir) {
 		case -10: return 'n';
-		case  10: return 's';
 		case  -1: return 'w';
+		case  10: return 's';
 		case   1: return 'e';
 	}
 
-	return false;
+	return '';
 }
+
+
+// sorts the cardinal points for a laser beam
+function c_sort(dirs) {
+	var output = '';
+
+	if (-1 != dirs.indexOf('n')) { output += 'n'; }
+	if (-1 != dirs.indexOf('w')) { output += 'w'; }
+	if (-1 != dirs.indexOf('s')) { output += 's'; }
+	if (-1 != dirs.indexOf('e')) { output += 'e'; }
+
+	return output;
+}
+

@@ -359,6 +359,7 @@ debug($this->_get_laser_ascii( ));
 				}
 
 				// this is where we split off in two directions through the beam splitter
+				$do_split = false;
 				if (is_array($dir)) {
 					// add a new entry in the paths for the reflection
 					// and change dir to be the pass-through beam
@@ -418,6 +419,10 @@ debug($this->_get_laser_ascii( ));
 				}
 
 				$next[$key] = array($current, $dir);
+				if ($do_split) {
+					$next[$key][2] = count($paths) + $split - 1;
+				}
+
 				$used[] = array($current, $dir);
 			} // end foreach $current
 
@@ -564,11 +569,12 @@ call($hit);
 		);
 
 		$piece = $this->_board[$index];
+		call($piece);
 		$silver = ($piece == strtoupper($piece));
 		$piece = strtoupper($piece);
 
 		if ( ! isset($rotation[$piece])) {
-			return false;
+			throw new MyException(__METHOD__.': Piece rotation not found');
 		}
 
 		$this->_board[$index] = ($silver ? $rotation[$piece][$direction] : strtolower($rotation[$piece][$direction]));
