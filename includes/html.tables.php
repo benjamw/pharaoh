@@ -483,6 +483,17 @@ if ( ! function_exists('ifemptyor')) {
 }
 
 
+if ( ! function_exists('ife')) {
+	function ife($param, $or) {
+		if (empty($param)) {
+			return $or;
+		}
+
+		return $param;
+	}
+}
+
+
 if ( ! function_exists('ifdateor')) {
 	function ifdateor($date_format, & $if, $or) {
 		$date = (isset($if) && is_int($if)) ? $if : $or;

@@ -16,9 +16,11 @@ $meta['title'] = 'Login';
 $meta['show_menu'] = false;
 $meta['head_data'] = '
 	<script type="text/javascript" src="scripts/jquery.overlabel.js"></script>
+	<script type="text/javascript" src="scripts/jquery.showpass.js"></script>
 	<script type="text/javascript">//<![CDATA[
 		jQuery(document).ready( function($) {
 			$("div.formdiv label").not(".inline").overlabel( );
+			$("div.formdiv input").showpass( );
 		});
 	//]]></script>
 
@@ -46,8 +48,10 @@ echo get_header($meta);
 			<div id="date"><?php echo date(Settings::read('long_date')); ?></div>
 			<p><strong>Welcome to <?php echo $GLOBALS['__GAME_NAME']; ?>!</strong></p>
 			<p>Please enter a valid username and password to enter.</p>
+			<?php if (Settings::read('approve_users')) { ?>
 			<p><span class="notice">NOTE</span>: You will be unable to log in if your account has not been approved yet.</p>
 			<p>You should receive an email when your account has been approved.</p>
+			<?php } ?>
 		</div>
 
 		<div id="content">

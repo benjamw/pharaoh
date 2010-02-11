@@ -1,367 +1,121 @@
+/* the board styles ------------
 
-/* $Id: board.css 207 2009-10-21 15:01:14Z cchristensen $ */
+	 do not edit these, if things need to be moved
+	 edit #board, things will break horribly
+	 if these sizes are changed
+*/
 
-#contents {
-	margin: 10px;
-}
-
-#nudge {
-	float: right;
-}
-
-#controls {
-	margin-left: 800px;
-	width: 200px;
-	height: 451px;
-	border: 2px solid #CCC;
-}
-
-#controls hr {
-	line-height: 26px;
-}
-
-#players {
-	position: absolute;
-	bottom: 0;
-	left: 0;
-	z-index: 5;
-	width: 140px;
-	height: 180px;
-	background: #000;
-	border: 3px solid #CCC;
-	border-width: 3px 3px 0 0;
-	overflow: hidden;
-	white-space: nowrap;
-}
-
-#players ul {
-	margin-left: 30px;
-}
-
-#players li {
-	text-align: left;
-	border: 1px solid #777;
-	margin-bottom: 2px;
-	padding: 2px 3px;
-	font-size: 12px;
+.header, .header_disabled {
+	text-align: center;
 	font-weight: bold;
-	list-style: none outside none;
+	font-size: 16px;
 }
 
-#players li.host {
-	border-color: #000;
-	border-style: dashed;
+#the_board {
+	border: 2px solid #000;
+	background: #222;
+	color: #CCC;
+	width: 550px;
+	height: 450px;
 }
 
-#players li.me {
-	border-color: #FFF;
-}
-
-/*#players li.waiting { list-style-image: url(../images/time.png); }*/
-#players li.trading ,
-#players li.placing { list-style-image: url(../images/add.png); }
-#players li.attacking ,
-#players li.occupying { list-style-image: url(../images/tick.png); }
-#players li.fortifying { list-style-image: url(../images/exclamation.png); }
-#players li.resigned { list-style-image: url(../images/flag_white.png); }
-#players li.dead { list-style-image: url(../images/flower_daisy.png); }
-
-#players span.cards {
-	display: inline;
+#the_board div {
+	border: 1px solid #000;
+	float: left;
+	width: 44px;
+	height: 44px;
+	margin: 1px;
+	padding: 1px;
 	position: relative;
-	z-index: 1;
+	overflow: hidden;
+}
+
+#the_board .vert {
 	border: 0;
-	font-weight: bold;
-	background: transparent;
+	margin: 0;
 	padding: 0;
-	font-size: inherit;
-	color: inherit;
-	cursor: text;
-}
-
-#players span.cards:after {
-	content: ' - ';
-}
-
-#players .red {
-	color: #FFF;
-	background: #E22;
-}
-
-#dice {
-	position: absolute;
-	bottom: 0;
-	left: 560px;
-	z-index: 5;
-	width: 54px;
-	height: 81px;
-	background: #000;
-	border: 3px solid #CCC;
-	border-bottom-width: 0;
-}
-
-#dice img {
-	margin: 10px 2px;
-}
-
-#dice div {
 	width: 25px;
+	height: 50px;
+	line-height: 50px;
+}
+
+#the_board .horz {
+	border: 0;
+	margin: 0;
+	padding: 0;
+	width: 50px;
 	height: 25px;
 	line-height: 25px;
-	text-align: center;
-	font-size: 25px;
-	font-weight: bold;
-	border: 1px solid #999;
 }
 
-#dice .attack,
-#dice .defend {
+#the_board .corner {
 	border: 0;
-	width: 27px;
-	height: auto;
-	float: left;
-}
-
-#dice .attack-lost,
-#dice .defend-lost {
-	width: auto;
-	height: auto;
-}
-
-#action {
-	padding: 5px;
-	height: 200px;
-	overflow: auto;
-}
-
-#action p {
 	margin: 0;
-	text-align: center;
-	font-weight: bold;
-	font-size: 14px;
+	padding: 0;
+	width: 25px;
+	height: 25px;
 }
 
-#action label {
-	width: auto;
+#the_board .silver {
+	background-color: #555;
 }
 
-#action #skip {
-	float: right;
+#the_board .red {
+	background-color: #500;
 }
 
-table.history td {
-	padding: 3px 5px;
-	font-size: 1.1em;
-	line-height: 150%;
-	border-bottom: 1px solid #222;
+#the_board .yellow {
+	background-color: #BB0;
 }
 
-table.history td.date {
-	width: 1%;
-	white-space: nowrap;
+#the_board .piece {
+	background-position: center center;
+	background-repeat: no-repeat;
 }
 
-#board {
-	float: left;
-	width: 800px;
-	height: 449px;
-	background: transparent url(../images/board.jpg) center center no-repeat;
-	border: 3px solid #CCC;
-	color: #000;
-	position: relative;
+#the_board .from,
+#the_board .to,
+#the_board .turned {
+	border: 2px solid #FFF;
+	margin: 0;
+}
+
+/*
+#the_board .silver_pharaoh { background-image: url(../images/pieces/silver_pharaoh.png); }
+#the_board .red_pharaoh { background-image: url(../images/pieces/red_pharaoh.png); }
+
+#the_board .silver_pyramid_ne { background-image: url(../images/pieces/silver_pyramid_ne.png); }
+#the_board .silver_pyramid_se { background-image: url(../images/pieces/silver_pyramid_se.png); }
+#the_board .silver_pyramid_sw { background-image: url(../images/pieces/silver_pyramid_sw.png); }
+#the_board .silver_pyramid_nw { background-image: url(../images/pieces/silver_pyramid_nw.png); }
+#the_board .red_pyramid_ne { background-image: url(../images/pieces/red_pyramid_ne.png); }
+#the_board .red_pyramid_se { background-image: url(../images/pieces/red_pyramid_se.png); }
+#the_board .red_pyramid_sw { background-image: url(../images/pieces/red_pyramid_sw.png); }
+#the_board .red_pyramid_nw { background-image: url(../images/pieces/red_pyramid_nw.png); }
+
+#the_board .silver_djed_ne { background-image: url(../images/pieces/silver_djed_ne.png); }
+#the_board .silver_djed_nw { background-image: url(../images/pieces/silver_djed_nw.png); }
+#the_board .red_djed_ne { background-image: url(../images/pieces/red_djed_ne.png); }
+#the_board .red_djed_nw { background-image: url(../images/pieces/red_djed_nw.png); }
+
+#the_board .silver_obelisk { background-image: url(../images/pieces/silver_obelisk.png); }
+#the_board .silver_obelisk_stack { background-image: url(../images/pieces/silver_obelisk_stack.png); }
+#the_board .red_obelisk { background-image: url(../images/pieces/red_obelisk.png); }
+#the_board .red_obelisk_stack { background-image: url(../images/pieces/red_obelisk_stack.png); }
+
+#the_board .silver_horus_ne { background-image: url(../images/pieces/silver_horus_ne.png); }
+#the_board .silver_horus_nw { background-image: url(../images/pieces/silver_horus_nw.png); }
+#the_board .red_horus_ne { background-image: url(../images/pieces/red_horus_ne.png); }
+#the_board .red_horus_nw { background-image: url(../images/pieces/red_horus_nw.png); }
+*/
+
+#the_board div img {
+	position: absolute;
 	top: 0;
 	left: 0;
 }
 
-#board #next {
-	position: absolute;
-	width: 70px;
-	height: 32px;
-	overflow: visible;
-	top: 396px;
-	left: 291px;
-	z-index: 2;
-	font-weight: bold;
-	font-size: 24px;
-	line-height: 32px;
-	text-align: center;
+#the_board div img.piece {
+	position: relative;
 }
 
-#board span {
-	display: block;
-	position: absolute;
-	z-index: 2;
-	border: 1px solid #000;
-	font-weight: bold;
-	background: #999;
-	padding: 1px 3px 2px;
-	font-size: 10px;
-	color: #FFF;
-	cursor: pointer;
-}
-
-area {
-	cursor: pointer;
-}
-
-#board #sl01 { top:  45px; left:  40px; } /* Alaska */
-#board #sl02 { top:  90px; left: 110px; } /* Alberta */
-#board #sl03 { top: 210px; left: 140px; } /* Central America */
-#board #sl04 { top: 143px; left: 180px; } /* Eastern United States */
-#board #sl05 { top:  45px; left: 270px; } /* Greenland */
-#board #sl06 { top:  40px; left: 120px; } /* Northwest Territory */
-#board #sl07 { top:  95px; left: 165px; } /* Ontario */
-#board #sl08 { top:  95px; left: 225px; } /* Quebec */
-#board #sl09 { top: 160px; left: 115px; } /* Western United States */
-
-#board #sl10 { top: 340px; left: 200px; } /* Argentina */
-#board #sl11 { top: 305px; left: 245px; } /* Brazil */
-#board #sl12 { top: 300px; left: 175px; } /* Peru */
-#board #sl13 { top: 260px; left: 175px; } /* Venezuela */
-
-#board #sl14 { top: 120px; left: 320px; } /* Great Britain */
-#board #sl15 { top:  70px; left: 335px; } /* Iceland */
-#board #sl16 { top: 155px; left: 385px; } /* Northern Europe */
-#board #sl17 { top: 100px; left: 400px; } /* Scandinavia */
-#board #sl18 { top: 200px; left: 405px; } /* Southern Europe */
-#board #sl19 { top: 110px; left: 480px; } /* Ukraine */
-#board #sl20 { top: 185px; left: 340px; } /* Western Europe */
-
-#board #sl21 { top: 317px; left: 423px; } /* Congo */
-#board #sl22 { top: 310px; left: 470px; } /* East Africa */
-#board #sl23 { top: 245px; left: 430px; } /* Egypt */
-#board #sl24 { top: 370px; left: 495px; } /* Madagascar */
-#board #sl25 { top: 255px; left: 360px; } /* North Africa */
-#board #sl26 { top: 400px; left: 430px; } /* South Africa */
-
-#board #sl27 { top: 150px; left: 535px; } /* Afghanistan */
-#board #sl28 { top: 170px; left: 610px; } /* China */
-#board #sl29 { top: 235px; left: 575px; } /* India */
-#board #sl30 { top:  85px; left: 648px; } /* Irkutsk */
-#board #sl31 { top: 125px; left: 740px; } /* Japan */
-#board #sl32 { top:  60px; left: 710px; } /* Kamchatka */
-#board #sl33 { top: 235px; left: 485px; } /* Middle East */
-#board #sl34 { top: 128px; left: 670px; } /* Mongolia */
-#board #sl35 { top: 245px; left: 650px; } /* Siam */
-#board #sl36 { top:  80px; left: 595px; } /* Siberia */
-#board #sl37 { top: 115px; left: 555px; } /* Ural */
-#board #sl38 { top:  52px; left: 650px; } /* Yakutsk */
-
-#board #sl39 { top: 370px; left: 750px; } /* Eastern Australia */
-#board #sl40 { top: 310px; left: 665px; } /* Indonesia */
-#board #sl41 { top: 300px; left: 720px; } /* New Guinea */
-#board #sl42 { top: 345px; left: 685px; } /* Western Australia */
-
-
-#pathmarkers div{
-	background: transparent url(../images/path_marker.png) center center no-repeat;
-	color: #000;
-	height: 35px;
-	line-height: 35px;
-	position: absolute;
-	text-align: center;
-	display: none;
-	width: 35px;
-}
-
-#pathmarkers #pm01 { top:  45px; left:  44px; } /* Alaska */
-#pathmarkers #pm02 { top:  90px; left: 114px; } /* Alberta */
-#pathmarkers #pm03 { top: 210px; left: 144px; } /* Central America */
-#pathmarkers #pm04 { top: 143px; left: 184px; } /* Eastern United States */
-#pathmarkers #pm05 { top:  45px; left: 274px; } /* Greenland */
-#pathmarkers #pm06 { top:  40px; left: 124px; } /* Northwest Territory */
-#pathmarkers #pm07 { top:  95px; left: 169px; } /* Ontario */
-#pathmarkers #pm08 { top:  95px; left: 229px; } /* Quebec */
-#pathmarkers #pm09 { top: 160px; left: 119px; } /* Western United States */
-
-#pathmarkers #pm10 { top: 340px; left: 204px; } /* Argentina */
-#pathmarkers #pm11 { top: 305px; left: 249px; } /* Brazil */
-#pathmarkers #pm12 { top: 300px; left: 179px; } /* Peru */
-#pathmarkers #pm13 { top: 260px; left: 179px; } /* Venezuela */
-
-#pathmarkers #pm14 { top: 120px; left: 324px; } /* Great Britain */
-#pathmarkers #pm15 { top:  70px; left: 339px; } /* Iceland */
-#pathmarkers #pm16 { top: 155px; left: 389px; } /* Northern Europe */
-#pathmarkers #pm17 { top: 100px; left: 404px; } /* Scandinavia */
-#pathmarkers #pm18 { top: 200px; left: 409px; } /* Southern Europe */
-#pathmarkers #pm19 { top: 110px; left: 484px; } /* Ukraine */
-#pathmarkers #pm20 { top: 185px; left: 344px; } /* Western Europe */
-
-#pathmarkers #pm21 { top: 317px; left: 427px; } /* Congo */
-#pathmarkers #pm22 { top: 310px; left: 474px; } /* East Africa */
-#pathmarkers #pm23 { top: 245px; left: 434px; } /* Egypt */
-#pathmarkers #pm24 { top: 370px; left: 499px; } /* Madagascar */
-#pathmarkers #pm25 { top: 255px; left: 364px; } /* North Africa */
-#pathmarkers #pm26 { top: 400px; left: 434px; } /* South Africa */
-
-#pathmarkers #pm27 { top: 150px; left: 539px; } /* Afghanistan */
-#pathmarkers #pm28 { top: 170px; left: 614px; } /* China */
-#pathmarkers #pm29 { top: 235px; left: 579px; } /* India */
-#pathmarkers #pm30 { top:  85px; left: 652px; } /* Irkutsk */
-#pathmarkers #pm31 { top: 125px; left: 744px; } /* Japan */
-#pathmarkers #pm32 { top:  60px; left: 714px; } /* Kamchatka */
-#pathmarkers #pm33 { top: 235px; left: 489px; } /* Middle East */
-#pathmarkers #pm34 { top: 128px; left: 674px; } /* Mongolia */
-#pathmarkers #pm35 { top: 245px; left: 654px; } /* Siam */
-#pathmarkers #pm36 { top:  80px; left: 599px; } /* Siberia */
-#pathmarkers #pm37 { top: 115px; left: 559px; } /* Ural */
-#pathmarkers #pm38 { top:  52px; left: 654px; } /* Yakutsk */
-
-#pathmarkers #pm39 { top: 370px; left: 754px; } /* Eastern Australia */
-#pathmarkers #pm40 { top: 310px; left: 669px; } /* Indonesia */
-#pathmarkers #pm41 { top: 300px; left: 724px; } /* New Guinea */
-#pathmarkers #pm42 { top: 345px; left: 689px; } /* Western Australia */
-
-
-.gra { background-color: #999 !important; color: #FFF !important; }
-.red { background-color: #E22 !important; color: #FFF !important; }
-.blu { background-color: #36F !important; color: #FFF !important; }
-.bla { background-color: #333 !important; color: #FFF !important; }
-.bro { background-color: #963 !important; color: #FFF !important; }
-.gre { background-color: #090 !important; color: #FFF !important; }
-.yel { background-color: #DD3 !important; color: #000 !important; }
-.pur { background-color: #609 !important; color: #FFF !important; }
-.pin { background-color: #F9F !important; color: #000 !important; }
-.aqu { background-color: #0CC !important; color: #000 !important; }
-
-
-.red.res { background-color: #FBC8C8 !important; color: #E04949 !important; }
-.blu.res { background-color: #CCD9FF !important; color: #456AD7 !important; }
-.bla.res { background-color: #CCCCCC !important; color: #333333 !important; }
-.bro.res { background-color: #E5D9CC !important; color: #6A553E !important; }
-.gre.res { background-color: #BFE5BF !important; color: #539C53 !important; }
-.yel.res { background-color: #F3F3B8 !important; color: #A4A400 !important; }
-.pur.res { background-color: #CAA6DB !important; color: #9B25D6 !important; }
-.pin.res { background-color: #FFCCFF !important; color: #F63EF6 !important; }
-.aqu.res { background-color: #CCFFFF !important; color: #4AE0E0 !important; }
-
-
-/* history table spans */
-.history .gra { background-color: transparent !important; color: #999 !important; }
-.history .red { background-color: transparent !important; color: #E22 !important; }
-.history .blu { background-color: transparent !important; color: #36F !important; }
-.history .bla { background-color: transparent !important; color: #333 !important; }
-.history .bro { background-color: transparent !important; color: #963 !important; }
-.history .gre { background-color: transparent !important; color: #090 !important; }
-.history .yel { background-color: transparent !important; color: #DD3 !important; }
-.history .pur { background-color: transparent !important; color: #609 !important; }
-.history .pin { background-color: transparent !important; color: #F9F !important; }
-.history .aqu { background-color: transparent !important; color: #0CC !important; }
-
-.history .attack    { color: #F00; font-weight: bold; }
-.history .card      { color: #0FF; font-weight: bold; }
-.history .fortify   { color: #9F0; font-weight: bold; }
-.history .occupy    { color: #F0F; font-weight: bold; }
-.history .place     { color: #0F0; font-weight: bold; }
-.history .reinforce { color: #FF0; font-weight: bold; }
-.history .trade     { color: #F90; font-weight: bold; }
-.history .outcome   { color: #900; font-weight: bold; }
-.history .defeat    { color: #900; font-weight: bold; }
-.history .roll      { color: #33C; font-weight: bold; }
-.history .value     { color: #F36; font-weight: bold; }
-
-.history .winner td:first-child { color: #000; background-color: #0F0; font-weight: bold; }
-.history .killed td:first-child { color: #000; background-color: #F00; font-weight: bold; }
-.history .init   td:first-child { color: #000; background-color: #FFF; font-weight: bold; }
-.history .next   td:first-child { color: #000; background-color: #DDD; font-weight: bold; }
-.history .resign td:first-child { color: #FFF; background-color: #50A; font-weight: bold; }

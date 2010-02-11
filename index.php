@@ -37,14 +37,14 @@ $table_meta = array(
 );
 $table_format = array(
 	array('SPECIAL_HTML', 'true', 'id="g[[[game_id]]]"') ,
-	array('SPECIAL_CLASS', '(1 == \'[[[highlight]]]\')', 'highlight') ,
+	array('SPECIAL_CLASS', '(1 == \'[[[my_turn]]]\')', 'highlight') ,
 
 	array('ID', 'game_id') ,
-	array('Name', 'clean_name') ,
-	array('State', '###(([[[paused]]]) ? \'Paused\' : ((\'Waiting\' == \'[[[state]]]\') ? ((\'\' != \'[[[password]]]\') ? \'<span class="highlight password">[[[state]]]</span>\' : \'<span class="highlight">[[[state]]]</span>\') : \'[[[state]]]\'))') ,
-	array('Current Player', '###((\'\' == \'[[[username]]]\') ? \'[[[hostname]]]\' : \'[[[username]]]\')') ,
-//	array('Game Type', 'game_type') ,
-//	array('Extra Info', '<acronym title="Fortify: [[[get_fortify]]] | Kamikaze: [[[get_kamikaze]]] | Warmonger: [[[get_warmonger]]] | FoW Armies: [[[get_fog_of_war_armies]]] | FoW Colors: [[[get_fog_of_war_colors]]] | Conquer Limit: [[[get_conquer_limit]]] | Custom Rules: [[[clean_custom_rules]]]">Hover</acronym>') ,
+	array('Silver', '###(('.$_SESSION['player_id'].' == [[[white_id]]]) ? \'<span class="highlight">[[[white]]]</span>\' : \'[[[white]]]\')') ,
+	array('Red', '###(('.$_SESSION['player_id'].' == [[[black_id]]]) ? \'<span class="highlight">[[[black]]]</span>\' : \'[[[black]]]\')') ,
+	array('Turn', '###((\'white\' == \'[[[turn]]]\') ? \'[[[white]]]\' : \'[[[black]]]\')') ,
+	array('State', '###(([[[paused]]]) ? \'Paused\' : \'[[[state]]]\')') ,
+	array('Setup', 'setup_name') ,
 	array('Last Move', '###date(Settings::read(\'long_date\'), strtotime(\'[[[last_move]]]\'))', null, ' class="date"') ,
 );
 $contents .= '

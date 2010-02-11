@@ -87,7 +87,7 @@ class Game
 
 	/** public property state
 	 *		Holds the game's current state
-	 *		can be one of 'Waiting', 'Playing', 'Finished'
+	 *		can be one of 'Playing', 'Finished'
 	 *
 	 * @var string (enum)
 	 */
@@ -237,7 +237,7 @@ class Game
 		// BUT... only if PHP didn't die because of an error
 		$error = error_get_last( );
 
-		if (0 == ((E_ERROR | E_WARNING | E_PARSE) & $error['type'])) {
+		if ($this->id && (0 == ((E_ERROR | E_WARNING | E_PARSE) & $error['type']))) {
 			try {
 				$this->_save( );
 			}
@@ -327,32 +327,36 @@ class Game
 	}
 
 
-	/** public function invite
+	/** static public function invite
 	 *		Creates the game from _POST data
 	 *
 	 * @param void
-	 * @action creates a game
-	 * @return int game id
+	 * @action creates an invite
+	 * @return int invite id
 	 */
-	public function invite( )
+	static public function invite( )
 	{
 		call(__METHOD__);
 		call($_POST);
+
+		$Mysql = Mysql::get_instance( );
 
 		// DON'T sanitize the data
 		// it gets sani'd in the MySQL->insert method
 		$_P = $_POST;
 
 		// translate (filter/sanitize) the data
-		$_P['white_id'] = $_P['player_id'];
-		$_P['black_id'] = $_P['opponent'];
+		$_P['invitor_id'] = (int) $_SESSION['player_id'];
+		$_P['invitee_id'] = (int) $_P['opponent'];
+		$_P['setup_id'] = (int) $_P['setup'];
 
 		call($_P);
 
-		$extra_info = array(
-			'custom_rules' => htmlentities($_P['custom_rules'], ENT_QUOTES, 'ISO-8859-1', false),
-		);
-		call($extra_info);
+		$extra_info = array( );
+#		$extra_info = array(
+#			'custom_rules' => htmlentities($_P['custom_rules'], ENT_QUOTES, 'ISO-8859-1', false),
+#		);
+#		call($extra_info);
 
 		$diff = array_compare($extra_info, self::$_EXTRA_INFO_DEFAULTS);
 		$extra_info = $diff[0];
@@ -365,12 +369,13 @@ class Game
 
 		// create the game
 		$required = array(
-			'white_id' ,
-			'black_id' ,
-			'method' ,
+			'invitor_id' ,
+			'setup_id' ,
 		);
 
-		$key_list = $required;
+		$key_list = array_merge($required, array(
+			'invitee_id' ,
+		));
 
 		try {
 			$_DATA = array_clean($_P, $key_list, $required);
@@ -379,31 +384,136 @@ class Game
 			throw $e;
 		}
 
-		$_DATA['state'] = 'Waiting';
-		$_DATA['create_date '] = 'NOW( )'; // note the trailing space in the field name, this is not a typo
+		$_DATA['invite_date '] = 'NOW( )'; // note the trailing space in the field name, this is not a typo
+
+		$insert_id = $Mysql->insert(self::INVITE_TABLE, $_DATA);
+
+		if (empty($insert_id)) {
+			throw new MyException(__METHOD__.': Invite could not be created');
+		}
+
+		return $insert_id;
+	}
 
 
-		// THIS IS THE ONLY PLACE IN THE CLASS WHERE IT BREAKS THE _pull / _save MENTALITY
-		// BECAUSE I NEED THE INSERT ID FOR THE REST OF THE GAME FUNCTIONALITY
+	/** static public function accept_invite
+	 *		Creates the game from invite data
+	 *
+	 * @param int invite id
+	 * @action creates a game
+	 * @return int game id
+	 */
+	static public function accept_invite($invite_id)
+	{
+		call(__METHOD__);
 
-		$insert_id = $this->_mysql->insert(self::GAME_TABLE, $_DATA);
+		$invite_id = (int) $invite_id;
+
+		$Mysql = Mysql::get_instance( );
+
+		// basically all we do, is copy the invite to the game table
+		// and randomly set the player order
+		$query = "
+			SELECT *
+			FROM ".self::INVITE_TABLE."
+			WHERE invite_id = '{$invite_id}'
+		";
+		$invite = $Mysql->fetch_assoc($query);
+
+		$game = array(
+			'extra_info' => $invite['extra_info'],
+			'setup_id' => $invite['setup_id'],
+			'create_date ' => 'NOW( )',  // note the trailing space in the field name, this is not a typo
+		);
+
+		if (mt_rand(0, 1)) {
+			$game['white_id'] = $_SESSION['player_id'];
+			$game['black_id'] = $invite['invitor_id'];
+		}
+		else {
+			$game['black_id'] = $_SESSION['player_id'];
+			$game['white_id'] = $invite['invitor_id'];
+		}
+
+		$insert_id = $Mysql->insert(self::GAME_TABLE, $game);
 
 		if (empty($insert_id)) {
 			throw new MyException(__METHOD__.': Game could not be created');
 		}
 
-		$this->id = $insert_id;
+		// add the first entry in the history table
+		$query = "
+			INSERT INTO ".self::GAME_BOARD_TABLE."
+				(game_id, board)
+			VALUES
+				('{$insert_id}', (
+					SELECT board
+					FROM ".Setup::SETUP_TABLE."
+					WHERE setup_id = '{$game['setup_id']}'
+				))
+		";
+		$Mysql->query($query);
 
-		$this->_create_blank_boards( );
-		Email::send('invite', $_P['black_id'], array('name' => $GLOBALS['_PLAYERS'][$_P['white_id']]));
+		// delete the invite
+		$Mysql->delete(self::INVITE_TABLE, " WHERE invite_id = '{$invite_id}' ");
 
-		// set the modified date
-		$Mysql->insert(self::GAME_TABLE, array('modify_date' => NULL), " WHERE game_id = '{$this->id}' ");
+		return $insert_id;
+	}
 
-		// pull the fresh data
-		$this->_pull( );
 
-		return $this->id;
+	/** static public function delete_invite
+	 *		Deletes the given invite
+	 *
+	 * @param int invite id
+	 * @action deletes the invite
+	 * @return void
+	 */
+	static public function delete_invite($invite_id)
+	{
+		call(__METHOD__);
+
+		$invite_id = (int) $invite_id;
+
+		$Mysql = Mysql::get_instance( );
+
+		$Mysql->delete(self::INVITE_TABLE, " WHERE invite_id = '{$invite_id}' ");
+	}
+
+
+	/** static public function has_invite
+	 *		Tests if the given player has the given invite
+	 *
+	 * @param int invite id
+	 * @param int player id
+	 * @param bool optional player can accept invite
+	 * @action deletes the invite
+	 * @return void
+	 */
+	static public function has_invite($invite_id, $player_id, $accept = false)
+	{
+		call(__METHOD__);
+
+		$invite_id = (int) $invite_id;
+		$player_id = (int) $player_id;
+
+		$Mysql = Mysql::get_instance( );
+
+		$open = "";
+		if ($accept) {
+			$open = " OR invitee_id IS NULL
+				OR invitee_id = FALSE ";
+		}
+
+		$query = "
+			SELECT COUNT(*)
+			FROM ".self::INVITE_TABLE."
+			WHERE invite_id = '{$invite_id}'
+				AND (invitor_id = '{$player_id}'
+					OR invitee_id = '{$player_id}'
+					{$open}
+				)
+		";
+		return (bool) $Mysql->fetch_value($query);
 	}
 
 
@@ -485,104 +595,22 @@ class Game
 	}
 
 
-	/** public function do_shots
-	 *		Performs the shots requested
+	/** public function get_board
+	 *		Returns the current board
 	 *
-	 * @param array of human readable targets (or single target string)
-	 * @action updates the board with the shots
-	 * @return void
+	 * @param bool optional return expanded FEN
+	 * @param int optional history index
+	 * @return string board FEN (or xFEN)
 	 */
-	public function do_shots($targets)
+	public function get_board($expanded = false, $history_index = 0)
 	{
-		call(__METHOD__);
+		$board = $this->_history[(int) $history_index]['board'];
 
-		// shoot !
-		try {
-			foreach ((array) $targets as $target) {
-				$this->_boards['opponent']->do_shot($target);
-			}
-
-			$this->_test_winner( );
-		}
-		catch (MyException $e) {
-			throw $e;
-		}
-	}
-
-
-	/** public function get_previous_shots
-	 *		Grabs the previous shots made
-	 *
-	 * @param void
-	 * @return array of computer string indexes and player color
-	 */
-	public function get_previous_shots( )
-	{
-		call(__METHOD__);
-
-		if (2 > count($this->_history)) {
-			return false;
-		}
-		else {
-			if (is_null($this->_history[0]['white_board'])) {
-				return array($this->_diff($this->_history[0]['black_board'], $this->_history[1]['black_board']), 'black');
-			}
-			else {
-				return array($this->_diff($this->_history[0]['white_board'], $this->_history[1]['white_board']), 'white');
-			}
-		}
-	}
-
-
-	/** public function test_setup
-	 *		Tests the game to see if this player
-	 *		can still setup the board
-	 *
-	 * @param void
-	 * @action tests player setup ability
-	 * @return bool player can setup
-	 */
-	public function test_setup( )
-	{
-		call(__METHOD__);
-
-		return ! $this->_players['player']['ready'];
-	}
-
-
-	/** public function test_ready
-	 *		Tests the game to see if the boards are
-	 *		set up and ready to go
-	 *
-	 * @param void
-	 * @action sets the state to 'Playing' and sends an email
-	 * @return bool game is ready
-	 */
-	public function test_ready( )
-	{
-		if (in_array($this->state, array('Waiting', 'Placing'))) {
-			$ready = $this->_players['white']['ready'] && $this->_players['black']['ready'];
-
-			// test both boards and make sure they both have all 5 boats on them
-			$first = $this->get_missing_boats( );
-			$second = $this->get_missing_boats(false);
-
-			if ($ready && ! count($first) && ! count($second)) {
-				$this->state = 'Playing';
-
-				$player_ids = array( );
-				$player_ids[] = $this->_players['white']['player_id'];
-				$player_ids[] = $this->_players['black']['player_id'];
-
-				Email::send('start', $player_ids, array('name' => $this->name));
-
-				return true;
-			}
-
-			return false;
+		if ((bool) $expanded) {
+			return $this->expandFEN($board);
 		}
 
-		return true;
+		return $board;
 	}
 
 
@@ -698,459 +726,6 @@ class Game
 	}
 
 
-	/** public function get_board_html
-	 *		Creates the board html based on the type
-	 *			'first' - all squares are id'd with 'dfd'
-	 *			'second' - all squares are id'd with 'tgt'
-	 *
-	 * @param string optional type of board to display
-	 * @param bool optional pull direct from class
-	 * @return string board html
-	 */
-	public function get_board_html($type = 'first', $direct = false)
-	{
-		call(__METHOD__);
-
-		if ( ! isset($this->_players['player'])) {
-			throw new MyException(__METHOD__.': Player session id is missing');
-		}
-
-		if ('first' == $type) {
-			$color = $this->_players['player']['color'];
-			$theirs = false;
-		}
-		else {
-			$color = ('white' == $this->_players['player']['color']) ? 'black' : 'white';
-			$theirs = ! ('Finished' == $this->state);
-		}
-		call($color);
-
-		// grab the boards
-		if ( ! $direct) {
-			// grab the most recent board
-			$board = $this->_history[0][$color.'_board'];
-			if (is_null($board)) {
-				$board = $this->_history[1][$color.'_board'];
-			}
-			call($board);
-			call($this->_boards['player']->get_board_ascii($board));
-
-			// grab the first board
-			$orig_board = $this->_history[count($this->_history) - 1][$color.'_board'];
-			call($orig_board);
-			call($this->_boards['player']->get_board_ascii($orig_board));
-		}
-		else {
-			$board = $orig_board = $this->_boards[$color]->board;
-		}
-
-		$letters = 'ABCDEFGHIJ';
-
-		$html = '<div class="board '.$type.' '.$color.'">';
-		$top = '<div class="row top"><div class="corner"></div><div>1</div><div>2</div><div>3</div><div>4</div><div>5</div><div>6</div><div>7</div><div>8</div><div>9</div><div>10</div><div class="corner"></div></div>';
-
-		$html .= $top;
-
-		for ($i = 0; $i < strlen($board); ++$i) {
-			$j = str_pad($i, 2, '0', STR_PAD_LEFT);
-			$tgt_id = ('first' == $type) ? " id=\"dfd-{$j}\"" : " id=\"tgt-{$j}\"";
-
-			$side = '<div class="side">'.$letters[floor($i / 10)].'</div>';
-
-			// add the border
-			if (0 == ($i % 10)) {
-				$html .= '<div class="row">'.$side;
-			}
-
-			switch($board[$i]) {
-				case 'Y' : $img = '<img src="images/miss.gif" alt="miss" />';  break;
-				case 'X' : $img = '<img src="images/hit.gif" alt="hit" />';   break;
-				default  : $img = '&nbsp;'; break;
-			}
-
-			if ( ! $theirs) {
-				switch (strtolower($orig_board[$i])) {
-					case 'a' : // no break
-					case 'f' : // no break
-					case 'j' : // no break
-					case 'm' : // no break
-					case 'p' :
-						$class = ' class="h-bow"';
-						break;
-
-					case 'b' : // no break
-					case 'g' :
-						$class = ' class="h-fore"';
-						break;
-
-					case 'c' : // no break
-					case 'k' : // no break
-					case 'n' :
-						$class = ' class="h-mid"';
-						break;
-
-					case 'd' : // no break
-					case 'h' :
-						$class = ' class="h-aft"';
-						break;
-
-					case 'e' : // no break
-					case 'i' : // no break
-					case 'l' : // no break
-					case 'o' : // no break
-					case 'q' :
-						$class = ' class="h-stern"';
-						break;
-
-					default  :
-						$class = '';
-						break;
-				} // end switch
-
-				// if it's vertical, switch the class
-				if (strtolower($orig_board[$i]) != $orig_board[$i]) {
-					$class = str_replace('h', 'v', $class);
-				}
-			}
-			else { // theirs (don't show the boats)
-				$class = '';
-			}
-
-			// put in the div
-			$html .= "<div{$tgt_id}{$class}>{$img}</div>";
-
-			// add the border
-			if (9 == ($i % 10)) {
-				$html .= $side.'</div>'."\n";
-			}
-		}
-		$html .= str_replace('top', 'bottom', $top) . '</div>';
-
-		// if there is no board
-		if (100 != strlen($board)) {
-			// let the opponent know about it
-			$html = '<div class="noboard">This player has not set up their board yet.</div>';
-		}
-		call($html);
-
-		return $html;
-	}
-
-
-	public function get_missing_boats($mine = true)
-	{
-		if ($mine) {
-			return $this->_boards['player']->get_missing_boats( );
-		}
-		else {
-			return $this->_boards['opponent']->get_missing_boats( );
-		}
-	}
-
-
-	public function get_sunk( )
-	{
-		call(__METHOD__);
-
-		// grab the boards for the player who's turn it is
-		$this_board = $this->_history[0][$this->turn.'_board'];
-
-		if (isset($this->_history[1][$this->turn.'_board'])) {
-			$prev_board = $this->_history[1][$this->turn.'_board'];
-		}
-		else {
-			return false;
-		}
-
-		if (is_null($this_board)) {
-			$this_board = $prev_board;
-
-			if (isset($this->_history[2][$this->turn.'_board'])) {
-				$prev_board = $this->_history[2][$this->turn.'_board'];
-			}
-			else {
-				return false;
-			}
-		}
-
-		$diff = $this->_diff($this_board, $prev_board);
-
-		$sunk = array( );
-
-		// look where each shot was made and find out which ships were hit
-		foreach($diff as $shot) {
-			$hit = $prev_board[$shot];
-
-			// if we can find the boat before the shot
-			if ('0' != $hit) {
-				switch (strtolower($hit)) {
-					case 'a' : // no break
-					case 'b' : // no break
-					case 'c' : // no break
-					case 'd' : // no break
-					case 'e' :
-						$pattern = '/[a-e]/i';
-						$ship = 'Carrier';
-						break;
-
-					case 'f' : // no break
-					case 'g' : // no break
-					case 'h' : // no break
-					case 'i' :
-						$pattern = '/[f-i]/i';
-						$ship = 'Battleship';
-						break;
-
-					case 'j' : // no break
-					case 'k' : // no break
-					case 'l' :
-						$pattern = '/[jkl]/i';
-						$ship = 'Cruiser';
-						break;
-
-					case 'm' : // no break
-					case 'n' : // no break
-					case 'o' :
-						$pattern = '/[mno]/i';
-						$ship = 'Submarine';
-						break;
-
-					case 'p' : // no break
-					case 'q' :
-						$pattern = '/[pq]/i';
-						$ship = 'Destroyer';
-						break;
-				}
-
-				// if we can't find it now
-				if (0 == preg_match($pattern, $this_board)) {
-					// it must have been sunk this round
-					call('--SHIP SUNK--');
-					$sunk[] = $ship;
-				}
-			} // end if hit check
-		} // end foreach shot loop
-
-		// sort it by name
-		sort($sunk);
-		call($sunk);
-
-		return array_unique($sunk);
-	}
-
-
-	public function get_sunk_ships($board)
-	{
-		$missing = $this->get_missing_boats('my' == $board);
-
-		$return = 'No boats sunk';
-		if ($missing) {
-			$return = "Sunk Boats:";
-			foreach ($missing as $bow => $null) {
-				switch ($bow) {
-					case 'a' : $return .= "\n\tCarrier"; break;
-					case 'f' : $return .= "\n\tBattleship"; break;
-					case 'j' : $return .= "\n\tCruiser"; break;
-					case 'm' : $return .= "\n\tSubmarine"; break;
-					case 'p' : $return .= "\n\tDestroyer"; break;
-				}
-			}
-		}
-
-		return $return;
-	}
-
-
-	public function get_salvo_shots( )
-	{
-		return $this->_boards['player']->get_salvo_shots( );
-	}
-
-
-	/** public function get_boats_html
-	 *		Creates the boat html for placing boats
-	 *
-	 * @param array optional of ints boat sizes available
-	 * @return string boat html
-	 */
-	public function get_boats_html($boats = -1)
-	{
-		call(__METHOD__);
-
-		if (-1 == $boats) {
-			$boats = $this->get_missing_boats(true);
-		}
-
-		$html = '<div class="boats">';
-
-		foreach ($boats as $boat) 	{
-			$html .= '<div class="boat">';
-
-			switch ($boat) {
-				case 5 :
-					$html .= '<div class="h-bow">&nbsp;</div><div class="h-fore">&nbsp;</div><div class="h-mid">&nbsp;</div><div class="h-aft">&nbsp;</div><div class="h-stern">&nbsp;</div>';
-					break;
-
-				case 4 :
-					$html .= '<div class="h-bow">&nbsp;</div><div class="h-fore">&nbsp;</div><div class="h-aft">&nbsp;</div><div class="h-stern">&nbsp;</div>';
-					break;
-
-				case 3 :
-					$html .= '<div class="h-bow">&nbsp;</div><div class="h-mid">&nbsp;</div><div class="h-stern">&nbsp;</div>';
-					break;
-
-				case 2 :
-					$html .= '<div class="h-bow">&nbsp;</div><div class="h-stern">&nbsp;</div>';
-					break;
-			}
-
-			$html .= "</div>\n";
-		}
-
-		$html .= '</div>';
-
-		return $html;
-	}
-
-
-	/** public function setup_clear_board
-	 *		Clears the board
-	 *
-	 * @param void
-	 * @action clears the board
-	 * @return string html game board
-	 */
-	public function setup_clear_board( )
-	{
-		call(__METHOD__);
-
-		try {
-			$this->test_setup( );
-			$this->_boards['player']->clear_board( );
-			return $this->get_board_html('first', true);
-		}
-		catch (MyException $e) {
-			throw $e;
-		}
-	}
-
-
-	/** public function setup_remove_boat
-	 *		Removes the boat on the given square
-	 *
-	 * @param string board square
-	 * @action removes the given boat
-	 * @return string html game board
-	 */
-	public function setup_remove_boat($index)
-	{
-		call(__METHOD__);
-
-		try {
-			$this->test_setup( );
-			$this->_boards['player']->remove_boat($index);
-			return $this->get_board_html('first', true);
-		}
-		catch (MyException $e) {
-			throw $e;
-		}
-	}
-
-
-	/** public function setup_random_boat
-	 *		Places the given boat randomly
-	 *
-	 * @param int size of boat
-	 * @action randomly places given boat
-	 * @return string html game board
-	 */
-	public function setup_random_boat($size)
-	{
-		call(__METHOD__);
-
-		try {
-			$this->test_setup( );
-			$this->_boards['player']->place_random_boat($size);
-			return $this->get_board_html('first', true);
-		}
-		catch (MyException $e) {
-			throw $e;
-		}
-	}
-
-
-	/** public function setup_random_board
-	 *		Clears the board and sets up a
-	 *		completely random board
-	 *
-	 * @param void
-	 * @action sets up random board
-	 * @return string html game board
-	 */
-	public function setup_random_board( )
-	{
-		call(__METHOD__);
-
-		try {
-			$this->test_setup( );
-			$this->_boards['player']->generate_random_board( );
-			return $this->get_board_html('first', true);
-		}
-		catch (MyException $e) {
-			throw $e;
-		}
-	}
-
-
-	/** public function setup_place_boat_between
-	 *		Places a boat between the two given squares
-	 *
-	 * @param string board square
-	 * @param string board square
-	 * @action places boat
-	 * @return string html game board
-	 */
-	public function setup_place_boat_between($index1, $index2)
-	{
-		call(__METHOD__);
-
-		try {
-			$this->test_setup( );
-			$this->_boards['player']->place_boat_between($index1, $index2);
-			return $this->get_board_html('first', true);
-		}
-		catch (MyException $e) {
-			throw $e;
-		}
-	}
-
-
-	/** public function setup_done
-	 *		Finalizes the board setup
-	 *
-	 * @param void
-	 * @action sets the game state to disallow further editing
-	 * @return bool success
-	 */
-	public function setup_done( )
-	{
-		call(__METHOD__);
-
-		if ($this->test_setup( )) {
-			// make sure the player has placed all the boats
-			if (count($this->get_missing_boats( ))) {
-				throw new MyException(__METHOD__.': All boats must be placed before finalizing setup');
-			}
-
-			$this->_players['player']['ready'] = true;
-
-			return true;
-		}
-
-		return false;
-	}
-
-
 	/** public function get_outcome
 	 *		Returns the outcome string and outcome
 	 *
@@ -1167,8 +742,8 @@ class Game
 			return false;
 		}
 
-		list($null, $loser) = $this->get_previous_shots( );
-		$winner = ('white' == $loser) ? 'black' : 'white';
+		$count = count($this->_history);
+		$winner = (0 == ($count % 2)) ? 'black' : 'white';
 
 		if ($player_id == $this->_players[$winner]['player_id']) {
 			return array('You Won !', 'won');
@@ -1232,7 +807,6 @@ class Game
 
 		// set the properties
 		$this->state = $result['state'];
-		$this->method = $result['method'];
 		$this->paused = (bool) $result['paused'];
 		$this->create_date = strtotime($result['create_date']);
 		$this->modify_date = strtotime($result['modify_date']);
@@ -1266,10 +840,7 @@ class Game
 			$this->_players['opponent']['opp_color'] = 'white';
 		}
 
-		$this->_players['white']['ready'] = (bool) $result['white_ready'];
-		$this->_players['black']['ready'] = (bool) $result['black_ready'];
-
-		// set up the boards
+		// set up the board
 		$query = "
 			SELECT *
 			FROM ".self::GAME_BOARD_TABLE."
@@ -1281,10 +852,12 @@ class Game
 
 		if ($result) {
 			$this->_history = $result;
+			$this->turn = ((0 == count($this->_history)) ? 'black' : 'white');
 			$this->last_move = strtotime($result[0]['move_date']);
 
 			try {
 				$this->_pharaoh = new Pharaoh( );
+				$this->_pharaoh->set_board($this->expandFEN($this->_history[0]['board']));
 			}
 			catch (MyException $e) {
 				throw $e;
@@ -1292,15 +865,6 @@ class Game
 		}
 		else {
 			$this->last_move = $this->create_date;
-		}
-
-		if ('white' == $this->_players['player']['color']) {
-			$this->_boards['player'] = & $this->_boards['white'];
-			$this->_boards['opponent'] = & $this->_boards['black'];
-		}
-		else {
-			$this->_boards['player'] = & $this->_boards['black'];
-			$this->_boards['opponent'] = & $this->_boards['white'];
 		}
 
 		$this->_players[$this->turn]['turn'] = true;
@@ -1329,8 +893,6 @@ class Game
 			// update the game data
 			$query = "
 				SELECT state
-					, white_ready
-					, black_ready
 					, modify_date
 				FROM ".self::GAME_TABLE."
 				WHERE game_id = '{$this->id}'
@@ -1369,78 +931,34 @@ class Game
 			$update_game['state'] = $this->state;
 		}
 
-		call($game['white_ready']);
-		call($this->_players['white']['ready']);
-		if ($game['white_ready'] != (int) $this->_players['white']['ready']) {
-			$update_game['white_ready'] = (int) $this->_players['white']['ready'];
-		}
-
-		call($game['black_ready']);
-		call($this->_players['black']['ready']);
-		if ($game['black_ready'] != (int) $this->_players['black']['ready']) {
-			$update_game['black_ready'] = (int) $this->_players['black']['ready'];
-		}
-
 		if ($update_game) {
 			$update_modified = true;
 			$this->_mysql->insert(self::GAME_TABLE, $update_game, " WHERE game_id = '{$this->id}' ");
 		}
 
-		// update the boards
+		// update the board
 		$color = $this->_players['player']['color'];
 		call($color);
-		if (in_array($this->state, array('Waiting', 'Placing'))) {
-			call('SETUP SAVE');
+		call('IN-GAME SAVE');
 
-			// grab the first boards from the database
-			$query = "
-				SELECT *
-				FROM ".self::GAME_BOARD_TABLE."
-				WHERE game_id = '{$this->id}'
-				ORDER BY move_date ASC
-				LIMIT 1
-			";
-			$boards = $this->_mysql->fetch_assoc($query);
-			call($boards);
+		// grab the current board from the database
+		$query = "
+			SELECT *
+			FROM ".self::GAME_BOARD_TABLE."
+			WHERE game_id = '{$this->id}'
+			ORDER BY move_date DESC
+			LIMIT 1
+		";
+		$board = $this->_mysql->fetch_assoc($query);
+		call($board);
 
-			call($this->_boards);
+		$new_board = $this->_pharaoh->board;
+		call($new_board);
 
-			if ($boards[$color.'_board'] != $this->_boards['player']->board) {
-				$update_modified = true;
-				$where = " WHERE game_id = '{$boards['game_id']}' AND move_date = '{$boards['move_date']}' ";
-				$this->_mysql->insert(self::GAME_BOARD_TABLE, array($color.'_board' => $this->_boards['player']->board), $where);
-			}
-		}
-		else {
-			call('IN-GAME SAVE');
-
-			// grab the current boards from the database
-			$query = "
-				SELECT *
-				FROM ".self::GAME_BOARD_TABLE."
-				WHERE game_id = '{$this->id}'
-				ORDER BY move_date DESC
-				LIMIT 2
-			";
-			$boards = $this->_mysql->fetch_array($query);
-			call($boards);
-
-			$white_board = $this->_boards['white']->board;
-			$black_board = $this->_boards['black']->board;
-			call($white_board);
-			call($black_board);
-
-			// only one should be different at a time
-			if ($black_board != $boards[0]['black_board']) {
-				call('UPDATED BLACK');
-				$update_modified = true;
-				$this->_mysql->insert(self::GAME_BOARD_TABLE, array('black_board' => $black_board, 'game_id' => $this->id));
-			}
-			elseif (is_null($boards[0]['white_board']) && ($white_board != $boards[1]['white_board'])) {
-				call('UPDATED WHITE');
-				$update_modified = true;
-				$this->_mysql->insert(self::GAME_BOARD_TABLE, array('white_board' => $white_board), " WHERE game_id = '{$this->id}' AND move_date = '{$boards[0]['move_date']}' ");
-			}
+		if ($new_board != $board) {
+			call('UPDATED BOARD');
+			$update_modified = true;
+			$this->_mysql->insert(self::GAME_BOARD_TABLE, array('board' => $new_board, 'game_id' => $this->id));
 		}
 
 		// update the game modified date
@@ -1473,45 +991,26 @@ class Game
 	 * @action takes appropriate action if a winner is found
 	 * @return void
 	 */
-	protected function _test_winner( )
-	{
-		call(__METHOD__);
-
-		$color = $this->_players['player']['opp_color'];
-		call($color);
-
-		$match = preg_match('/[a-q]/i', $this->_boards[$color]->board);
-		call($match);
-
-		if ( ! $match) {
-			$this->_players['player']['object']->add_win( );
-			$this->_players['opponent']['object']->add_loss( );
-			$this->state = 'Finished';
-			Email::send('defeated', $this->_players['opponent']['object']->id, array('name' => $this->_players['player']['object']->username));
-		}
-		else {
-			Email::send('turn', $this->_players['opponent']['object']->id, array('name' => $this->_players['player']['object']->username));
-		}
-	}
-
-
-	/** protected function _create_blank_boards
-	 *		Initializes the game board table with blank
-	 *		boards for the setup page
-	 *
-	 * @param void
-	 * @action initializes blank boards in the game board table
-	 * @return void
-	 */
-	protected function _create_blank_boards( )
-	{
-		if ( ! empty($this->id)) {
-			$data['game_id'] = (int) $this->id;
-			$data['white_board'] = $data['black_board'] = str_repeat('0', 100);
-
-			$this->_mysql->insert(self::GAME_BOARD_TABLE, $data);
-		}
-	}
+#	protected function _test_winner( )
+#	{
+#		call(__METHOD__);
+#
+#		$color = $this->_players['player']['opp_color'];
+#		call($color);
+#
+#		$match = preg_match('/[a-q]/i', $this->_boards[$color]->board);
+#		call($match);
+#
+#		if ( ! $match) {
+#			$this->_players['player']['object']->add_win( );
+#			$this->_players['opponent']['object']->add_loss( );
+#			$this->state = 'Finished';
+#			Email::send('defeated', $this->_players['opponent']['object']->id, array('name' => $this->_players['player']['object']->username));
+#		}
+#		else {
+#			Email::send('turn', $this->_players['opponent']['object']->id, array('name' => $this->_players['player']['object']->username));
+#		}
+#	}
 
 
 	/** protected function _diff
@@ -1525,7 +1024,7 @@ class Game
 	protected function _diff($board1, $board2)
 	{
 		$diff = array( );
-		for ($i = 0; $i < 100; ++$i) {
+		for ($i = 0, $length = strlen($board1); $i < $length; ++$i) {
 			if ($board1[$i] != $board2[$i]) {
 				$diff[] = $i;
 			}
@@ -1561,7 +1060,7 @@ class Game
 			throw new MyException(__METHOD__.': Player ID required when not pulling all games');
 		}
 
-		$WHERE = " WHERE G.state <> 'Waiting' ";
+		$WHERE = "";
 		if ( ! $all) {
 			$WHERE .= "
 					AND G.state <> 'Finished'
@@ -1573,10 +1072,12 @@ class Game
 		$query = "
 			SELECT G.*
 				, IF((0 = MAX(GB.move_date)) OR MAX(GB.move_date) IS NULL, G.create_date, MAX(GB.move_date)) AS last_move
+				, COUNT(GB.move_date) AS count
 				, 0 AS my_turn
 				, 0 AS in_game
 				, W.username AS white
 				, B.username AS black
+				, S.name AS setup_name
 			FROM ".self::GAME_TABLE." AS G
 				LEFT JOIN ".self::GAME_BOARD_TABLE." AS GB
 					ON GB.game_id = G.game_id
@@ -1584,6 +1085,8 @@ class Game
 					ON W.player_id = G.white_id
 				LEFT JOIN ".Player::PLAYER_TABLE." AS B
 					ON B.player_id = G.black_id
+				LEFT JOIN ".Setup::SETUP_TABLE." AS S
+					ON S.setup_id = G.setup_id
 			{$WHERE}
 			GROUP BY game_id
 			ORDER BY state ASC
@@ -1594,14 +1097,7 @@ class Game
 		if (0 != $player_id) {
 			// run though the list and find games the user needs action on
 			foreach ($list as $key => $game) {
-				$query = "
-					SELECT IF(white_board IS NULL, 'black', 'white') AS turn
-					FROM ".self::GAME_BOARD_TABLE."
-					WHERE game_id = '{$game['game_id']}'
-					ORDER BY move_date DESC
-					LIMIT 1
-				";
-				$game['turn'] = $Mysql->fetch_value($query);
+				$game['turn'] = (0 == ($game['count'] % 2)) ? 'black' : 'white';
 
 				$game['in_game'] = (int) (($player_id == $game['white_id']) || ($player_id == $game['black_id']));
 				$game['my_turn'] = (int) ( ! empty($game['turn']) && ($player_id == $game[$game['turn'].'_id']));
@@ -1651,20 +1147,22 @@ class Game
 					ON E.player_id = I.invitee_id
 			WHERE I.invitor_id = {$player_id}
 				OR I.invitee_id = {$player_id}
+				OR I.invitee_id IS NULL
+				OR I.invitee_id = FALSE
 			ORDER BY invite_date DESC
 		";
 		$list = $Mysql->fetch_array($query);
 
 		$in_vites = $out_vites = $open_vites = array( );
 		foreach ($list as $item) {
-			if ( ! $item['invitee']) {
-				$open_vites[] = $item;
+			if ($player_id == $item['invitor_id']) {
+				$out_vites[] = $item;
 			}
-			elseif ($player_id == $item['invitee']) {
+			elseif ($player_id == $item['invitee_id']) {
 				$in_vites[] = $item;
 			}
 			else {
-				$out_vites[] = $item;
+				$open_vites[] = $item;
 			}
 		}
 
@@ -1672,7 +1170,7 @@ class Game
 	}
 
 
-	/** static public function get_invites
+	/** static public function get_invite_count
 	 *		Returns a count array of all the invites in the database
 	 *		for the given player
 	 *
@@ -1702,7 +1200,10 @@ class Game
 		$query = "
 			SELECT COUNT(*)
 			FROM ".self::INVITE_TABLE."
-			WHERE invitee_id IS NULL
+			WHERE invitor_id <> '{$player_id}'
+				AND (invitee_id IS NULL
+					OR invitee_id = FALSE
+				)
 		";
 		$open_vites = $Mysql->fetch_value($query);
 
@@ -1756,11 +1257,11 @@ class Game
 		// games in play
 		$query = "
 			SELECT game_id
-				, IF(silver_id = {$player_id}, 'silver', 'red') AS color
+				, IF(white_id = {$player_id}, 'silver', 'red') AS color
 			FROM ".self::GAME_TABLE."
 			WHERE state = 'Playing'
-				AND (silver_id = '{$player_id}'
-					OR red_id = '{$player_id}'
+				AND (white_id = '{$player_id}'
+					OR black_id = '{$player_id}'
 				)
 		";
 		$games = $Mysql->fetch_array($query);
@@ -1777,27 +1278,13 @@ class Game
 			$count = (int) $Mysql->fetch_value($query);
 			$odd = (bool) ($count % 2);
 
-			if ((('silver' == $game['color']) && ! $odd)
-				|| (('red' == $game['color']) && $odd)) {
+			if ((('silver' == $game['color']) && $odd)
+				|| (('red' == $game['color']) && ! $odd)) {
 				++$turn;
 			}
 		}
 
 		return array($mine, $turn);
-	}
-
-
-	/** public function check_turns
-	 *		Returns the number of games in which
-	 *		the given player has turns pending
-	 *
-	 * @param int player id
-	 * @return int number of pending turn games
-	 */
-	static public function check_turns( )
-	{
-		// TODO: check for pending games
-		return 0;
 	}
 
 
@@ -1844,9 +1331,9 @@ class Game
 			throw new MyException(__METHOD__.': No game ids given');
 		}
 
-#		foreach ($ids as $id) {
-#			self::write_game_file($id);
-#		}
+		foreach ($ids as $id) {
+			self::write_game_file($id);
+		}
 
 		$tables = array(
 			self::GAME_BOARD_TABLE ,

@@ -152,39 +152,32 @@ if (isset($_POST['chat'])) {
 }
 
 
-// init our game
-$Game = new Game((int) $_SESSION['game_id']);
-
-// run the card clicks
-if (isset($_POST['cardcheck'])) {
-	// easter egg?  maybe...
-	$notice = array(
-		'Nice Try',
-		'Keep trying to cheat, and we\'ll gang up on you',
-		'I\'m telling your parents or legal guardians that you\'re trying to cheat',
-		'CHEATER',
-		'What? You actually thought that would work?',
-		'They have cards, but I\'m not telling you what they are',
-		'I\'m sure the cards they have are the ones you need',
-		'Stop that',
-		'Not tellin\'',
-		'It would be easier to ask them what their cards are',
-		'I don\'t think they would appreciate you trying to cheat',
-		'I\'ve just sucked one year of your life away',
-	);
-
-	if ($_POST['id'] != $_SESSION['player_id']) {
-		echo $notice[mt_rand(0, count($notice) - 1)];
-		exit;
+// run the invite button clicks
+if (isset($_POST['invite'])) {
+	if ('delete' == $_POST['invite']) {
+		// make sure we are one of the two people in the invite
+		if (Game::has_invite($_POST['invite_id'], $_SESSION['player_id'])) {
+			Game::delete_invite($_POST['invite_id']);
+			echo 'Invite Deleted';
+		}
+		else {
+			echo 'ERROR: Not your invite';
+		}
 	}
-
-	try {
-		echo $Game->get_cards($_POST['id']);
+	else {
+		// make sure we are one of the two people in the invite
+		if (Game::has_invite($_POST['invite_id'], $_SESSION['player_id'], $accept = true)) {
+			if ($game_id = Game::accept_invite($_POST['invite_id'])) { // single equals intended
+				echo $game_id;
+			}
+			else {
+				echo 'ERROR: Could not create game';
+			}
+		}
+		else {
+			echo 'ERROR: Not your invite';
+		}
 	}
-	catch (MyException $e) {
-		echo 'ERROR';
-	}
-
 	exit;
 }
 
@@ -205,6 +198,10 @@ if (($player_id != $_SESSION['player_id']) && ! $GLOBALS['Player']->is_admin) {
 	echo 'ERROR: Incorrect player id given';
 	exit;
 }
+
+// init our game
+$Game = new Game((int) $_SESSION['game_id']);
+
 
 // run the 'Nudge' button
 if (isset($_POST['nudge'])) {

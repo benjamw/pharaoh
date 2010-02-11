@@ -25,8 +25,12 @@ H - eye of horus (splitter, NE-SW \ ) - needs 2 characters to show orientation
 	I - NW-SE /
 T - Tower of Kadesh base ( x4 )
 
+
+R - red (player color)
+S - silver (player color)
+
 ABCDEFGHIJKLMNOPQRSTUVWXYZ
-----   --      -   - ----
+----   --      - --- ----
 
 set up and use the FEN notation for the board
     A   B   C   D   E   F   G   H   I   J

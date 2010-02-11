@@ -5,8 +5,8 @@
 $LOGIN = false;
 require_once 'includes/inc.global.php';
 
-if ((false == Settings::read('new_users')) && ( ! $GLOBALS['Player']->is_admin)) {
-	Flash::store('Sorry, be we are not accepting new applications at this time.');
+if ((false == Settings::read('new_users')) && ((0 != Settings::read('max_users')) && ($num_players >= Settings::read('max_users'))) && ( ! $GLOBALS['Player']->is_admin)) {
+	Flash::store('Sorry, but we are not accepting new applications at this time.');
 }
 
 if (isset($_SESSION['player_id'])) {
@@ -59,10 +59,16 @@ echo get_header($meta);
 $hints = array(
 	'Please Register' ,
 	'You must remember your username and password to be able to gain access to '.$GLOBALS['__GAME_NAME'].' later.' ,
-	'<span class="notice">NOTE</span>: You will not be able to log in until your account has been approved.' ,
-	'You should receive an email when your account has been approved.' ,
-	'<span class="warning">WARNING!</span><br />Inactive accounts will be deleted after '.Settings::read('expire_users').' days.' ,
 );
+
+if (Settings::read('approve_users')) {
+	$hints[] = '<span class="notice">NOTE</span>: You will be unable to log in if your account has not been approved yet.';
+	$hints[] = 'You should receive an email when your account has been approved.';
+}
+
+if (Settings::read('expire_users')) {
+	$hints[] = '<span class="warning">WARNING!</span><br />Inactive accounts will be deleted after '.Settings::read('expire_users').' days.';
+}
 
 $contents = <<< EOF
 	<form method="post" action="{$_SERVER['REQUEST_URI']}"><div class="formdiv">

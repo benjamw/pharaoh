@@ -428,10 +428,10 @@ class GamePlayer
 			WHERE player_id = '{$this->id}'
 		";
 		$result = $this->_mysql->fetch_assoc($query);
-		call($result);
 
 		if ( ! $result) {
 #			throw new MyException(__METHOD__.': Data not found in database (#'.$this->id.')');
+return false;
 		}
 
 		$this->is_admin = ( ! $this->is_admin) ? (bool) $result['is_admin'] : true;
@@ -527,18 +527,16 @@ class GamePlayer
 		$Mysql = Mysql::get_instance( );
 
 		$query = "
-			SELECT COUNT(GP.game_id) AS game_count
-				, GP.player_id
+			SELECT COUNT(G.game_id) AS game_count
+				, PE.player_id
 				, PE.max_games
-			FROM ".Game::GAME_PLAYER_TABLE." AS GP
-				LEFT JOIN ".Game::GAME_TABLE." AS G
-					ON (G.game_id = GP.game_id)
+			FROM ".Game::GAME_TABLE." AS G
 				LEFT JOIN ".self::EXTEND_TABLE." AS PE
-					ON (PE.player_id = GP.player_id)
-			WHERE GP.state NOT IN ('Resigned', 'Dead')
-				AND G.state <> 'Finished'
+					ON (PE.player_id = G.white_id
+						OR PE.player_id = G.black_id)
+			WHERE G.state <> 'Finished'
 				AND PE.max_games <> 0
-			GROUP BY GP.player_id
+			GROUP BY PE.player_id
 		";
 		$maxed_players = $Mysql->fetch_array($query);
 

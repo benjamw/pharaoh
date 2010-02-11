@@ -49,6 +49,7 @@ class Pharaoh {
 	 *		extra_info is an array that holds information about the current player state
 	 *
 	 * @var array of player data
+	 * @info not used yet
 	 */
 	public $players;
 
@@ -57,13 +58,14 @@ class Pharaoh {
 	 *		The current player's id
 	 *
 	 * @var int
+	 * @info not used yet
 	 */
 	public $current_player;
 
 
 	/** public property winner
 	 *		Holds the winner
-	 *		'silver' or 'red'
+	 *		'silver' or 'red' (or 'draw')
 	 *
 	 * @var string
 	 */
@@ -206,13 +208,11 @@ class Pharaoh {
 	 *			-rotate: square-direction (0 = CCW, 1 = CW)) e.g.- B4-0
 	 *
 	 * @param string move
-	 * @return string board
+	 * @return void
 	 */
 	public function do_move($move)
 	{
 		call(__METHOD__);
-debug($this->_board);
-debug($move);
 
 		$index = self::get_target_index(substr($move, 0, 2));
 
@@ -226,7 +226,7 @@ debug($move);
 				$this->_rotate_piece($index, $move[3]);
 			}
 			else { // move
-				$this->_move_piece($index, self::get_target_index(substr($move, 3, 2)), (':' == $move[3]));
+				$this->_move_piece($index, self::get_target_index(substr($move, 3, 2)), (':' == $move[2]));
 			}
 		}
 		catch (MyException $e) {
@@ -238,10 +238,20 @@ debug($move);
 		foreach ($hits as $hit) {
 			// check if we hit a pharaoh
 			if ('p' == $this->_board[$hit]) {
-				$this->winner = 'silver';
+				if (in_array($this->winner, array('red','draw'))) {
+					$this->winner = 'draw';
+				}
+				else {
+					$this->winner = 'silver';
+				}
 			}
 			elseif ('P' == $this->_board[$hit]) {
-				$this->winner = 'red';
+				if (in_array($this->winner, array('silver','draw'))) {
+					$this->winner = 'draw';
+				}
+				else {
+					$this->winner = 'red';
+				}
 			}
 
 			// remove the piece
@@ -256,6 +266,7 @@ debug($move);
 				$this->_board[$hit] = '0';
 			}
 		}
+
 		call($this->_get_board_ascii( ));
 	}
 
@@ -322,7 +333,6 @@ debug($move);
 			$this->_laser_path = array(array(array(0, I_DOWN)));
 		}
 
-
 		$i = 0; // infinite loop protection
 		$paths = $this->_laser_path[0];
 		$used = array( );
@@ -331,8 +341,6 @@ debug($move);
 		while ($i < 999) { // no ad infinitum here
 			$split = 0;
 			$continue = false;
-
-debug($this->_get_laser_ascii( ));
 
 			foreach ($paths as $key => $node) {
 				if ((false == $node) || (true === $node)) {
@@ -367,7 +375,7 @@ debug($this->_get_laser_ascii( ));
 					// if we've already split a beam once,
 					// we'll need to add a few more to the index
 					// (it is possible to hit a single splitter from two sides,
-					// as well as hit both splitter from two sides, so...)
+					// as well as hit both splitters from two sides, so...)
 
 					// also note: if there are no beam splitters, there is no way
 					// of doubling back or going over the same path again, ever
@@ -429,7 +437,6 @@ debug($this->_get_laser_ascii( ));
 			// if we have no valid nodes left
 			// break the loop
 			if ( ! $continue) {
-debug('NO MORE NODES');
 				break;
 			}
 
@@ -441,49 +448,62 @@ debug('NO MORE NODES');
 			++$i; // keep those pesky infinite loops at bay
 		} // end while
 
-debug($this->_laser_path);
-debug(json_encode($this->_laser_path));
-call($this->_get_laser_ascii( ));
-call($hit);
+		call($this->_get_laser_ascii( ));
+		call($hit);
+
 		return $hit;
 	}
 
 
+	/** public function get_laser_path
+	 *		Returns the laser path array
+	 *
+	 * @param void
+	 * @return array laser path
+	 */
 	public function get_laser_path( )
 	{
 		return $this->_laser_path;
 	}
 
 
-	private function _check_queue( & $queue)
-	{
-		if (count($queue)) {
-			return array_pop($queue);
-		}
-
-		return false;
-	}
-
-
-	public function set_board($board)
+	/** public function set_board
+	 *		Tests and sets the board
+	 *
+	 * @param string expanded FEN of board
+	 * @return void
+	 */
+	public function set_board($xFEN)
 	{
 		call(__METHOD__);
 
 		// test the board and make sure all is well
-		if (80 != strlen($board)) {
+		if (80 != strlen($xFEN)) {
 			throw new MyException(__METHOD__.': Board is not the right size');
 		}
 
-		$this->_board = $board;
+		$this->_board = $xFEN;
 	}
 
 
+	/** protected function _move_piece
+	 *		Tests and moves a piece
+	 *
+	 * @param int board from index
+	 * @param int board to index
+	 * @param bool optional move both obelisks
+	 * @return void
+	 */
 	protected function _move_piece($from_index, $to_index, $both_obelisks = true)
 	{
 		call(__METHOD__);
 
+		$piece = $this->_board[$from_index];
+		$to_piece = $this->_board[$to_index];
+		$silver = ($piece == strtoupper($piece));
+
 		// check for a piece on the from square
-		if ('0' == $this->_board[$from_index]) {
+		if ('0' == $piece) {
 			throw new MyException(__METHOD__.': No piece found to move');
 		}
 
@@ -510,7 +530,7 @@ call($hit);
 		// check for wrong color piece moving onto a colored square
 		$not_silver = array(0, 10, 20, 30, 40, 50, 60, 70, 8, 78);
 		$not_red = array(9, 19, 29, 39, 49, 59, 69, 79, 1, 71);
-		$color_array = 'not_'.self::get_piece_color($this->_board[$from_index]);
+		$color_array = 'not_'.self::get_piece_color($piece);
 		if (in_array($to_index, ${$color_array})) {
 			throw new MyException(__METHOD__.': Cannot move onto square of opposite color');
 		}
@@ -520,37 +540,63 @@ call($hit);
 		// it's not allowed
 
 		// check for a piece in the way
-		if ('0' != $this->_board[$to_index]) {
-			// both the Djed and Eye of Horus can swap places with other pieces
-			if ( ! in_array(strtoupper($this->_board[$from_index]), array('H','I','X','Y'))) {
-				throw new MyException(__METHOD__.': Target square not empty - '.$this->_board[$from_index]);
+		if ('0' != $to_piece) {
+				// make sure we are not moving obelisks around
+			if (in_array(strtoupper($piece), array('V','W')) && ('V' != strtoupper($to_piece))) {
+				throw new MyException(__METHOD__.': Target square not empty - '.$piece);
 			}
-			// but only with pyramids or obelisks
-			elseif ( ! in_array(strtoupper($this->_board[$to_index]), array('A','B','C','D','V','W'))) {
-				throw new MyException(__METHOD__.': Target piece not swappable - '.$this->_board[$from_index]);
+				// both the Djed and Eye of Horus can swap places with other pieces
+				// as well as swapping a single and double obelisk tower is the from is double
+			elseif ( ! in_array(strtoupper($piece), array('H','I','X','Y','W'))) {
+				throw new MyException(__METHOD__.': Target square not empty - '.$piece);
+			}
+				// but only with pyramids or obelisks
+			elseif ( ! in_array(strtoupper($to_piece), array('A','B','C','D','V','W'))) {
+				throw new MyException(__METHOD__.': Target piece not swappable - '.$piece);
 			}
 		}
 
-		// make sure we are not trying to split a non-obelisk tower
-		if ( ! $both_obelisks && ('W' != strtoupper($this->_board[$from_index]))) {
+		// make sure we are not trying to split a non-obelisk tower (or single tower)
+		if ( ! $both_obelisks && ('W' != strtoupper($piece))) {
 			$both_obelisks = true;
 		}
 
 		// if we made it here, the move is easy
-		if ($both_obelisks) {
+		// if we are joining / swapping obelisk towers
+		if (in_array(strtoupper($piece), array('V','W')) && ('V' == strtoupper($to_piece))) {
+			if ('V' == strtoupper($piece)) {
+				$this->board[$from_index] = '0';
+				$this->board[$to_index] = ($silver ? 'W' : 'w');
+			}
+			else {
+				// swap the two places
+				$temp = $to_piece;
+				$this->_board[$to_index] = $piece;
+				$this->_board[$from_index] = $temp;
+			}
+		}
+		elseif ($both_obelisks) {
 			// swap the two places
-			$temp = $this->_board[$to_index];
-			$this->_board[$to_index] = $this->_board[$from_index];
+			$temp = $to_piece;
+			$this->_board[$to_index] = $piece;
 			$this->_board[$from_index] = $temp;
 		}
 		else { // we're splitting an obelisk tower
 			// set both from and to equal to a single obelisk
-			$this->board[$from_index] = $this->board[$to_index] = (('W' == $this->board[$from_index]) ? 'V' : 'v');
+			$this->board[$from_index] = $this->board[$to_index] = ($silver ? 'V' : 'v');
 		}
+
 		call($this->_get_board_ascii( ));
 	}
 
 
+	/** protected function _rotate_piece
+	 *		Tests and rotates a piece
+	 *
+	 * @param int board index
+	 * @param int direction (0 = CCW, 1 = CW)
+	 * @return void
+	 */
 	protected function _rotate_piece($index, $direction)
 	{
 		call(__METHOD__);
@@ -581,6 +627,12 @@ call($hit);
 	}
 
 
+	/** static public function get_board_ascii
+	 *		Returns the board in an ASCII format
+	 *
+	 * @param string expanded board FEN
+	 * @return string ascii board
+	 */
 	static public function get_board_ascii($board)
 	{
 		$ascii = '
@@ -636,6 +688,13 @@ call($hit);
 	}
 
 
+	/** protected function _get_board_ascii
+	 *		Returns the board in an ASCII format
+	 *
+	 * @see get_board_ascii
+	 * @param string optional expanded board FEN
+	 * @return string ascii board
+	 */
 	protected function _get_board_ascii($board = null)
 	{
 		if ( ! $board) {
@@ -646,6 +705,15 @@ call($hit);
 	}
 
 
+	/** static public function get_laser_ascii
+	 *		Returns the board in an ASCII format
+	 *		with the laser path shown
+	 *
+	 * @see get_board_ascii
+	 * @param string expanded board FEN
+	 * @param array laser path
+	 * @return string ascii board
+	 */
 	static public function get_laser_ascii($board, $laser_path)
 	{
 		foreach ($laser_path as $paths) {
@@ -670,6 +738,16 @@ call($hit);
 	}
 
 
+	/** protected function _get_laser_ascii
+	 *		Returns the board in an ASCII format
+	 *		with the laser path shown
+	 *
+	 * @see get_board_ascii
+	 * @see get_laser_ascii
+	 * @param string optional expanded board FEN
+	 * @param array optional laser path
+	 * @return string ascii board
+	 */
 	protected function _get_laser_ascii($board = null, $laser_path = null)
 	{
 		if ( ! $board) {
@@ -752,3 +830,4 @@ call($hit);
 if ( ! class_exists('MyException')) {
 	class MyException extends Exception { }
 }
+

@@ -5,7 +5,7 @@
 $GLOBALS['__EMAIL_DATA'] = array(
 	'invite' => array(
 		'subject' => 'Game Invitation',
-		'message' = '
+		'message' => '
 You have been invited to play in a [[[GAME_NAME]]] game ([[[game_name]]]) at [[[site_name]]].
 
 If you wish to join this game, please log in and do so
@@ -46,7 +46,7 @@ Please log in and take your turn. Good Luck!'),
 	'defeated' => array(
 		'subject' => 'Defeated',
 		'message' => '
-You have been defeated in the [[[GAME_NAME]]] game ([[[game_name]]]) you are playing at [[[site_name]]].
+You have been pwninated by [[[sender]]] in the [[[GAME_NAME]]] game ([[[game_name]]]) you are playing at [[[site_name]]].
 
 Better luck next time, it was probably the fault of the dice anyways.
 You can always log on and create a new game if you still wish to play.'),

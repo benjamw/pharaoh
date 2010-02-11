@@ -51,6 +51,14 @@ class Email
 	static private $_instance;
 
 
+	/** protected property email_data
+	 *		Holds the message data
+	 *
+	 * @var array
+	 */
+	protected $email_data = array( );
+
+
 
 	/**
 	 *		METHODS
@@ -65,7 +73,11 @@ class Email
 	 */
 	protected function __construct( )
 	{
-		// do nothing, yet...
+		if ( ! $this->email_data && ! empty($GLOBALS['__INCLUDE_ROOT'])) {
+			require_once $GLOBALS['__INCLUDE_ROOT'].'inc.email.php';
+			$this->email_data = $GLOBALS['__EMAIL_DATA'];
+			unset($GLOBALS['__EMAIL_DATA']);
+		}
 	}
 
 
@@ -122,12 +134,12 @@ class Email
 
 		$site_name = Settings::read('site_name');
 
-		if ( ! in_array($type, array_keys($GLOBALS['__EMAIL_DATA']))) {
+		if ( ! in_array($type, array_keys($this->email_data))) {
 			throw new MyException(__METHOD__.': Trying to send email with unsupprted type ('.$type.')');
 		}
 
-		$subject = $GLOBALS['__EMAIL_DATA'][$type]['subject'];
-		$message = $GLOBALS['__EMAIL_DATA'][$type]['message'];
+		$subject = $this->email_data[$type]['subject'];
+		$message = $this->email_data[$type]['message'];
 
 		// replace the meta vars
 		$replace = array(

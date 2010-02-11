@@ -127,7 +127,7 @@ function get_header($meta = null) {
 	<link rel="stylesheet" type="text/css" media="screen" href="css/c_{$GLOBALS['_DEFAULT_COLOR']}.css" />
 
 	<script type="text/javascript" src="scripts/json.js"></script>
-	<script type="text/javascript" src="scripts/jquery-1.3.2.min.js"></script>
+	<script type="text/javascript" src="scripts/jquery-1.4.1.min.js"></script>
 	<script type="text/javascript" src="scripts/jquery.tablesorter.js"></script>
 	<!-- <script type="text/javascript" src="scripts/jquery.color.js"></script> -->
 
@@ -139,8 +139,8 @@ function get_header($meta = null) {
 	<![endif]-->
 
 	<!-- fancybox -->
-	<link rel="stylesheet" type="text/css" media="screen" href="scripts/jquery.fancybox/jquery.fancybox.css" />
-	<script type="text/javascript" src="scripts/jquery.fancybox/jquery.fancybox-1.2.1.pack.js"></script>
+	<link rel="stylesheet" type="text/css" media="screen" href="scripts/jquery.fancybox/jquery.fancybox-1.3.0.css" />
+	<script type="text/javascript" src="scripts/jquery.fancybox/jquery.fancybox-1.3.0.pack.js"></script>
 	<script type="text/javascript">//<![CDATA[
 		$(document).ready( function( ) {
 			jQuery('a.help').fancybox({
@@ -179,8 +179,8 @@ EOF;
 			<ul>
 				<li'.get_active('index').'><a href="index.php'.$GLOBALS['_?_DEBUG_QUERY'].'" title="(Your Turn | Your Games | Total Games)"'.(($allow_blink && $menu_data['my_turn']) ? ' class="blink"' : '').'>Games ('.$menu_data['my_turn'].'|'.$menu_data['my_games'].'|'.$menu_data['games'].')</a></li>
 				<li'.get_active('invite').'><a href="invite.php'.$GLOBALS['_?_DEBUG_QUERY'].'" title="(Recieved | Sent | Open)"'.(($allow_blink && $menu_data['in_vites']) ? ' class="blink"' : '').'>Invitations ('.$menu_data['in_vites'].'|'.$menu_data['out_vites'].'|'.$menu_data['open_vites'].')</a></li>
-				<li'.get_active('stats').'><a href="stats.php'.$GLOBALS['_?_DEBUG_QUERY'].'">Statistics</a></li>
 				<li'.get_active('messages').'><a href="messages.php'.$GLOBALS['_?_DEBUG_QUERY'].'" title="(New Messages | Total Messages)"'.(($allow_blink && $menu_data['new_msgs']) ? ' class="blink"' : '').'>Messages ('.$menu_data['new_msgs'].'|'.$menu_data['msgs'].')</a></li>
+				<li'.get_active('stats').'><a href="stats.php'.$GLOBALS['_?_DEBUG_QUERY'].'">Statistics</a></li>
 				<li'.get_active('prefs').'><a href="prefs.php'.$GLOBALS['_?_DEBUG_QUERY'].'">Preferences</a></li>
 				<li'.get_active('profile').'><a href="profile.php'.$GLOBALS['_?_DEBUG_QUERY'].'">Profile</a></li>
 				';
@@ -203,7 +203,7 @@ EOF;
 
 			foreach ($game_data as $game) {
 				$html .= '
-				<li class="'.strtolower($game['my_state']).'"><a href="game.php?id='.$game['game_id'].$GLOBALS['_&_DEBUG_QUERY'].'">'.htmlentities($game['name'], ENT_QUOTES, 'ISO-8859-1', false).'</a></li>';
+				<li class="'.($game['my_turn'] ? 'my_turn' : '').'"><a href="game.php?id='.$game['game_id'].$GLOBALS['_&_DEBUG_QUERY'].'">'.htmlentities($game['opponent'], ENT_QUOTES, 'ISO-8859-1', false).'</a></li>';
 			}
 
 			$html .= '
@@ -295,22 +295,6 @@ function get_item($contents, $hint, $title = '', $extra_html = '') {
 			'.$contents.'
 		</div>
 	';
-
-	return $html;
-}
-
-
-/** function get_board
- *		Generates an HTML board
- *
- * @param string board data
- * @param array laser path data
- * @return string HTML board
- */
-function get_board($board, $laser_path = array( )) {
-	$html = '<div class="board">';
-	// TODO
-	$html .= '</div> <!-- .board -->';
 
 	return $html;
 }

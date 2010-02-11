@@ -66,8 +66,12 @@ function rotate_piece(piece, rotation) {
 function create_board(xFEN, flip) {
 	flip = !! flip;
 
+	if ( ! xFEN) {
+		return false;
+	}
+
 	var i,j,n,
-		row,piece,color,
+		row,piece,color,img,
 		letters = 'ABCDEFGHIJ',
 		html = '',
 		classes = [],
@@ -151,16 +155,18 @@ function create_board(xFEN, flip) {
 				classes.push(silver);
 			}
 
+			img = '';
 			if ('0' != piece) {
 				classes.push('piece');
 				classes.push(color+'_'+pieces[piece.toUpperCase( )].toLowerCase( ));
+				img = '<img src="images/pieces/'+color+'_'+pieces[piece.toUpperCase( )].toLowerCase( )+'.png" alt="'+piece+'" class="piece" />';
 			}
 
 			if (classes.length) {
 				html += ' class="'+classes.join(' ')+'"';
 			}
 
-			html += '></div>';
+			html += '>'+img+'</div>';
 		} // end foreach piece loop
 
 		html += '<div class="header vert">'+(9 - n)+'</div>';
