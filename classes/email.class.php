@@ -73,8 +73,8 @@ class Email
 	 */
 	protected function __construct( )
 	{
-		if ( ! $this->email_data && ! empty($GLOBALS['__INCLUDE_ROOT'])) {
-			require_once $GLOBALS['__INCLUDE_ROOT'].'inc.email.php';
+		if ( ! $this->email_data && defined('INCLUDE_DIR')) {
+			require_once INCLUDE_DIR.'inc.email.php';
 			$this->email_data = $GLOBALS['__EMAIL_DATA'];
 			unset($GLOBALS['__EMAIL_DATA']);
 		}
@@ -143,7 +143,7 @@ class Email
 
 		// replace the meta vars
 		$replace = array(
-			'/\[\[\[GAME_NAME\]\]\]/' => $GLOBALS['__GAME_NAME'],
+			'/\[\[\[GAME_NAME\]\]\]/' => GAME_NAME,
 			'/\[\[\[game_name\]\]\]/' => @$data['name'],
 			'/\[\[\[site_name\]\]\]/' => $site_name,
 			'/\[\[\[extra_text\]\]\]/' => $this->_strip(@$_POST['extra_text']),
@@ -154,7 +154,7 @@ class Email
 
 		$message = preg_replace(array_keys($replace), $replace, $message);
 
-		$subject = $GLOBALS['__GAME_NAME'].' - '.$subject;
+		$subject = GAME_NAME.' - '.$subject;
 		$message .= '
 
 =============================================
@@ -167,7 +167,9 @@ and should not be replied to.
 		$from_email = Settings::read('from_email');
 
 		// send the email
-		$headers = "From: {$GLOBALS['__GAME_NAME']} <{$from_email}>\r\n\r\n";
+		$headers = "From: {".GAME_NAME."} <{$from_email}>\r\n";
+
+		$message = html_entity_decode($message);
 
 		$this->_log($email."\n".$headers."\n".$subject."\n".$message);
 		call($subject);call($message);call($headers);

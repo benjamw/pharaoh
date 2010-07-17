@@ -5,11 +5,23 @@
 $LOGIN = false;
 require_once 'includes/inc.global.php';
 
-if ((false == Settings::read('new_users')) && ((0 != Settings::read('max_users')) && ($num_players >= Settings::read('max_users'))) && ( ! $GLOBALS['Player']->is_admin)) {
+// if we have a player_id in session, log them in, and check for admin
+if ( ! empty($_SESSION['player_id'])) {
+	$GLOBALS['Player'] = new GamePlayer( );
+	// this will redirect to login if failed
+	$GLOBALS['Player']->log_in( );
+}
+
+$no_new_users = (false == Settings::read('new_users'));
+$max_users_set = (0 != Settings::read('max_users'));
+$max_users_reached = (GamePlayer::get_count( ) >= Settings::read('max_users'));
+$not_admin = empty($GLOBALS['Player']) || ! $GLOBALS['Player']->is_admin;
+
+if ($not_admin && ($no_new_users || ($max_users_set && $max_users_reached))) {
 	Flash::store('Sorry, but we are not accepting new applications at this time.');
 }
 
-if (isset($_SESSION['player_id'])) {
+if ($not_admin && isset($_SESSION['player_id'])) {
 	$GLOBALS['Player'] = array( );
 	$_SESSION['player_id'] = false;
 	unset($_SESSION['player_id']);
@@ -58,7 +70,7 @@ echo get_header($meta);
 
 $hints = array(
 	'Please Register' ,
-	'You must remember your username and password to be able to gain access to '.$GLOBALS['__GAME_NAME'].' later.' ,
+	'You must remember your username and password to be able to gain access to '.GAME_NAME.' later.' ,
 );
 
 if (Settings::read('approve_users')) {

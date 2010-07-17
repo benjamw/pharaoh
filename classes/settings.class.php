@@ -102,7 +102,10 @@ class Settings
 	protected function __construct( )
 	{
 		$this->_mysql = Mysql::get_instance( );
-		$this->_pull( );
+
+		if ($this->test( )) {
+			$this->_pull( );
+		}
 	}
 
 
@@ -380,7 +383,18 @@ class Settings
 	 */
 	static public function test( )
 	{
-		return Mysql::test( );
+		if ( ! Mysql::test( )) {
+			return false;
+		}
+
+		// look for anything in the settings table
+		$query = "
+			SELECT *
+			FROM ".self::SETTINGS_TABLE."
+		";
+		$return = Mysql::get_instance( )->query($query);
+
+		return (bool) $return;
 	}
 
 } // end of Settings class

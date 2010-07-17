@@ -8,7 +8,7 @@ $meta['title'] = 'Statistics';
 
 
 $hints = array(
-	'View '.$GLOBALS['__GAME_NAME'].' Player and Game statistics.' ,
+	'View '.GAME_NAME.' Player statistics.' ,
 );
 
 // grab the wins and losses for the players

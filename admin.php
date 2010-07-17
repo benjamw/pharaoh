@@ -81,11 +81,11 @@ if (isset($_POST['submit'])) {
 
 	try {
 		// clear the submit and token fields
-		$post = sani($_POST);
-		unset($post['submit']);
-		unset($post['token']);
+		$POST = $_POST;
+		unset($POST['submit']);
+		unset($POST['token']);
 
-		Settings::write_all($post);
+		Settings::write_all($POST);
 
 		Flash::store('Admin Update Successfull', true); // redirect kills form resubmission
 	}
@@ -94,13 +94,13 @@ if (isset($_POST['submit'])) {
 	}
 }
 
-$meta['title'] = $GLOBALS['__GAME_NAME'].' Administration';
+$meta['title'] = GAME_NAME.' Administration';
 $meta['head_data'] = '
 	<script type="text/javascript" src="scripts/admin.js"></script>
 ';
 
 $hints = array(
-	'Here you can administrate your '.$GLOBALS['__GAME_NAME'].' installation.' ,
+	'Here you can administrate your '.GAME_NAME.' installation.' ,
 	'Click anywhere on a row to mark that row for action.' ,
 );
 

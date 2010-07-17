@@ -25,6 +25,7 @@ elseif ( ! isset($_SESSION['game_id'])) {
 // always refresh the game data, there may be more than one person online
 try {
 	$Game = new Game((int) $_SESSION['game_id']);
+	$players = $Game->get_players( );
 }
 catch (MyException $e) {
 	if ( ! defined('DEBUG') || ! DEBUG) {
@@ -45,7 +46,6 @@ if ( ! $Game->is_player($_SESSION['player_id'])) {
 }
 
 if ( ! $Game->watch_mode || $GLOBALS['Player']->is_admin) {
-	$players = $Game->get_players( );
 	$Chat = new Chat($_SESSION['player_id'], $_SESSION['game_id']);
 	$chat_data = $Chat->get_box_list( );
 
@@ -53,29 +53,72 @@ if ( ! $Game->watch_mode || $GLOBALS['Player']->is_admin) {
 			<div id="chatbox">
 				<form action="'.$_SERVER['REQUEST_URI'].'" method="post"><div>
 					<input id="chat" type="text" name="chat" />
-					<!-- <label for="private" class="inline"><input type="checkbox" name="private" id="private" value="yes" /> Private</label> -->
-				</div></form>';
-
-	if (is_array($chat_data)) {
-		$chat_html .= '
+					<label for="private" class="inline"><input type="checkbox" name="private" id="private" value="yes" /> Private</label>
+				</div></form>
 				<dl id="chats">';
 
+	if (is_array($chat_data)) {
 		foreach ($chat_data as $chat) {
 			if ('' == $chat['username']) {
 				$chat['username'] = '[deleted]';
 			}
 
+			$color = 'blue';
+			if ('white' == $players[$chat['player_id']]['color']) {
+				$color = 'silver';
+			}
+
+			if ('black' == $players[$chat['player_id']]['color']) {
+				$color = 'red';
+			}
+
 			$chat_html .= '
-					<dt class="'.substr($players[$chat['player_id']]['color'], 0, 3).'"><span>'.$chat['create_date'].'</span> '.$chat['username'].'</dt>
+					<dt class="'.substr($color, 0, 3).'"><span>'.$chat['create_date'].'</span> '.$chat['username'].'</dt>
 					<dd'.($chat['private'] ? ' class="private"' : '').'>'.htmlentities($chat['message'], ENT_QUOTES, 'ISO-8859-1', false).'</dd>';
 		}
-
-		$chat_html .= '
-				</dl> <!-- #chats -->';
 	}
 
 	$chat_html .= '
+				</dl> <!-- #chats -->
 			</div> <!-- #chatbox -->';
+}
+
+// build the history table
+$history_html = '
+				<table class="history">
+					<thead>
+						<tr>
+							<th>#</th>
+							<th>Silver</th>
+							<th>Red</th>
+						</tr>
+					</thead>
+					<tbody>';
+foreach ($Game->get_history( ) as $i => $move) {
+	if ( ! is_array($move)) {
+		break;
+	}
+
+	$history_html .= '
+						<tr>
+							<td>'.($i + 1).'</td>
+							<td>'.$move[0].'</td>
+							<td>'.$move[1].'</td>
+						</tr>';
+}
+$history_html .= '
+					</tbody>
+				</table>';
+
+$turn = $Game->get_turn( );
+if ($GLOBALS['Player']->username == $turn) {
+	$turn = '<span class="'.$Game->get_color( ).'">Your turn</span>';
+}
+elseif ( ! $turn) {
+	$turn = '';
+}
+else {
+	$turn = '<span class="'.$Game->get_color(false).'">'.$turn.'\'s turn</span>';
 }
 
 $meta['title'] = htmlentities($Game->name, ENT_QUOTES, 'ISO-8859-1', false).' - #'.$_SESSION['game_id'];
@@ -84,12 +127,15 @@ $meta['head_data'] = '
 	<link rel="stylesheet" type="text/css" media="screen" href="css/game.css" />
 	<link rel="stylesheet" type="text/css" media="screen" href="css/board.css" />
 
-	<script type="text/javascript">/*<![CDATA[*/
-		var state = "'.(( ! $Game->watch_mode) ? (( ! $Game->paused) ? strtolower($Game->state) : 'paused') : 'watching').'";
-		var board = "'.$Game->get_board($expanded = true).'";
-		var prev_turn = ["'.$Game->get_prev_turn( ).'", '.$Game->get_prev_laser( ).'];
-	/*]]>*/</script>
 	<script type="text/javascript" src="scripts/board.js"></script>
+	<script type="text/javascript">/*<![CDATA[*/
+		var color = "'.(isset($players[$_SESSION['player_id']]) ? (('white' == $players[$_SESSION['player_id']]['color']) ? 'silver' : 'red') : '').'";
+		var state = "'.(( ! $Game->watch_mode) ? (( ! $Game->paused) ? strtolower($Game->state) : 'paused') : 'watching').'";
+		var board = "'.$Game->get_board(0, true).'";
+		var prev_turn = ['.$Game->get_move(0, true).', '.$Game->get_laser_path(0, true).', '.$Game->get_move_data(0, true).'];
+		var invert = '.(('black' == $players[$_SESSION['player_id']]['color']) ? 'true' : 'false').';
+		var my_turn = '.($Game->is_turn( ) ? 'true' : 'false').';
+	/*]]>*/</script>
 	<script type="text/javascript" src="scripts/game.js"></script>
 ';
 
@@ -102,17 +148,20 @@ echo get_header($meta);
 				<li><a href="index.php<?php echo $GLOBALS['_?_DEBUG_QUERY']; ?>">Main Page</a></li>
 				<li><a href="game.php<?php echo $GLOBALS['_?_DEBUG_QUERY']; ?>">Reload Game Board</a></li>
 			</ul>
-			<h2>Game #<?php echo $_SESSION['game_id'].': '.htmlentities($Game->name, ENT_QUOTES, 'ISO-8859-1', false); ?></h2>
+			<h2>Game #<?php echo $_SESSION['game_id'].': '.htmlentities($Game->name, ENT_QUOTES, 'ISO-8859-1', false); ?> <span class="turn"><?php echo $turn; ?></span></h2>
 
-			<div id="board"></div> <!-- #board -->
+			<div id="history">
+				<?php echo $history_html; ?>
+			</div> <!-- #history -->
 
-			<div id="controls">
-				<div id="history">
-					TODO: build this
-				</div> <!-- #history -->
-				<hr />
-				<?php echo $chat_html; ?>
-			</div> <!-- #controls -->
+			<div id="board_wrapper">
+				<div id="board"></div> <!-- #board -->
+				<div class="buttons">
+					<a href="javascript;" id="clear_laser">Clear Laser</a>
+				</div> <!-- .buttons -->
+			</div> <!-- #board_wrapper -->
+
+			<?php echo $chat_html; ?>
 
 		</div> <!-- #contents -->
 

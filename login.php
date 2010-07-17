@@ -10,8 +10,6 @@ require_once 'includes/inc.global.php';
 $GLOBALS['Player'] = new GamePlayer( );
 $GLOBALS['Player']->log_out(false, true);
 
-$num_players = GamePlayer::get_count( );
-
 $meta['title'] = 'Login';
 $meta['show_menu'] = false;
 $meta['head_data'] = '
@@ -46,7 +44,7 @@ echo get_header($meta);
 ?>
 		<div id="notes">
 			<div id="date"><?php echo date(Settings::read('long_date')); ?></div>
-			<p><strong>Welcome to <?php echo $GLOBALS['__GAME_NAME']; ?>!</strong></p>
+			<p><strong>Welcome to <?php echo GAME_NAME; ?>!</strong></p>
 			<p>Please enter a valid username and password to enter.</p>
 			<?php if (Settings::read('approve_users')) { ?>
 			<p><span class="notice">NOTE</span>: You will be unable to log in if your account has not been approved yet.</p>
@@ -57,7 +55,7 @@ echo get_header($meta);
 		<div id="content">
 			<h2>Login</h2>
 			<noscript class="notice ctr">
-				<p>Warning! Javascript must be enabled for proper operation of <?php echo $GLOBALS['__GAME_NAME']; ?>.</p>
+				<p>Warning! Javascript must be enabled for proper operation of <?php echo GAME_NAME; ?>.</p>
 			</noscript>
 
 			<form method="post" action="index.php<?php echo $GLOBALS['_?_DEBUG_QUERY']; ?>"><div class="formdiv">
@@ -66,22 +64,22 @@ echo get_header($meta);
 				<label for="remember" class="inline"><input type="checkbox" id="remember" name="remember" checked="checked" tabindex="3" />Remember me</label><br />
 				<input type="submit" name="login" value="Log in" tabindex="4" />
 				<?php
-				if ((true == Settings::read('new_users')) && ((0 == Settings::read('max_users')) || ($num_players < Settings::read('max_users')))) {
+				if ((true == Settings::read('new_users')) && ((0 == Settings::read('max_users')) || (GamePlayer::get_count( ) < Settings::read('max_users')))) {
 					?><input type="button" value="Register" onclick="window.open('register.php<?php echo $GLOBALS['_?_DEBUG_QUERY']; ?>', '_self')" tabindex="5" /><?php
 				}
 				?>
 			</div></form>
 
 			<noscript class="notice ctr">
-				<p>Warning! Javascript must be enabled for proper operation of <?php echo $GLOBALS['__GAME_NAME']; ?>.</p>
+				<p>Warning! Javascript must be enabled for proper operation of <?php echo GAME_NAME; ?>.</p>
 			</noscript>
 		</div>
 
 		<div id="footerspacer">&nbsp;</div>
 
 		<div id="footer">
-			<p><?php echo $GLOBALS['__GAME_NAME']; ?> <?php echo $GLOBALS['_VERSION']; ?>, last updated <?php echo date('F j, Y', $GLOBALS['_UPDATED']); ?></p>
-			<p><?php echo $GLOBALS['__GAME_NAME']; ?> is Free Software released under the GNU General Public License (GPL).</p>
+			<p><?php echo GAME_NAME; ?> <?php echo VERSION; ?>, last updated <?php echo date('F j, Y', UPDATED); ?></p>
+			<p><?php echo GAME_NAME; ?> is Free Software released under the GNU General Public License (GPL).</p>
 		</div>
 
 	</div>

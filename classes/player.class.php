@@ -20,8 +20,8 @@
 
 // TODO: comments & organize better
 
-require_once $GLOBALS['__INCLUDE_ROOT'].'func.array.php';
-require_once $GLOBALS['__INCLUDE_ROOT'].'func.html.php';
+require_once INCLUDE_DIR.'func.array.php';
+require_once INCLUDE_DIR.'func.html.php';
 
 class Player
 {
@@ -297,19 +297,21 @@ class Player
 	 */
 	public function log_out($login_attempt = false, $login_page = false)
 	{
+		call(__METHOD__);
+
 		$this->is_logged = false;
 		$this->_delete_cookie( );
 
-		// clear all session data, but...
+		// clear player session data, but...
 		// keep the items that we need
-		$keep = array(
-			'login_referrer',
-			'token',
-			'FLASH',
+		$kill = array(
+			'player_id',
+			'PID',
+			'admin_id',
 		);
 
 		foreach (array_keys($_SESSION) as $key) {
-			if ( ! in_array($key, $keep)) {
+			if (in_array($key, $kill)) {
 				$_SESSION[$key] = false;
 				$_SESSION[$key] = null;
 				unset($_SESSION[$key]);
@@ -913,6 +915,7 @@ class Player
 		// make sure our query is clean
 		$username = sani($username);
 		$email = sani($email);
+		$player_id = (int) $player_id;
 
 		$query = "
 			SELECT COUNT(*)

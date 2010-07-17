@@ -2,6 +2,8 @@
 
 // $Id: inc.global.php 214 2009-11-02 23:59:44Z cchristensen $
 
+define('GAME_NAME', 'Pharaoh');
+
 $debug = false;
 
 // set some ini stuff
@@ -30,22 +32,31 @@ if (get_magic_quotes_gpc( )) {
  *		GLOBAL INCLUDES
  * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
-$GLOBALS['__INCLUDE_ROOT'] = dirname(__FILE__).DIRECTORY_SEPARATOR;
-$GLOBALS['__WEB_ROOT'] = realpath($GLOBALS['__INCLUDE_ROOT'].'..').DIRECTORY_SEPARATOR;
-$GLOBALS['__CLASSES_ROOT'] = $GLOBALS['__WEB_ROOT'].'classes'.DIRECTORY_SEPARATOR;
-$GLOBALS['__GAMES_ROOT'] = $GLOBALS['__WEB_ROOT'].'games'.DIRECTORY_SEPARATOR;
-$GLOBALS['__LOG_ROOT'] = $GLOBALS['__WEB_ROOT'].'logs'.DIRECTORY_SEPARATOR;
+define('ROOT_DIR', dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR);
+define('INCLUDE_DIR', dirname(__FILE__).DIRECTORY_SEPARATOR);
+define('CLASSES_DIR', ROOT_DIR.'classes'.DIRECTORY_SEPARATOR);
+define('GAMES_DIR', ROOT_DIR.'games'.DIRECTORY_SEPARATOR);
+define('LOG_DIR', ROOT_DIR.'logs'.DIRECTORY_SEPARATOR);
 
-ini_set('error_log', $GLOBALS['__LOG_ROOT'].'php.err');
+ini_set('error_log', LOG_DIR.'php.err');
 
-if (is_file($GLOBALS['__INCLUDE_ROOT'].'config.php')) {
-	require_once $GLOBALS['__INCLUDE_ROOT'].'config.php';
+if (is_file(INCLUDE_DIR.'config.php')) {
+	require_once INCLUDE_DIR.'config.php';
+}
+/*/
+elseif ('setup-config.php' != basename($_SERVER['PHP_SELF'])) {
+	header('Location: setup-config.php');
+/*/
+elseif ('install.php' != basename($_SERVER['PHP_SELF'])) {
+	header('Location: install.php');
+//*/
+	exit;
 }
 
-require_once $GLOBALS['__INCLUDE_ROOT'].'inc.version.php';
-require_once $GLOBALS['__INCLUDE_ROOT'].'func.global.php';
-require_once $GLOBALS['__INCLUDE_ROOT'].'html.general.php';
-require_once $GLOBALS['__INCLUDE_ROOT'].'html.tables.php';
+require_once INCLUDE_DIR.'inc.version.php';
+require_once INCLUDE_DIR.'func.global.php';
+require_once INCLUDE_DIR.'html.general.php';
+require_once INCLUDE_DIR.'html.tables.php';
 
 // MAKE SURE TO LOAD CLASS FILES BEFORE STARTING THE SESSION
 // OR YOU END UP WITH INCOMPLETE OBJECTS PULLED FROM SESSION
@@ -60,7 +71,7 @@ $GLOBALS['_&_DEBUG_QUERY'] = '';
 $GLOBALS['_?_DEBUG_QUERY'] = '';
 
 // make a list of all the color files available to use
-$GLOBALS['_COLOR_LIST'] = array( );
+$GLOBALS['_COLORS'] = array( );
 
 $dh = opendir(realpath(dirname(__FILE__).'/../css'));
 while (false !== ($file = readdir($dh))) {
@@ -110,13 +121,18 @@ $GLOBALS['_LOGGING'] = DEBUG; // do not change, rather, change debug value
 if (Mysql::test( )) {
 	$Mysql = Mysql::get_instance( );
 	$Mysql->set_settings(array(
-		'log_errors' => Settings::read('DB_error_log'),
-		'log_path' => $GLOBALS['__LOG_ROOT'],
-		'email_errors' => Settings::read('DB_error_email'),
-		'email_subject' => $GLOBALS['__GAME_NAME'].' Query Error',
-		'email_from' => Settings::read('from_email'),
-		'email_to' => Settings::read('to_email'),
+		'log_path' => LOG_DIR,
+		'email_subject' => GAME_NAME.' Query Error',
 	));
+
+	if (class_exists('Settings') && Settings::test( )) {
+		$Mysql->set_settings(array(
+			'log_errors' => Settings::read('DB_error_log'),
+			'email_errors' => Settings::read('DB_error_email'),
+			'email_from' => Settings::read('from_email'),
+			'email_to' => Settings::read('to_email'),
+		));
+	}
 }
 
 if (defined('DEBUG') && DEBUG) {
@@ -142,7 +158,6 @@ if (( ! isset($LOGIN) || $LOGIN) && isset($Mysql)) {
 		$Message = new Message($_SESSION['player_id'], $GLOBALS['Player']->is_admin);
 	}
 }
-
 
 // grab the list of players
 if (isset($Mysql)) {

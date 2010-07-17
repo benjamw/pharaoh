@@ -53,7 +53,7 @@ class MyException
 		parent::__construct($message, $code);
 
 		// our own exception handling stuff
-		if ($GLOBALS['_LOGGING']) {
+		if ( ! empty($GLOBALS['_LOGGING'])) {
 			$this->_write_error( );
 		}
 	}
@@ -97,7 +97,7 @@ class MyException
 			$str .= "-------- [ END BACKTRACE ] --------\n\n";
 		}
 
-		if ($fp = @fopen($GLOBALS['__LOG_ROOT'].$log_name, 'a')) {
+		if ($fp = @fopen(LOG_DIR.$log_name, 'a')) {
 			fwrite($fp, $str);
 			fclose($fp);
 		}

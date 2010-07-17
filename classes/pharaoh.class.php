@@ -486,6 +486,20 @@ class Pharaoh {
 	}
 
 
+	/** public function get_board
+	 *		Returns the board
+	 *
+	 * @param void
+	 * @return string expanded FEN of board
+	 */
+	public function get_board( )
+	{
+		call(__METHOD__);
+
+		return $this->_board;
+	}
+
+
 	/** protected function _move_piece
 	 *		Tests and moves a piece
 	 *
@@ -565,8 +579,8 @@ class Pharaoh {
 		// if we are joining / swapping obelisk towers
 		if (in_array(strtoupper($piece), array('V','W')) && ('V' == strtoupper($to_piece))) {
 			if ('V' == strtoupper($piece)) {
-				$this->board[$from_index] = '0';
-				$this->board[$to_index] = ($silver ? 'W' : 'w');
+				$this->_board[$from_index] = '0';
+				$this->_board[$to_index] = ($silver ? 'W' : 'w');
 			}
 			else {
 				// swap the two places
@@ -583,7 +597,7 @@ class Pharaoh {
 		}
 		else { // we're splitting an obelisk tower
 			// set both from and to equal to a single obelisk
-			$this->board[$from_index] = $this->board[$to_index] = ($silver ? 'V' : 'v');
+			$this->_board[$from_index] = $this->_board[$to_index] = ($silver ? 'V' : 'v');
 		}
 
 		call($this->_get_board_ascii( ));
@@ -825,9 +839,4 @@ class Pharaoh {
 
 
 } // end Pharaoh
-
-
-if ( ! class_exists('MyException')) {
-	class MyException extends Exception { }
-}
 

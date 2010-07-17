@@ -7,11 +7,9 @@ require_once 'includes/inc.global.php';
 // this has nothing to do with creating a game
 // but I'm running it here to prevent long load
 // times on other pages where it would be ran more often
-if (0) { // TODO
 GamePlayer::delete_inactive(Settings::read('expire_users'));
-Game::delete_inactive(Settings::read('expire_games'));
 Game::delete_finished(Settings::read('expire_finished_games'));
-}
+Game::delete_inactive(Settings::read('expire_games'));
 
 $Game = new Game( );
 

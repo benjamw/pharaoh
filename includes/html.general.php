@@ -15,8 +15,13 @@
  * @return string HTML header for page
  */
 function get_header($meta = null) {
-	$title = ('' != $meta['title']) ? $GLOBALS['__GAME_NAME'].' :: '.$meta['title'] : $GLOBALS['__GAME_NAME'];
+	if ( ! defined('GAME_NAME')) {
+		define('GAME_NAME', 'Game');
+	}
+
+	$title = ( ! empty($meta['title'])) ? GAME_NAME.' :: '.$meta['title'] : GAME_NAME;
 	$show_menu = (isset($meta['show_menu'])) ? (bool) $meta['show_menu'] : true;
+	$show_nav_links = (isset($meta['show_nav_links'])) ? (bool) $meta['show_nav_links'] : true;
 	$menu_data = (isset($meta['menu_data'])) ? $meta['menu_data'] : false;
 	$head_data = (isset($meta['head_data'])) ? $meta['head_data'] : '';
 	$file_name = (isset($meta['file_name'])) ? $meta['file_name'] : basename($_SERVER['SCRIPT_NAME']);
@@ -47,7 +52,10 @@ function get_header($meta = null) {
 			list($menu_data['games'], ) = Game::get_count( );
 			list($menu_data['my_games'], $menu_data['my_turn']) = Game::get_my_count($_SESSION['player_id']);
 			list($menu_data['in_vites'], $menu_data['out_vites'], $menu_data['open_vites']) = Game::get_invite_count($_SESSION['player_id']);
-			list($menu_data['msgs'], $menu_data['new_msgs']) = Message::get_my_count($_SESSION['player_id']);
+
+			$messages = Message::get_count($_SESSION['player_id']);
+			$menu_data['msgs'] = (int) @$messages[0];
+			$menu_data['new_msgs'] = (int) @$messages[1];
 
 			$allow_blink = ('index.php' == basename($_SERVER['PHP_SELF']));
 		}
@@ -99,9 +107,11 @@ function get_header($meta = null) {
 	$debug_string = (defined('DEBUG') && DEBUG) ? 'var debug = true;' : 'var debug = false;';
 
 	$nav_links = '';
-	if (class_exists('Settings') && Settings::test( )) {
+	if ($show_nav_links && class_exists('Settings') && Settings::test( )) {
 		$nav_links = Settings::read('nav_links');
 	}
+
+	$GAME_NAME = GAME_NAME;
 
 	$html = <<< EOF
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
@@ -127,7 +137,7 @@ function get_header($meta = null) {
 	<link rel="stylesheet" type="text/css" media="screen" href="css/c_{$GLOBALS['_DEFAULT_COLOR']}.css" />
 
 	<script type="text/javascript" src="scripts/json.js"></script>
-	<script type="text/javascript" src="scripts/jquery-1.4.1.min.js"></script>
+	<script type="text/javascript" src="scripts/jquery-1.4.2.min.js"></script>
 	<script type="text/javascript" src="scripts/jquery.tablesorter.js"></script>
 	<!-- <script type="text/javascript" src="scripts/jquery.color.js"></script> -->
 
@@ -165,7 +175,7 @@ function get_header($meta = null) {
 	{$admin_div}
 
 	<div id="links">{$nav_links}</div>
-	<h1><a href="index.php">{$GLOBALS['__GAME_NAME']}</a></h1>
+	<h1><a href="index.php">{$GAME_NAME}</a></h1>
 	<div id="wrapper">
 EOF;
 

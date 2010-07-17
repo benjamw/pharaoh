@@ -12,7 +12,7 @@
  * @action ouptuts var to screen
  * @return void
  */
-function call($var = 'Th&F=xUFucreSp2*ezAhe=ApuPR*$axe', $bypass = false, $show_from = true)
+function call($var = 'Th&F=xUFucreSp2*ezAhe=ApuPR*$axe', $bypass = false, $show_from = true, $new_window = false)
 {
 	if ((( ! defined('DEBUG') || ! DEBUG) || (isset($GLOBALS['NODEBUG']) && $GLOBALS['NODEBUG'])) && ! (bool) $bypass) {
 		return false;
@@ -80,7 +80,17 @@ function call($var = 'Th&F=xUFucreSp2*ezAhe=ApuPR*$axe', $bypass = false, $show_
 		$html = "<strong>{$called}{$file0} : {$line0}</strong>\n";
 	}
 
-	echo "\n\n<pre style=\"background:#FFF;color:#000;font-size:larger;\">{$html}{$contents}\n<hr /></pre>\n\n";
+	if ( ! $new_window) {
+		echo "\n\n<pre style=\"background:#FFF;color:#000;font-size:larger;\">{$html}{$contents}\n<hr /></pre>\n\n";
+	}
+	else { ?>
+		<script language="javascript">
+			myRef = window.open('','debugWindow');
+			myRef.document.write('\n\n<pre style="background:#FFF;color:#000;font-size:larger;">');
+			myRef.document.write('<?php echo str_replace("'", "\'", str_replace("\n", "<br />", "{$html}{$contents}")); ?>');
+			myRef.document.write('\n<hr /></pre>\n\n');
+		</script>
+	<?php }
 }
 function dump($var = 'Th&F=xUFucreSp2*ezAhe=ApuPR*$axe', $bypass = false, $show_from = true) { call($var, $bypass, $show_from); }
 function debug($var = 'Th&F=xUFucreSp2*ezAhe=ApuPR*$axe', $bypass = true, $show_from = true) { call($var, $bypass, $show_from); }
@@ -97,7 +107,7 @@ function debug($var = 'Th&F=xUFucreSp2*ezAhe=ApuPR*$axe', $bypass = true, $show_
  * @return bool success
  */
 function load_class($class_name) {
-	$class_file = $GLOBALS['__CLASSES_ROOT'].strtolower($class_name).'.class.php';
+	$class_file = CLASSES_DIR.strtolower($class_name).'.class.php';
 
 	if (file_exists($class_file)) {
 		require_once $class_file;

@@ -12,7 +12,6 @@
 }
 
 #the_board {
-	border: 2px solid #000;
 	background: #222;
 	color: #CCC;
 	width: 550px;
@@ -56,16 +55,20 @@
 	height: 25px;
 }
 
-#the_board .silver {
+#the_board .c_silver {
 	background-color: #555;
 }
 
-#the_board .red {
+#the_board .c_red {
 	background-color: #500;
 }
 
-#the_board .yellow {
+#the_board .c_yellow {
 	background-color: #BB0;
+}
+
+#the_board .highlight {
+	background-color: #550;
 }
 
 #the_board .piece {
@@ -80,34 +83,10 @@
 	margin: 0;
 }
 
-/*
-#the_board .silver_pharaoh { background-image: url(../images/pieces/silver_pharaoh.png); }
-#the_board .red_pharaoh { background-image: url(../images/pieces/red_pharaoh.png); }
-
-#the_board .silver_pyramid_ne { background-image: url(../images/pieces/silver_pyramid_ne.png); }
-#the_board .silver_pyramid_se { background-image: url(../images/pieces/silver_pyramid_se.png); }
-#the_board .silver_pyramid_sw { background-image: url(../images/pieces/silver_pyramid_sw.png); }
-#the_board .silver_pyramid_nw { background-image: url(../images/pieces/silver_pyramid_nw.png); }
-#the_board .red_pyramid_ne { background-image: url(../images/pieces/red_pyramid_ne.png); }
-#the_board .red_pyramid_se { background-image: url(../images/pieces/red_pyramid_se.png); }
-#the_board .red_pyramid_sw { background-image: url(../images/pieces/red_pyramid_sw.png); }
-#the_board .red_pyramid_nw { background-image: url(../images/pieces/red_pyramid_nw.png); }
-
-#the_board .silver_djed_ne { background-image: url(../images/pieces/silver_djed_ne.png); }
-#the_board .silver_djed_nw { background-image: url(../images/pieces/silver_djed_nw.png); }
-#the_board .red_djed_ne { background-image: url(../images/pieces/red_djed_ne.png); }
-#the_board .red_djed_nw { background-image: url(../images/pieces/red_djed_nw.png); }
-
-#the_board .silver_obelisk { background-image: url(../images/pieces/silver_obelisk.png); }
-#the_board .silver_obelisk_stack { background-image: url(../images/pieces/silver_obelisk_stack.png); }
-#the_board .red_obelisk { background-image: url(../images/pieces/red_obelisk.png); }
-#the_board .red_obelisk_stack { background-image: url(../images/pieces/red_obelisk_stack.png); }
-
-#the_board .silver_horus_ne { background-image: url(../images/pieces/silver_horus_ne.png); }
-#the_board .silver_horus_nw { background-image: url(../images/pieces/silver_horus_nw.png); }
-#the_board .red_horus_ne { background-image: url(../images/pieces/red_horus_ne.png); }
-#the_board .red_horus_nw { background-image: url(../images/pieces/red_horus_nw.png); }
-*/
+#the_board .hit {
+	border: 2px solid #0F0;
+	margin: 0;
+}
 
 #the_board div img {
 	position: absolute;
@@ -119,3 +98,6 @@
 	position: relative;
 }
 
+.sil { background-color: #AAA !important; color: #000 !important; }
+.red { background-color: #E22 !important; color: #FFF !important; }
+.blu { background-color: #36F !important; color: #FFF !important; }

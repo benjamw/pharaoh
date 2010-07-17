@@ -1,3 +1,9 @@
+
+- don't show success messages if email is not sent
+
+- if same board configuration is seen in a game for the third time, the next player can declare a draw
+
+
 setup table
 ---------------------
 id

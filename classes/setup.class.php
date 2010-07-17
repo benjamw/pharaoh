@@ -127,36 +127,15 @@ class Setup {
 	}
 
 
-	protected function _expandFEN($FEN)
+	function test_reflection($xFEN, $type = 'Origin')
 	{
-		$FEN = trim($FEN);
-
-		$xFEN = preg_replace('/(1?[0-9])/e', "str_repeat('0', \\1)", $FEN);
-		$xFEN = str_replace('/', '', $xFEN); // Leave only pieces and empty squares
-
-		return $xFEN;
-	}
-
-
-	protected function _packFEN($xFEN)
-	{
-		$xFEN = trim($xFEN);
-
-		$FEN = trim(chunk_split($xFEN, 10, '/'), '/'); // add the row separaters
-		$FEN = preg_replace('/(0{1,10})/e', "strlen('\\1')", $FEN);
-
-		return $FEN;
-	}
-
-
-	function test_reflection($xFEN, $type = 'Origin') {
 		if (preg_match('/[0-9]/', $xFEN)) {
 			$xFEN = expandFEN($xFEN);
 		}
 
 		// look for invalid characters
 		if (preg_match('/[^abcdhipvwxy0]/i', $xFEN)) {
-			throw new Exception('Invalid characters found in setup');
+			throw new MyException(__METHOD__.': Invalid characters found in setup');
 		}
 
 		// make sure the given xFEN has all the pieces reflected properly
@@ -199,7 +178,7 @@ class Setup {
 
 			if (('0' !== $c) && (strtoupper($c) === $c) && in_array($c, $reflect_keys)) {
 				if ($reflect[$c] !== $xFEN[_reflect($i)]) {
-					throw new Exception('Invalid reflected character found at index: '.$i.'- '.$c.'->'.$xFEN[_reflect($i)].'; should be '.$reflect[$c]);
+					throw new MyException(__METHOD__.': Invalid reflected character found at index: '.$i.'- '.$c.'->'.$xFEN[_reflect($i)].'; should be '.$reflect[$c]);
 				}
 
 				// removed the tested chars
@@ -211,10 +190,32 @@ class Setup {
 		// we tested all silver -> red
 		// now look for any remaining red
 		if (preg_match('/[a-dhipvwxy]/', $xFEN)) {
-			throw new Exception('Red piece found without matching Silver piece');
+			throw new MyException(__METHOD__.': Red piece found without matching Silver piece');
 		}
 
 		return true;
+	}
+
+
+	static public function expandFEN($FEN)
+	{
+		$FEN = preg_replace('/\s+/', '', $FEN); // remove spaces
+
+		$FEN = preg_replace('/([1-9]0?)/e', "str_repeat('0', \\1)", $FEN); // unpack the 0s
+		$xFEN = str_replace('/', '', $FEN); // remove the row separators
+
+		return $xFEN;
+	}
+
+
+	static public function packFEN($xFEN, $row_length = 10)
+	{
+		$xFEN = preg_replace('/\s+/', '', $xFEN); // remove spaces
+
+		$xFEN = trim(chunk_split($xFEN, $row_length, '/'), '/'); // add the row separaters
+		$FEN = preg_replace('/(0+)/e', "strlen('\\1')", $xFEN); // pack the 0s
+
+		return $FEN;
 	}
 
 
@@ -231,6 +232,23 @@ class Setup {
 		$setups = $Mysql->fetch_array($query);
 
 		return $setups;
+	}
+
+
+	static public function add_used($setup_id)
+	{
+		call(__METHOD__);
+
+		$setup_id = (int) $setup_id;
+
+		$Mysql = Mysql::get_instance( );
+
+		$query = "
+			UPDATE ".self::SETUP_TABLE."
+			SET used = used + 1
+			WHERE setup_id = '{$setup_id}'
+		";
+		$Mysql->query($query);
 	}
 
 } // end Setup

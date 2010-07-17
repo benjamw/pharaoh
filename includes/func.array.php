@@ -27,6 +27,10 @@ function array_trim( & $array, $type = null)
 		'object' ,
 	);
 
+	if ( ! $array) {
+		$array = array( );
+	}
+
 	if ( ! in_array($type, $types)) {
 		$type = null;
 	}
@@ -177,7 +181,7 @@ function array_sum_field($array, $key)
 
 	$total = 0;
 
-	if (is_array($array[$key])) {
+	if (isset($array[$key]) && is_array($array[$key])) {
 		$total = array_sum($array[$key]);
 	}
 	else {

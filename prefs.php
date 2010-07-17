@@ -30,16 +30,16 @@ if (isset($_POST['submit'])) {
 $meta['title'] = 'Update Preferences';
 
 $hints = array(
-	'Here you can update your '.$GLOBALS['__GAME_NAME'].' preferences.' ,
+	'Here you can update your '.GAME_NAME.' preferences.' ,
 	'Setting a max concurrent games value will prevent you from joining a game after the max games value has been reached.  It will also block people from sending you invites to new games.  Set to 0 to disable.' ,
 );
 
 $allow_email_cb = '<input type="checkbox" id="allow_email" name="allow_email" '.get_selected(true, $GLOBALS['Player']->allow_email, false).'/>';
 
-if (is_array($GLOBALS['_COLOR_LIST']) && (0 != count($GLOBALS['_COLOR_LIST']))) {
+if (is_array($GLOBALS['_COLORS']) && (0 != count($GLOBALS['_COLORS']))) {
 	$color_select = '<div><label for="color">Theme Color</label><select id="color" name="color">';
 
-	foreach ($GLOBALS['_COLOR_LIST'] as $color) {
+	foreach ($GLOBALS['_COLORS'] as $color) {
 		$color_select .= '<option value="'.$color.'"'.get_selected($GLOBALS['Player']->color, $color).'>'.ucwords(str_replace('_', ' ', $color)).'</option>';
 	}
 

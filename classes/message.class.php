@@ -794,14 +794,14 @@ class Message
 	}
 
 
-	/** static public function get_my_count
+	/** static public function get_count
 	 *		Grab the inbox count of new and total messages
 	 *		for the given player
 	 *
 	 * @param int player id
 	 * @return array (int total messages, int new messages)
 	 */
-	static public function get_my_count($player_id)
+	static public function get_count($player_id)
 	{
 		call(__METHOD__);
 
@@ -818,12 +818,12 @@ class Message
 					OR send_date IS NULL)
 				AND deleted = 0
 		";
-		$msgs = (int) $Mysql->fetch_value($query);
+		$msgs = $Mysql->fetch_value($query);
 
 		$query .= "
 				AND view_date IS NULL
 		";
-		$new_msgs = (int) $Mysql->fetch_value($query);
+		$new_msgs = $Mysql->fetch_value($query);
 
 		return array($msgs, $new_msgs);
 	}

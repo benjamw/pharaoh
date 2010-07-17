@@ -26,7 +26,7 @@
 
 // TODO: comments & organize better
 
-require_once $GLOBALS['__INCLUDE_ROOT'].'func.array.php';
+require_once INCLUDE_DIR.'func.array.php';
 
 class Game
 {
@@ -43,12 +43,12 @@ class Game
 	const GAME_TABLE = T_GAME;
 
 
-	/** const property GAME_BOARD_TABLE
+	/** const property GAME_HISTORY_TABLE
 	 *		Holds the game board table name
 	 *
 	 * @var string
 	 */
-	const GAME_BOARD_TABLE = T_GAME_BOARD;
+	const GAME_HISTORY_TABLE = T_GAME_HISTORY;
 
 
 	/** const property GAME_NUDGE_TABLE
@@ -260,12 +260,7 @@ class Game
 	{
 		switch ($property) {
 			case 'name' :
-				if ($_SESSION['player_id'] == $this->_players['player']['player_id']) {
-					return $this->_players['opponent']['object']->username;
-				}
-				else {
-					return $this->_players['white']['object']->username.' vs '.$this->_players['black']['object']->username;
-				}
+				return $this->_players['white']['object']->username.' vs '.$this->_players['black']['object']->username;
 				break;
 
 			case 'first_name' :
@@ -443,7 +438,7 @@ class Game
 
 		// add the first entry in the history table
 		$query = "
-			INSERT INTO ".self::GAME_BOARD_TABLE."
+			INSERT INTO ".self::GAME_HISTORY_TABLE."
 				(game_id, board)
 			VALUES
 				('{$insert_id}', (
@@ -453,6 +448,9 @@ class Game
 				))
 		";
 		$Mysql->query($query);
+
+		// add a used count to the setup table
+		Setup::add_used($game['setup_id']);
 
 		// delete the invite
 		$Mysql->delete(self::INVITE_TABLE, " WHERE invite_id = '{$invite_id}' ");
@@ -544,8 +542,10 @@ class Game
 		if ($this->_players['player']['player_id'] != $player_id) {
 			throw new MyException(__METHOD__.': Player (#'.$player_id.') trying to resign opponent from a game (#'.$this->id.')');
 		}
+
 		// we need to edit the board of the person resigning if it is not their turn
-		if ( ! $this->get_my_turn($player_id)) {
+		// why?  i forget
+		if ( ! $this->get_turn($player_id)) {
 			$this->_boards['player']->board = str_replace('0', 'W', $this->_boards['player']->board);
 		}
 
@@ -571,27 +571,41 @@ class Game
 	}
 
 
-	/** public function get_my_color
-	 *		Returns the current player's color
+	/** public function get_color
+	 *		Returns the requested player's color
 	 *
-	 * @param void
-	 * @return string current player's color (or false on failure)
+	 * @param bool current player is requested player
+	 * @return string requested player's color (or false on failure)
 	 */
-	public function get_my_color( )
+	public function get_color($player = true)
 	{
-		return ((isset($this->_players['player']['color'])) ? $this->_players['player']['color'] : false);
+		$request = (bool) $player ? 'player' : 'opponent';
+		return ((isset($this->_players[$request]['color'])) ? $this->_players[$request]['color'] : false);
 	}
 
 
-	/** public function get_my_turn
-	 *		Returns the current player's turn
+	/** public function is_turn
+	 *		Returns the requested player's turn
+	 *
+	 * @param bool current player is requested player
+	 * @return bool is the requested player's turn
+	 */
+	public function is_turn($player = true)
+	{
+		$request = (bool) $player ? 'player' : 'opponent';
+		return ((isset($this->_players[$request]['turn'])) ? (bool) $this->_players[$request]['turn'] : false);
+	}
+
+
+	/** public function get_turn
+	 *		Returns the name of the player who's turn it is
 	 *
 	 * @param void
-	 * @return bool is the current players turn
+	 * @return string current player's name
 	 */
-	public function get_my_turn( )
+	public function get_turn( )
 	{
-		return ((isset($this->_players['player']['turn'])) ? $this->_players['player']['turn'] : false);
+		return ((isset($this->turn) && isset($this->_players[$this->turn]['object'])) ? $this->_players[$this->turn]['object']->username : false);
 	}
 
 
@@ -602,9 +616,11 @@ class Game
 	 * @param int optional history index
 	 * @return string board FEN (or xFEN)
 	 */
-	public function get_board($expanded = false, $history_index = 0)
+	public function get_board($index = 0, $expanded = false)
 	{
-		$board = $this->_history[(int) $history_index]['board'];
+		call(__METHOD__);
+
+		$board = $this->_history[(int) $index]['board'];
 
 		if ((bool) $expanded) {
 			return $this->expandFEN($board);
@@ -614,8 +630,154 @@ class Game
 	}
 
 
+	/** public function get_history
+	 *		Returns the game move history
+	 *
+	 * @param void
+	 * @return array game history
+	 */
+	public function get_history( )
+	{
+		call(__METHOD__);
+
+		$history = array_reverse($this->_history);
+		array_shift($history); // remove the empty first move
+
+		$return = array( );
+		foreach ($history as $i => $ply) {
+			if (false !== strpos($ply['move'], '-')) {
+				$ply['move'] = str_replace(array('-0','-1'), array('-L','-R'), $ply['move']);
+			}
+
+			$return[floor($i / 2)][$i % 2] = $ply['move'];
+		}
+
+		if (isset($i) && (0 == ($i % 2))) {
+			++$i;
+			$return[floor($i / 2)][$i % 2] = '';
+		}
+
+		return $return;
+	}
+
+
+	/** public function get_move
+	 *		Returns the turn for the given move index
+	 *
+	 * @param int optional move history index
+	 * @param bool optional return as JSON string
+	 * @return array or string previous turn
+	 */
+	public function get_move($index = 0, $JSON = false)
+	{
+		call(__METHOD__);
+
+		$turn = $this->_history[(int) $index];
+
+		if ( ! $turn['move']) {
+			if ((bool) $JSON) {
+				return 'false';
+			}
+
+			return false;
+		}
+
+		$move = array( );
+
+		$move[0][0] = Pharaoh::get_target_index(substr($turn['move'], 0, 2));
+
+		if ('-' == $turn['move'][2]) {
+			$move[0][1] = $move[0][0];
+			$move[0][2] = $turn['move'][3];
+		}
+		else {
+			$move[0][1] = Pharaoh::get_target_index(substr($turn['move'], 3, 2));
+			$move[0][2] = (int) (':' == $turn['move'][2]);
+		}
+
+		$move[1] = array_trim($turn['hit'], 'int');
+
+		if ((bool) $JSON) {
+			return json_encode($move);
+		}
+
+		$old = $move;
+		$move = array( );
+
+		$move['move']['from'] = $old[0][0];
+		$move['move']['to'] = $old[0][1];
+		$move['move']['extra'] = $old[0][2];
+
+		$move['hit'] = $old[1];
+
+		return $move;
+	}
+
+
+	/** public function get_laser_path
+	 *		Returns the laser path for the given move index
+	 *
+	 * @param int optional move history index
+	 * @param bool optional return as JSON string
+	 * @return array or JSON string laser path
+	 */
+	public function get_laser_path($index = 0, $JSON = false)
+	{
+		call(__METHOD__);
+
+		$turn = $this->_history[(int) $index];
+
+		if ( ! $turn['color']) {
+			if ((bool) $JSON) {
+				return '[]';
+			}
+
+			return false;
+		}
+
+		$test = new Pharaoh( );
+		$test->set_board(self::expandFEN($turn['board']));
+		$test->fire_laser(('white' == $turn['color']) ? 'silver' : 'red');
+		$laser = $test->get_laser_path( );
+
+		if ((bool) $JSON) {
+			return json_encode($laser);
+		}
+
+		return $laser;
+	}
+
+
+	/** public function get_move_data
+	 *		Returns the turn data for the given move index
+	 *
+	 * @param int optional move history index
+	 * @param bool optional return as JSON string
+	 * @return array or string previous turn
+	 */
+	public function get_move_data($index = 0, $JSON = false)
+	{
+		call(__METHOD__);
+
+		$move_data = array( );
+
+		if ($this->_history[$index]['hit']) {
+			$hit = $this->_history[$index]['hit'];
+			$prev_board = self::expandFEN($this->_history[$index + 1]['board']);
+			$piece = $prev_board[$hit];
+			$move_data = compact('hit', 'piece');
+		}
+
+		if ((bool) $JSON) {
+			return json_encode($move_data);
+		}
+
+		return $move_data;
+	}
+
+
 	/** public function nudge
-	 *		Nudges the given player to tke their move
+	 *		Nudges the given player to take their turn
 	 *
 	 * @param void
 	 * @return bool success
@@ -653,7 +815,7 @@ class Game
 
 		$player_id = (int) $this->_players['opponent']['player_id'];
 
-		if ($this->get_my_turn( ) || ('Finished' == $this->state) || $this->paused) {
+		if ($this->is_turn( ) || ('Finished' == $this->state) || $this->paused) {
 			return false;
 		}
 
@@ -843,7 +1005,7 @@ class Game
 		// set up the board
 		$query = "
 			SELECT *
-			FROM ".self::GAME_BOARD_TABLE."
+			FROM ".self::GAME_HISTORY_TABLE."
 			WHERE game_id = '{$this->id}'
 			ORDER BY move_date DESC
 		";
@@ -852,7 +1014,7 @@ class Game
 
 		if ($result) {
 			$this->_history = $result;
-			$this->turn = ((0 == count($this->_history)) ? 'black' : 'white');
+			$this->turn = ((0 == (count($this->_history) % 2)) ? 'black' : 'white');
 			$this->last_move = strtotime($result[0]['move_date']);
 
 			try {
@@ -944,21 +1106,23 @@ class Game
 		// grab the current board from the database
 		$query = "
 			SELECT *
-			FROM ".self::GAME_BOARD_TABLE."
+			FROM ".self::GAME_HISTORY_TABLE."
 			WHERE game_id = '{$this->id}'
 			ORDER BY move_date DESC
 			LIMIT 1
 		";
-		$board = $this->_mysql->fetch_assoc($query);
+		$move = $this->_mysql->fetch_assoc($query);
+		$board = $move['board'];
 		call($board);
 
-		$new_board = $this->_pharaoh->board;
+		$new_board = $this->packFEN($this->_pharaoh->get_board( ));
 		call($new_board);
 
 		if ($new_board != $board) {
 			call('UPDATED BOARD');
 			$update_modified = true;
-			$this->_mysql->insert(self::GAME_BOARD_TABLE, array('board' => $new_board, 'game_id' => $this->id));
+			// TODO - need to add more info in here, like if anything was hit, and the move notation
+			$this->_mysql->insert(self::GAME_HISTORY_TABLE, array('board' => $new_board, 'game_id' => $this->id));
 		}
 
 		// update the game modified date
@@ -1071,16 +1235,16 @@ class Game
 
 		$query = "
 			SELECT G.*
-				, IF((0 = MAX(GB.move_date)) OR MAX(GB.move_date) IS NULL, G.create_date, MAX(GB.move_date)) AS last_move
-				, COUNT(GB.move_date) AS count
+				, MAX(GH.move_date) AS last_move
+				, COUNT(GH.move_date) AS count
 				, 0 AS my_turn
 				, 0 AS in_game
 				, W.username AS white
 				, B.username AS black
 				, S.name AS setup_name
 			FROM ".self::GAME_TABLE." AS G
-				LEFT JOIN ".self::GAME_BOARD_TABLE." AS GB
-					ON GB.game_id = G.game_id
+				LEFT JOIN ".self::GAME_HISTORY_TABLE." AS GH
+					ON GH.game_id = G.game_id
 				LEFT JOIN ".Player::PLAYER_TABLE." AS W
 					ON W.player_id = G.white_id
 				LEFT JOIN ".Player::PLAYER_TABLE." AS B
@@ -1088,8 +1252,8 @@ class Game
 				LEFT JOIN ".Setup::SETUP_TABLE." AS S
 					ON S.setup_id = G.setup_id
 			{$WHERE}
-			GROUP BY game_id
-			ORDER BY state ASC
+			GROUP BY G.game_id
+			ORDER BY G.state ASC
 				, last_move ASC
 		";
 		$list = $Mysql->fetch_array($query);
@@ -1241,6 +1405,21 @@ class Game
 	}
 
 
+	/** static public function check_turns
+	 *		Returns a count of all games
+	 *		in which it is the user's turn
+	 *
+	 * @param int player id
+	 * @return int number of games with player action
+	 */
+	static public function check_turns($player_id)
+	{
+		$list = self::get_list($player_id, false);
+		$turn_count = array_sum_field($list, 'my_turn');
+		return $turn_count;
+	}
+
+
 	/** static public function get_my_count
 	 *		Returns a count of all given player's games in the database,
 	 *		as well as the games in which it is the player's turn
@@ -1272,7 +1451,7 @@ class Game
 		foreach ($games as $game) {
 			$query = "
 				SELECT COUNT(*)
-				FROM ".self::GAME_BOARD_TABLE."
+				FROM ".self::GAME_HISTORY_TABLE."
 				WHERE game_id = '{$game['game_id']}'
 			";
 			$count = (int) $Mysql->fetch_value($query);
@@ -1336,7 +1515,7 @@ class Game
 		}
 
 		$tables = array(
-			self::GAME_BOARD_TABLE ,
+			self::GAME_HISTORY_TABLE ,
 			self::GAME_TABLE ,
 		);
 
@@ -1344,7 +1523,7 @@ class Game
 
 		$query = "
 			OPTIMIZE TABLE ".self::GAME_TABLE."
-				, ".self::GAME_BOARD_TABLE."
+				, ".self::GAME_HISTORY_TABLE."
 		";
 		$Mysql->query($query);
 	}
@@ -1405,10 +1584,10 @@ class Game
 
 	static public function expandFEN($FEN)
 	{
-		$FEN = preg_replace('/\s+/', '', $FEN);
+		$FEN = preg_replace('/\s+/', '', $FEN); // remove spaces
 
-		$xFEN = preg_replace('/([1-9]0?)/e', "str_repeat('0', \\1)", $FEN);
-		$xFEN = str_replace('/', '', $xFEN); // Leave only pieces and empty squares
+		$FEN = preg_replace('/([1-9]0?)/e', "str_repeat('0', \\1)", $FEN); // unpack the 0s
+		$xFEN = str_replace('/', '', $FEN); // remove the row separators
 
 		return $xFEN;
 	}
@@ -1416,10 +1595,10 @@ class Game
 
 	static public function packFEN($xFEN, $row_length = 10)
 	{
-		$xFEN = preg_replace('/\s+/', '', $FEN);
+		$xFEN = preg_replace('/\s+/', '', $xFEN); // remove spaces
 
-		$FEN = trim(chunk_split($xFEN, $row_length, '/'), '/'); // add the row separaters
-		$FEN = preg_replace('/(0+)/e', "strlen('\\1')", $FEN);
+		$xFEN = trim(chunk_split($xFEN, $row_length, '/'), '/'); // add the row separaters
+		$FEN = preg_replace('/(0+)/e', "strlen('\\1')", $xFEN); // pack the 0s
 
 		return $FEN;
 	}
@@ -1479,8 +1658,5 @@ CREATE TABLE IF NOT EXISTS `bs_game_nudge` (
   UNIQUE KEY `game_player` (`game_id`,`player_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci ;
 
-
-
 */
-
 

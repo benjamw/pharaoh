@@ -53,7 +53,7 @@ class GamePlayer
 
 
 	/** protected property current_games
-	 *		Number of games player is currently in
+	 *		Number of games player is currently playing in
 	 *
 	 * @var int
 	 */
@@ -127,7 +127,7 @@ class GamePlayer
 			$count = (int) $this->_mysql->fetch_value($query);
 
 			if (0 == $count) {
-				throw new MyException(__METHOD__.': Pharaoh Player (#'.$id.') not found in database');
+				throw new MyException(__METHOD__.': '.GAME_NAME.' Player (#'.$id.') not found in database');
 			}
 		}
 
@@ -164,14 +164,14 @@ class GamePlayer
 
 	/** public function log_in
 	 *		Runs the parent's log_in function
-	 *		then, if success, tests pharaoh player
+	 *		then, if success, tests game player
 	 *		database to see if this player has been
 	 *		here before, if not, it adds then to the
 	 *		database, and if so, refreshes the last_online value
 	 *
 	 * @param void
 	 * @action logs the player in
-	 * @action optionally adds new pharaoh player data to the database
+	 * @action optionally adds new game player data to the database
 	 * @return bool success
 	 */
 	public function log_in( )
@@ -410,12 +410,12 @@ class GamePlayer
 
 
 	/** protected function _pull
-	 *		Pulls all pharaoh player data from the database
+	 *		Pulls all game player data from the database
 	 *		as well as the parent's data
 	 *
 	 * @param void
 	 * @action pulls the player data
-	 * @action pulls the pharaoh player data
+	 * @action pulls the game player data
 	 * @return void
 	 */
 	protected function _pull( )
@@ -447,11 +447,11 @@ return false;
 		$query = "
 			SELECT COUNT(*)
 			FROM ".Game::GAME_TABLE." AS G
-				LEFT JOIN ".Game::GAME_BOARD_TABLE." AS GB
+				LEFT JOIN ".Game::GAME_HISTORY_TABLE." AS GH
 					USING (game_id)
 			WHERE ((G.white_id = '{$this->id}'
 						OR G.black_id = '{$this->id}')
-					AND GB.board IS NOT NULL)
+					AND GH.board IS NOT NULL)
 				AND G.state <> 'Finished'
 		";
 		$this->current_games = $this->_mysql->fetch_value($query);
@@ -464,13 +464,13 @@ return false;
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
 	/** static public function get_list
-	 *		Returns a list array of all pharaoh players
+	 *		Returns a list array of all game players
 	 *		in the database
 	 *		This function supercedes the parent's function and
 	 *		just grabs the whole lot in one query
 	 *
 	 * @param bool restrict to approved players
-	 * @return array pharaoh player list (or bool false on failure)
+	 * @return array game player list (or bool false on failure)
 	 */
 	static public function get_list($only_approved = false)
 	{
@@ -495,11 +495,11 @@ return false;
 
 
 	/** static public function get_count
-	 *		Returns a count of all pharaoh players
+	 *		Returns a count of all game players
 	 *		in the database
 	 *
 	 * @param void
-	 * @return int pharaoh player count
+	 * @return int game player count
 	 */
 	static public function get_count( )
 	{
@@ -508,6 +508,10 @@ return false;
 		$query = "
 			SELECT COUNT(*)
 			FROM ".self::EXTEND_TABLE." AS E
+				JOIN ".Player::PLAYER_TABLE." AS P
+					USING (player_id)
+			WHERE P.is_approved = 1
+			-- TODO: AND E.is_approved = 1
 		";
 		$count = $Mysql->fetch_value($query);
 
@@ -526,6 +530,29 @@ return false;
 	{
 		$Mysql = Mysql::get_instance( );
 
+		// run through the maxed invites and set the key
+		// to the player id and the value to the invite count
+		// for ease of use later
+		$invites = array( );
+		// TODO: set a setting for this
+		if (true || $invites_count_toward_max_games) {
+			$query = "
+				SELECT COUNT(I.invite_id) AS invite_count
+					, PE.player_id
+				FROM ".Game::INVITE_TABLE." AS I
+					LEFT JOIN ".self::EXTEND_TABLE." AS PE
+						ON (PE.player_id = I.invitor_id
+							OR PE.player_id = I.invitee_id)
+				WHERE PE.max_games > 0
+				GROUP BY PE.player_id
+			";
+			$maxed_invites = $Mysql->fetch_array($query);
+
+			foreach ($maxed_invites as $invite) {
+				$invites[$invite['player_id']] = $invite['invite_count'];
+			}
+		}
+
 		$query = "
 			SELECT COUNT(G.game_id) AS game_count
 				, PE.player_id
@@ -542,7 +569,11 @@ return false;
 
 		$player_ids = array( );
 		foreach ($maxed_players as $data) {
-			if ($data['game_count'] >= $data['max_games']) {
+			if ( ! isset($invites[$data['player_id']])) {
+				$invites[$data['player_id']] = 0;
+			}
+
+			if (($data['game_count'] + $invites[$data['player_id']]) >= $data['max_games']) {
 				$player_ids[] = $data['player_id'];
 			}
 		}
@@ -585,8 +616,15 @@ return false;
 
 		// make sure the 'unused' player is not currently in a game
 		$query = "
-			SELECT DISTINCT player_id
-			FROM ".Game::GAME_PLAYER_TABLE."
+			SELECT DISTINCT white_id
+			FROM ".Game::GAME_TABLE."
+		";
+		$results = $Mysql->fetch_value_array($query);
+		$exception_ids = array_merge($exception_ids, $results);
+
+		$query = "
+			SELECT DISTINCT black_id
+			FROM ".Game::GAME_TABLE."
 		";
 		$results = $Mysql->fetch_value_array($query);
 		$exception_ids = array_merge($exception_ids, $results);
@@ -627,14 +665,15 @@ return false;
 // ===================================
 
 --
--- Table structure for table `wr_wr_player`
+-- Table structure for table `ph_ph_player`
 --
 
-DROP TABLE IF EXISTS `wr_wr_player`;
-CREATE TABLE IF NOT EXISTS `wr_wr_player` (
+DROP TABLE IF EXISTS `ph_ph_player`;
+CREATE TABLE IF NOT EXISTS `ph_ph_player` (
   `player_id` int(11) unsigned NOT NULL DEFAULT '0',
   `is_admin` tinyint(1) unsigned NOT NULL DEFAULT '0',
   `allow_email` tinyint(1) unsigned NOT NULL DEFAULT '1',
+  `max_games` tinyint(2) unsigned NOT NULL DEFAULT '0',
   `color` varchar(25) NOT NULL DEFAULT 'blue_white',
   `wins` smallint(5) unsigned NOT NULL DEFAULT '0',
   `kills` smallint(5) unsigned NOT NULL DEFAULT '0',

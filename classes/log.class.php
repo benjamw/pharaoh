@@ -73,8 +73,8 @@ class Log
 	 */
 	protected function __construct( )
 	{
-		if ( ! empty($GLOBALS['__LOG_ROOT'])) {
-			$this->_file_path = $GLOBALS['__LOG_ROOT'];
+		if (defined('LOG_DIR')) {
+			$this->_file_path = LOG_DIR;
 		}
 	}
 
@@ -135,7 +135,7 @@ class Log
 	{
 		$trace = debug_backtrace(false);
 
-		$root_dir = ( ! empty($GLOBALS['__WEB_ROOT'])) ? $GLOBALS['__WEB_ROOT'] : '';
+		$root_dir = (defined('ROOT_DIR')) ? ROOT_DIR : '';
 
 		// ignore the first two entries of the backtrace array
 		// (this method, and the self::write method)
@@ -201,7 +201,7 @@ class Log
 	 */
 	static public function write($message = '', $type = null, $backtrace = null)
 	{
-		if ( ! $GLOBALS['_LOGGING']) {
+		if (empty($GLOBALS['_LOGGING'])) {
 			return;
 		}
 

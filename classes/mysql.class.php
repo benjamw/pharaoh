@@ -101,10 +101,15 @@ class Mysql
 		$this->query_time = 0;
 		$this->query_count = 0;
 
-		$this->_log(__METHOD__);
-		$this->_log('===============================');
+		try {
+			$this->_log(__METHOD__);
+			$this->_log('===============================');
 
-		$this->connect_select( );
+			$this->connect_select( );
+		}
+		catch (MySQLException $e) {
+			throw $e;
+		}
 	}
 
 
@@ -931,7 +936,7 @@ class Mysql
 
 		// send the error as email if set
 		if ($this->_email_errors && ('' != $this->_email_to) && ('' != $this->_email_from)) {
-			mail($this->_email_to, trim($this->_email_subject), $error_report, 'From: '.$this->_email_from."\r\n\r\n");
+			mail($this->_email_to, trim($this->_email_subject), $error_report, 'From: '.$this->_email_from."\r\n");
 		}
 
 		// log the error
