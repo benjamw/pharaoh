@@ -6,8 +6,8 @@ require_once 'includes/inc.global.php';
 // but I'm running it here to prevent long load
 // times on other pages where it would be ran more often
 GamePlayer::delete_inactive(Settings::read('expire_users'));
-Game::delete_finished(Settings::read('expire_finished_games'));
 Game::delete_inactive(Settings::read('expire_games'));
+Game::delete_finished(Settings::read('expire_finished_games'));
 
 $Game = new Game( );
 
@@ -41,6 +41,10 @@ $players = array_diff($invite_players, $players_maxed);
 
 $opponent_selection = '<option value="">-- Open --</option>';
 foreach ($players_full as $player) {
+	if ($_SESSION['player_id'] == $player['player_id']) {
+		continue;
+	}
+
 	if (in_array($player['player_id'], $players)) {
 		$opponent_selection .= '
 			<option value="'.$player['player_id'].'">'.$player['username'].'</option>';
@@ -48,7 +52,7 @@ foreach ($players_full as $player) {
 }
 
 $setups = Setup::get_list( );
-$setup_selection = '<option value="">-- Choose Setup --</option>';
+$setup_selection = '<option value="0">Random</option>';
 $setup_javascript = '';
 foreach ($setups as $setup) {
 	$setup_selection .= '
@@ -83,10 +87,7 @@ if ($GLOBALS['Player']->max_games && ($GLOBALS['Player']->max_games <= $GLOBALS[
 	$submit_button = $warning = '<p class="warning">You have reached your maximum allowed games, you can not create this game !</p>';
 }
 
-$contents = '';
-
-$contents .= <<< EOF
-
+$contents = <<< EOF
 	<form method="post" action="{$_SERVER['REQUEST_URI']}" id="send"><div class="formdiv">
 		<input type="hidden" name="token" value="{$_SESSION['token']}" />
 		<input type="hidden" name="player_id" value="{$_SESSION['player_id']}" />
@@ -114,7 +115,7 @@ EOT;
 
 $table_meta = array(
 	'sortable' => true ,
-	'no_data' => '<p>There are no received invites to show</p>' ,
+	'no_data' => '<p>There are no recieved invites to show</p>' ,
 	'caption' => 'Invitations Recieved' ,
 );
 $table_format = array(

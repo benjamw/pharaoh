@@ -126,3 +126,27 @@ function bit_toggle($val, $bit, $reverse = false) {
 }
 function bitToggle($val, $bit, $reverse = false) { return bit_toggle($val, $bit, $reverse); }
 
+
+/** function trunc
+ *		Truncates the decimal number $val to the given $num of bits
+ *		from the LEFT (MSB), sign bit is ignored
+ *
+ *		EXAMPLE:
+ *			if the number is -3 : 1111111111111101 (16 bit),
+ *			the truncated(2) value is 1 : 01
+ *
+ *
+ * @param int value we are modifying
+ * @param int number of bits to truncate to
+ * @return int
+ */
+function trunc($val, $num = 2)
+{
+	$bin = str_pad(decbin($val), $num, '0', STR_PAD_LEFT);
+	$trunc = substr($bin, -$num);
+	$dec = bindec($trunc);
+
+	return $dec;
+}
+
+

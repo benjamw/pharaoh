@@ -1,7 +1,5 @@
 <?php
 
-define('GAME_NAME', 'Pharaoh');
-
 $debug = false;
 
 // set some ini stuff
@@ -41,17 +39,17 @@ ini_set('error_log', LOG_DIR.'php.err');
 if (is_file(INCLUDE_DIR.'config.php')) {
 	require_once INCLUDE_DIR.'config.php';
 }
-/*/
-elseif ('setup-config.php' != basename($_SERVER['PHP_SELF'])) {
-	header('Location: setup-config.php');
-/*/
-elseif ('install.php' != basename($_SERVER['PHP_SELF'])) {
-	header('Location: install.php');
-//*/
-	exit;
-}
+#/*/
+#elseif ('setup-config.php' != basename($_SERVER['PHP_SELF'])) {
+#	header('Location: setup-config.php');
+#/*/
+#elseif ('install.php' != basename($_SERVER['PHP_SELF'])) {
+#	header('Location: install.php');
+#//*/
+#	exit;
+#}
 
-require_once INCLUDE_DIR.'inc.version.php';
+require_once INCLUDE_DIR.'inc.settings.php';
 require_once INCLUDE_DIR.'func.global.php';
 require_once INCLUDE_DIR.'html.general.php';
 require_once INCLUDE_DIR.'html.tables.php';
@@ -88,8 +86,11 @@ if ('' == $GLOBALS['_DEFAULT_COLOR']) {
 	if (in_array('blue_white', $GLOBALS['_COLORS'])) {
 		$GLOBALS['_DEFAULT_COLOR'] = 'blue_white';
 	}
-	else {
+	elseif ($GLOBALS['_COLORS']) {
 		$GLOBALS['_DEFAULT_COLOR'] = $GLOBALS['_COLORS'][0];
+	}
+	else {
+		$GLOBALS['_DEFAULT_COLOR'] = '';
 	}
 }
 
@@ -107,11 +108,13 @@ if ( ! isset($_SESSION['token'])) {
 }
 call($_SESSION['token']);
 
-if (test_debug( )) {
-	define('DEBUG', true); // DO NOT CHANGE THIS ONE
-}
-else {
-	define('DEBUG', (bool) $debug); // set to true for output of debugging code
+if ( ! defined('DEBUG')) {
+	if (test_debug( )) {
+		define('DEBUG', true); // DO NOT CHANGE THIS ONE
+	}
+	else {
+		define('DEBUG', (bool) $debug); // set to true for output of debugging code
+	}
 }
 
 $GLOBALS['_LOGGING'] = DEBUG; // do not change, rather, change debug value
@@ -147,7 +150,7 @@ else { // do not edit the following
 }
 
 // log the player in
-if (( ! isset($LOGIN) || $LOGIN) && isset($Mysql)) {
+if (( ! defined('LOGIN') || LOGIN) && isset($Mysql)) {
 	$GLOBALS['Player'] = new GamePlayer( );
 	// this will redirect to login if failed
 	$GLOBALS['Player']->log_in( );

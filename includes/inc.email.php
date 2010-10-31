@@ -37,10 +37,28 @@ Please log in and take your turn. Good Luck!'),
 
 
 
+	'won' => array(
+		'subject' => 'You Won!',
+		'message' => '
+Apparently [[[sender]]] did something dumb and lasered their own Pharaoh in the game you were playing at [[[site_name]]].
+
+Log on and invite someone to a new game if you still wish to play.'),
+
+
+
+	'draw' => array(
+		'subject' => 'Draw',
+		'message' => '
+The [[[GAME_NAME]]] game you are playing against [[[sender]]] at [[[site_name]]] has ended in a draw.
+
+Log on and invite someone to a new game if you still wish to play.'),
+
+
+
 	'defeated' => array(
 		'subject' => 'Defeated',
 		'message' => '
-You have been pwninated by [[[sender]]] in the [[[GAME_NAME]]] game ([[[game_name]]]) you are playing at [[[site_name]]].
+You have been pwninated by [[[sender]]] in the [[[GAME_NAME]]] game you are playing at [[[site_name]]].
 
 Better luck next time, log on and invite someone to a new game if you still wish to play.'),
 
@@ -49,11 +67,11 @@ Better luck next time, log on and invite someone to a new game if you still wish
 	'resigned' => array(
 		'subject' => 'Opponent Resigned',
 		'message' => '
-Your opponent, [[[game_name]]], in a last ditch effort to wipe your fleet from the sea, hit the big red button to fire zee missiles.
+Your opponent, [[[game_name]]], while trying to unleash the forgotton fury of the Gods, attempted to trigger the allmighty deathbeam of Luxor.
 
-Alas, in the confusion, [[[game_name]]] forgot to release the clamps holding the nuclear warheads to zee missiles, and you watch in amazement as the horizon flashes into a brilliant white light that rivals that of the sun and a ginormous mushroom cloud fills the sky.
+Unfortunately, [[[game_name]]] was not learned in the ways of optical physics and failed to notice the smudge on their lens and eradicated their own Pharoah.
 
-Years later, when the area is safe for human occupation again, a research team dives to the depths looking for the remains of the formerly great floatilla, and there, at the bottom of the ocean, they found [[[game_name]]], frozen in their last moments of stupid realization, immortalized in a charcoal facepalm.'),
+The dust has settled and you can now claim your prize...  some broken obelisk somewhere with some weird pictures on it.  Yay.'),
 
 
 

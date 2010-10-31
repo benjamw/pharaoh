@@ -78,7 +78,7 @@ $(document).ready( function($) {
 });
 
 function show_link( ) {
-	if ($('select#setup').val( )) {
+	if (0 != $('select#setup').val( )) {
 		$('a#show_setup').show( );
 	}
 	else {

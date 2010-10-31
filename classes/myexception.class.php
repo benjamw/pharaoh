@@ -47,8 +47,11 @@ class MyException
 	 * @action writes the exception to the log
 	 * @return void
 	 */
-	public function __construct($message, $code = 1)
+	public function __construct($message = '', $code = 0)
 	{
+		$message = (string) $message;
+		$code = (float) $code;
+
 		parent::__construct($message, $code);
 
 		// our own exception handling stuff
@@ -101,7 +104,7 @@ class MyException
 			fclose($fp);
 		}
 
-		call($str);
+		call($str, $bypass = false, $show_from = true, $new_window = false, $error = true);
 	}
 
 }
@@ -109,24 +112,24 @@ class MyException
 
 /* PHP's built in Exception Class Reference ----
 
-class Exception
-{
-    protected $message = 'Unknown exception';   // exception message
-    protected $code = 0;                        // user defined exception code
-    protected $file;                            // source filename of exception
-    protected $line;                            // source line of exception
+class Exception   {
+	protected string $message ;
+	protected int $code ;
+	protected string $file ;
+	protected int $line ;
 
-    function __construct($message = null, $code = 0);
+	public __construct ([ string $message = "" [, int $code = 0 [, Exception $previous = NULL ]]] )
 
-    final function getMessage();                // message of exception
-    final function getCode();                   // code of exception
-    final function getFile();                   // source filename
-    final function getLine();                   // source line
-    final function getTrace();                  // an array of the backtrace()
-    final function getTraceAsString();          // formated string of trace
+	final public string getMessage ( void )
+	final public Exception getPrevious ( void )
+	final public int getCode ( void )
+	final public string getFile ( void )
+	final public int getLine ( void )
+	final public array getTrace ( void )
+	final public string getTraceAsString ( void )
+	final private void __clone ( void )
 
-    // Overrideable
-    function __toString();                       // formated string for display
+	public string __toString ( void )
 }
 
 */

@@ -429,6 +429,7 @@ class GamePlayer
 		$result = $this->_mysql->fetch_assoc($query);
 
 		if ( ! $result) {
+// TODO: find out what is going on here and fix.
 #			throw new MyException(__METHOD__.': Data not found in database (#'.$this->id.')');
 return false;
 		}
@@ -451,7 +452,7 @@ return false;
 			WHERE ((G.white_id = '{$this->id}'
 						OR G.black_id = '{$this->id}')
 					AND GH.board IS NOT NULL)
-				AND G.state <> 'Finished'
+				AND G.state NOT IN ('Finished', 'Draw')
 		";
 		$this->current_games = $this->_mysql->fetch_value($query);
 	}
@@ -560,7 +561,7 @@ return false;
 				LEFT JOIN ".self::EXTEND_TABLE." AS PE
 					ON (PE.player_id = G.white_id
 						OR PE.player_id = G.black_id)
-			WHERE G.state <> 'Finished'
+			WHERE G.state NOT IN ('Finished', 'Draw')
 				AND PE.max_games <> 0
 			GROUP BY PE.player_id
 		";

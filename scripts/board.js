@@ -25,6 +25,28 @@ T - Tower
 0000wpwb0000c0000000000D000000a0C0xy0b0Db0D0YX0a0C000000b0000000000A0000DWPW0000
 */
 
+var image_dir = 'images/pieces/',
+	laser_dir = 'images/laser/',
+	pieces = {
+		'P' : 'pharaoh',
+
+		'A' : 'pyramid_ne',
+		'B' : 'pyramid_se',
+		'C' : 'pyramid_sw',
+		'D' : 'pyramid_nw',
+
+		'X' : 'djed_ne',
+		'Y' : 'djed_nw',
+
+		'V' : 'obelisk',
+		'W' : 'obelisk_stack',
+
+		'H' : 'horus_ne',
+		'I' : 'horus_nw',
+
+		'T' : 'tower'
+	};
+
 function rotate_piece(piece, rotation) {
 	var rotate,
 		lower = (piece != piece.toUpperCase( ));
@@ -63,6 +85,7 @@ function rotate_piece(piece, rotation) {
 	return piece;
 }
 
+
 function create_board(xFEN, flip) {
 	flip = !! flip;
 
@@ -77,26 +100,6 @@ function create_board(xFEN, flip) {
 		classes = [],
 		silver = 'silver',
 		red = 'red',
-		image_dir = '../images/pieces/',
-		pieces = {
-			'P' : 'pharaoh',
-
-			'A' : 'pyramid_ne',
-			'B' : 'pyramid_se',
-			'C' : 'pyramid_sw',
-			'D' : 'pyramid_nw',
-
-			'X' : 'djed_ne',
-			'Y' : 'djed_nw',
-
-			'V' : 'obelisk',
-			'W' : 'obelisk_stack',
-
-			'H' : 'horus_ne',
-			'I' : 'horus_nw',
-
-			'T' : 'tower'
-		},
 		temp;
 
 	// chunk the xFEN into rows
@@ -167,7 +170,7 @@ function create_board(xFEN, flip) {
 				classes.push('i_'+piece);
 				classes.push(pieces[piece.toUpperCase( )]);
 
-				img = '<img src="images/pieces/'+color+'_'+pieces[piece.toUpperCase( )].toLowerCase( )+'.png" alt="'+piece+'" class="piece" />';
+				img = create_piece(piece);
 			}
 
 			if (classes.length) {
@@ -193,9 +196,27 @@ function create_board(xFEN, flip) {
 }
 
 
+function create_piece(piece, hit) {
+	hit = hit || false;
+	hit = !! hit;
+
+	var color = (piece == piece.toUpperCase( )) ? 'silver' : 'red';
+	var hit = (hit) ? ' hit' : '';
+	return '<img src="'+image_dir+color+'_'+pieces[piece.toUpperCase( )].toLowerCase( )+'.png" alt="'+piece+'" class="piece'+hit+'" />';
+}
+
+
+function do_prev_move( ) {
+	// TODO: build this function
+}
+
+
+var timer = false;
 function fire_laser(path, flip, i) {
-	// TODO: show the piece hit (if any)
-	// until the laser hits it, then fade
+	if ( ! path) {
+		return false;
+	}
+
 	var j,
 		dir,next_dir,add_dir,nodes,
 		timeout = 200,
@@ -227,8 +248,13 @@ function fire_laser(path, flip, i) {
 				if (true === path[i + 1][j]) {
 					// show the hit (only one direction)
 					next_dir = 0;
-alert(path[i][j][0]);
-					// TODO: fade the hit piece
+
+					// blink then fade the hit piece
+					$('img.hit')
+						.delay(250).fadeIn(50).delay(250).fadeOut(50)
+						.delay(250).fadeIn(50).delay(250).fadeOut(50)
+						.delay(250).fadeIn(50).delay(250).fadeOut(50)
+						.delay(250).fadeIn(50).delay(250).fadeTo(50, 0.25);
 				}
 				else {
 					// just run it into the wall
@@ -252,54 +278,80 @@ alert(path[i][j][0]);
 			}
 
 			// add the laser image
-			$('#idx_'+path[i][j][0]).append('<img src="images/laser/new_'+c_sort(dc(dir) + dc(next_dir) + dc(add_dir))+'.png" class="laser new" />');
+			$('#idx_'+path[i][j][0]).append('<img src="'+laser_dir+'new_'+c_sort(dc(dir) + dc(next_dir) + dc(add_dir))+'.png" class="laser new" />');
 		}
 	}
 
 	if (++i < length) { // increment then read
 		path = JSON.stringify(path);
-		setTimeout('fade_laser( ); fire_laser('+path+', '+flip+', '+i+');', timeout);
+		timer = setTimeout('fade_laser( ); fire_laser('+path+', '+flip+', '+i+');', timeout);
 	}
 	else {
-		setTimeout('fade_laser( );', timeout);
-		enable_moves( );
+		timer = setTimeout('fade_laser(true);', timeout);
 	}
 
 	return false;
 }
 
 
-function fade_laser( ) {
+function fade_laser(end) {
+	if (undefined == typeof end) {
+		end = false;
+	}
+
 	// find the greatest common multiple and use that image
 	// but we only need to search divs with new images
 	// (old images are already minified and faded)
+	// but don't include hits
 	$('img.laser.new').each( function( ) {
 		var $div = $(this).parent( ),
 			dirs = '';
+			hits = '';
 
 		$('img', $div).each( function( ) {
 			var match,
 				$img = $(this);
 
-			//make a list of all the directions shown (excluding hits, but not new hits)
-			if ((match = $img.attr('src').match(/laser\/(?:new_)?([nwse]{2,4})\.png/i))
-				|| (match = $img.attr('src').match(/laser\/new_([nwse])\.png/i)))
-			{
+			// make a list of all the directions shown (excluding hits)
+			if (match = $img.attr('src').match(/laser\/(?:new_)?([nwse]{2,4})\.png/i)) {
 				dirs += match[1];
 				$img.remove( );
 			}
+
+			// loop through all faded hits, and convert them all to faded laser
+			// (they'll get filtered out and removed if this is the only dir)
+			if (match = $img.attr('src').match(/laser\/([nwse])\.png/i)) {
+				dirs += match[1];
+				$img.remove( );
+			}
+
+			// now loop through any new hits, and convert them to faded hits, but still hits
+			// but only if there isn't already a hit image here already
+			// (can happen when firing laser over and over again)
+			if (match = $img.attr('src').match(/laser\/new_([nwse])\.png/i)) {
+				$img.removeClass('new').attr('src', $img.attr('src').replace(/new_/i, ''));
+			}
 		});
 
-		if (dirs) {
-			$div.append('<img src="images/laser/'+c_sort(dirs)+'.png" class="laser" />');
+		dirs = c_sort(dirs);
+
+		if (1 < dirs.length) {
+			$div.append('<img src="'+laser_dir+dirs+'.png" class="laser" />');
 		}
 	});
+
+	if (end) {
+		clearTimeout(timer);
+		timer = false;
+	}
 }
 
 
 function clear_laser( ) {
-	$("img.laser").remove( );
-	// TODO: clear out any hit piece, faded or not
+	clearTimeout(timer);
+	timer = false;
+	$('img.laser').remove( );
+	$('img.hit').hide( );
 }
 
 

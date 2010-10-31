@@ -3,7 +3,23 @@
 require_once 'includes/inc.global.php';
 
 $meta['title'] = 'Statistics';
+$meta['head_data'] = '
+	<script type="text/javascript">//<![CDATA[
+		$(document).ready( function( ) {
+			$("td.color, .color td").each( function(i, elem) {
+				var $elem = $(elem);
+				var text = parseFloat($elem.text( ));
 
+				if (0 < text) {
+					$elem.css("color", "green");
+				}
+				else if (0 > text) {
+					$elem.css("color", "red");
+				}
+			});
+		});
+	//]]></script>
+';
 
 $hints = array(
 	'View '.GAME_NAME.' Player statistics.' ,

@@ -71,12 +71,20 @@ class Pharaoh {
 	public $winner;
 
 
-	/** protected property board
+	/** protected property _board
 	 *		Holds the game board
 	 *
 	 * @var string
 	 */
 	protected $_board;
+
+
+	/** protected property _move
+	 *		Holds the last move
+	 *
+	 * @var string
+	 */
+	protected $_move;
 
 
 	/** protected property _laser_path
@@ -199,7 +207,7 @@ class Pharaoh {
 
 	/** public function do_move
 	 *		Performs the given move
-	 *		and then calls the laser firing method
+	 *		and then calls the laser firing method (if needed)
 	 *		Move syntax:
 	 *			-move: from:to e.g.- B4:B5
 	 *				- if splitting an obelisk tower, replace : with .
@@ -207,13 +215,18 @@ class Pharaoh {
 	 *			-rotate: square-direction (0 = CCW, 1 = CW)) e.g.- B4-0
 	 *
 	 * @param string move
-	 * @return void
+	 * @param bool whether or not to fire the laser after the move
+	 * @return array pieces hit if laser fired or string board after move
 	 */
-	public function do_move($move)
+	public function do_move($move, $fire_laser = true)
 	{
 		call(__METHOD__);
+		call($move);
 
-		$index = self::get_target_index(substr($move, 0, 2));
+		$fire_laser = (bool) $fire_laser;
+		call($fire_laser);
+
+		$index = self::target_to_index(substr($move, 0, 2));
 
 		// grab the color of the current piece
 		$piece = $this->_board[$index];
@@ -225,19 +238,29 @@ class Pharaoh {
 				$this->_rotate_piece($index, $move[3]);
 			}
 			else { // move
-				$this->_move_piece($index, self::get_target_index(substr($move, 3, 2)), (':' == $move[2]));
+				$this->_move_piece($index, self::target_to_index(substr($move, 3, 2)), (':' == $move[2]));
 			}
 		}
 		catch (MyException $e) {
 			throw $e;
 		}
 
-		$hits = $this->fire_laser($color);
+		$this->_move = $move;
+
+		// if we're not firing the laser, return the current board
+		if ( ! $fire_laser) {
+			call('NOT FIRING LASER');
+			call($this->_board);
+			return $this->_board;
+		}
+
+		$hits = $this->_fire_laser($color);
+		$this->_hits = $hits;
 
 		foreach ($hits as $hit) {
 			// check if we hit a pharaoh
 			if ('p' == $this->_board[$hit]) {
-				if (in_array($this->winner, array('red','draw'))) {
+				if (in_array($this->winner, array('red', 'draw'))) {
 					$this->winner = 'draw';
 				}
 				else {
@@ -245,7 +268,7 @@ class Pharaoh {
 				}
 			}
 			elseif ('P' == $this->_board[$hit]) {
-				if (in_array($this->winner, array('silver','draw'))) {
+				if (in_array($this->winner, array('silver', 'draw'))) {
 					$this->winner = 'draw';
 				}
 				else {
@@ -265,21 +288,54 @@ class Pharaoh {
 				$this->_board[$hit] = '0';
 			}
 		}
-
 		call($this->_get_board_ascii( ));
+
+		return $hits;
 	}
 
 
 	/** public function fire_laser
+	 *
+	 *		Manually fires the laser of the given color
+	 *		and returns the laser path array
+	 *
+	 * @param string color (red or silver)
+	 * @param string board the board layout to use
+	 * @return array of laser path
+	 */
+	public function fire_laser($color, $board = false)
+	{
+		call(__METHOD__);
+
+		if ($board) {
+			$orig_board = $this->_board;
+			$orig_path = $this->_laser_path;
+			$this->_board = $board;
+		}
+
+		$this->_fire_laser($color);
+		$path = $this->_laser_path;
+
+		if ($board) {
+			$this->_board = $orig_board;
+			$this->_laser_path = $orig_path;
+		}
+
+		return $path;
+	}
+
+
+	/** protected function _fire_laser
 	 *		FIRE ZEE MISSILES !!!
 	 *		But I am le tired
 	 *
 	 *		Fires the laser of the given color
 	 *
 	 * @param string color (red or silver)
+	 * @param string hit_board the previous board layout to use for hit checks
 	 * @return array of squares hit (empty array if none)
 	 */
-	function fire_laser($color)
+	protected function _fire_laser($color)
 	{
 		$color = strtolower($color);
 
@@ -336,7 +392,7 @@ class Pharaoh {
 		$paths = $this->_laser_path[0];
 		$used = array( );
 		$next = array( );
-		$hit = array( );
+		$hits = array( );
 		while ($i < 999) { // no ad infinitum here
 			$split = 0;
 			$continue = false;
@@ -356,7 +412,7 @@ class Pharaoh {
 				if ('0' != ($piece = $this->_board[$current])) {
 					// check for hit or reflection
 					if ( ! isset($reflections[strtoupper($piece)][$dir])) {
-						$hit[] = $current;
+						$hits[] = $current;
 
 						$next[$key] = true; // stop this path
 						continue;
@@ -448,9 +504,9 @@ class Pharaoh {
 		} // end while
 
 		call($this->_get_laser_ascii( ));
-		call($hit);
+		call($hits);
 
-		return $hit;
+		return $hits;
 	}
 
 
@@ -475,6 +531,7 @@ class Pharaoh {
 	public function set_board($xFEN)
 	{
 		call(__METHOD__);
+		call($xFEN);
 
 		// test the board and make sure all is well
 		if (80 != strlen($xFEN)) {
@@ -482,6 +539,8 @@ class Pharaoh {
 		}
 
 		$this->_board = $xFEN;
+
+		call($this->_get_board_ascii( ));
 	}
 
 
@@ -499,6 +558,25 @@ class Pharaoh {
 	}
 
 
+	/** public function get_move
+	 *		Returns the latest move and hits
+	 *
+	 * @param void
+	 * @return array string move, array hits
+	 */
+	public function get_move( )
+	{
+		call(__METHOD__);
+
+		return array(
+			0 => $this->_move,
+			'move' => $this->_move,
+			1 => $this->_hits,
+			'hits' => $this->_hits,
+		);
+	}
+
+
 	/** protected function _move_piece
 	 *		Tests and moves a piece
 	 *
@@ -511,9 +589,19 @@ class Pharaoh {
 	{
 		call(__METHOD__);
 
+		$from_index = (int) $from_index;
+		$to_index = (int) $to_index;
+		$both_obelisks = (bool) $both_obelisks;
+		call($from_index);
+		call($to_index);
+		call($both_obelisks);
+
 		$piece = $this->_board[$from_index];
 		$to_piece = $this->_board[$to_index];
 		$silver = ($piece == strtoupper($piece));
+		call($piece);
+		call($to_piece);
+		call($silver);
 
 		// check for a piece on the from square
 		if ('0' == $piece) {
@@ -554,18 +642,24 @@ class Pharaoh {
 
 		// check for a piece in the way
 		if ('0' != $to_piece) {
+			$to_color_array = 'not_'.self::get_piece_color($to_piece);
+
 				// make sure we are not moving obelisks around
 			if (in_array(strtoupper($piece), array('V','W')) && ('V' != strtoupper($to_piece))) {
 				throw new MyException(__METHOD__.': Target square not empty - '.$piece);
 			}
 				// both the Djed and Eye of Horus can swap places with other pieces
-				// as well as swapping a single and double obelisk tower is the from is double
+				// as well as swapping a single and double obelisk tower if the from is double
 			elseif ( ! in_array(strtoupper($piece), array('H','I','X','Y','W'))) {
 				throw new MyException(__METHOD__.': Target square not empty - '.$piece);
 			}
 				// but only with pyramids or obelisks
 			elseif ( ! in_array(strtoupper($to_piece), array('A','B','C','D','V','W'))) {
-				throw new MyException(__METHOD__.': Target piece not swappable - '.$piece);
+				throw new MyException(__METHOD__.': Target piece not swappable - '.$to_piece);
+			}
+				// make sure the swapped piece isn't going onto an off-color square
+			elseif (in_array($from_index, ${$to_color_array})) {
+				throw new MyException(__METHOD__.': Target piece not swappable due to ending on opposite color square - '.$to_piece.': '.self::get_piece_color($to_piece).' on '.self::get_piece_color($piece));
 			}
 		}
 
@@ -775,14 +869,14 @@ class Pharaoh {
 	}
 
 
-	/** static public function get_target_index
+	/** static public function target_to_index
 	 *		Converts a human readable target (H7)
 	 *		into a computer readable string index (76)
 	 *
 	 * @param string target
 	 * @return int string index
 	 */
-	static public function get_target_index($target)
+	static public function target_to_index($target)
 	{
 		try {
 			$target = self::test_target($target);
@@ -797,6 +891,24 @@ class Pharaoh {
 		$index += 10 * (8 - (int) $target[1]);
 
 		return $index;
+	}
+
+
+	/** static public function index_to_target
+	 *		Converts a computer readable string index (76)
+	 *		into a human readable target (H7)
+	 *
+	 * @param int string index
+	 * @return string target
+	 */
+	static public function index_to_target($index)
+	{
+		$chars = array('A','B','C','D','E','F','G','H','I','J');
+
+		$target = $chars[$index % 10];
+		$target .= (8 - floor($index / 10));
+
+		return $target;
 	}
 
 

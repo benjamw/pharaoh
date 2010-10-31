@@ -403,11 +403,11 @@ class Settings
 // ===================================
 
 --
--- Table structure for table `wr_settings`
+-- Table structure for table `ph_settings`
 --
 
-DROP TABLE IF EXISTS `wr_settings`;
-CREATE TABLE IF NOT EXISTS `wr_settings` (
+DROP TABLE IF EXISTS `ph_settings`;
+CREATE TABLE IF NOT EXISTS `ph_settings` (
   `setting` varchar(255) NOT NULL DEFAULT '',
   `value` text NOT NULL,
   `notes` text,
@@ -418,30 +418,30 @@ CREATE TABLE IF NOT EXISTS `wr_settings` (
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci ;
 
 --
--- Dumping data for table `wr_settings`
+-- Dumping data for table `ph_settings`
 --
 
-INSERT INTO `wr_settings` (`setting`, `value`, `notes`, `sort`) VALUES
-  ('site_name', 'the iohelix', 'The name of your site', 10),
-  ('default_color', 'c_yellow_black.css', 'The default theme color for the script pages', 20),
-  ('nav_links', '<script type="text/javascript" src="/scripts/links.js"></script>', 'HTML code for your site''s navigation links to display on the script pages', 30),
-  ('from_email', 'auto.mail@iohelix.net', 'The email address used to send game emails', 40),
-  ('to_email', 'benjam@iohelix.net', 'The email address to send admin notices to (comma separated)', 50),
+INSERT INTO `ph_settings` (`setting`, `value`, `notes`, `sort`) VALUES
+  ('site_name', 'Your Site Name', 'The name of your site', 10),
+  ('default_color', 'c_green_white.css', 'The default theme color for the script pages', 20),
+  ('nav_links', '<!-- your nav links here -->', 'HTML code for your site''s navigation links to display on the script pages', 30),
+  ('from_email', 'your.mail@yoursite.com', 'The email address used to send game emails', 40),
+  ('to_email', 'you@yoursite.com', 'The email address to send admin notices to (comma separated)', 50),
   ('new_users', '1', '(1/0) Allow new users to register (0 = off)', 60),
-  ('approve_users', '1', '(1/0) Require admin approval for new users (0 = off)', 70),
-  ('confirm_email', '1', '(1/0) Require email confirmation for new users (0 = off)', 80),
+  ('approve_users', '0', '(1/0) Require admin approval for new users (0 = off)', 70),
+  ('confirm_email', '0', '(1/0) Require email confirmation for new users (0 = off)', 80),
   ('max_users', '0', 'Max users allowed to register (0 = off)', 90),
   ('default_pass', 'change!me', 'The password to use when resetting a user''s password', 100),
   ('expire_users', '45', 'Number of days until untouched games are deleted (0 = off)', 110),
   ('save_games', '1', '(1/0) Save games in the ''games'' directory on the server (0 = off)', 120),
   ('expire_games', '30', 'Number of days until untouched user accounts are deleted (0 = off)', 130),
-  ('timezone', 'America/Denver', 'The timezone to use for dates (<a href="http://www.php.net/manual/en/timezones.php">List of Timezones</a>)', 140),
+  ('nudge_flood_control', '24', 'Number of hours between nudges. (-1 = no nudging, 0 = no flood control)', 135),
+  ('timezone', 'UTC', 'The timezone to use for dates (<a href="http://www.php.net/manual/en/timezones.php">List of Timezones</a>)', 140),
   ('long_date', 'M j, Y g:i a', 'The long format for dates (<a href="http://www.php.net/manual/en/function.date.php">Date Format Codes</a>)', 150),
   ('short_date', 'Y.m.d H:i', 'The short format for dates (<a href="http://www.php.net/manual/en/function.date.php">Date Format Codes</a>)', 160),
-  ('debug_pass', 'h3ll0!w0r1d', 'The DEBUG password to use to set temporary DEBUG status for the script', 170),
+  ('debug_pass', '', 'The DEBUG password to use to set temporary DEBUG status for the script', 170),
   ('DB_error_log', '1', '(1/0) Log database errors to the ''logs'' directory on the server (0 = off)', 180),
-  ('DB_error_email', '1', '(1/0) Email database errors to the admin email addresses given (0 = off)', 190),
-  ('nudge_flood_control', '24', 'Number of hours between nudges. (-1 = no nudging, 0 = no flood control)', 135);
+  ('DB_error_email', '1', '(1/0) Email database errors to the admin email addresses given (0 = off)', 190);
 
 
 */

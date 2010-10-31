@@ -84,22 +84,22 @@ legend {
 	font-size: larger;
 }
 
-.warning {
+.warning, .warning * {
 	color: #C00;
 	font-weight: bold;
 }
 
-.notice {
+.notice, .notice * {
 	color: #CC0;
 	font-weight: bold;
 }
 
-.highlight {
+.highlight, .highlight * {
 	color: #00C;
 	font-weight: bold;
 }
 
-.instruction {
+.instruction, .instruction * {
 	color: #AAA;
 }
 
@@ -227,7 +227,7 @@ legend {
 }
 
 #menu li.active .notice {
-	color: #00C;
+	color: #99F;
 }
 
 /* notes */
@@ -575,8 +575,8 @@ table.game_info {
 	margin-left: 100px;
 }
 
-#mygames .dead a { color: #999; }
-#mygames .placing a { color: #F00; }
+#mygames .finished a { color: #999; }
+#mygames .playing a { color: #F00; }
 #mygames .my_turn a { color: #FF0; }
 #mygames .none a { color: #FFF; }
 

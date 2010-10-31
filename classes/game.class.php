@@ -86,7 +86,7 @@ class Game
 
 	/** public property state
 	 *		Holds the game's current state
-	 *		can be one of 'Playing', 'Finished'
+	 *		can be one of 'Playing', 'Finished', 'Draw'
 	 *
 	 * @var string (enum)
 	 */
@@ -361,6 +361,26 @@ class Game
 			$_P['extra_info'] = serialize($extra_info);
 		}
 
+		// check for random setup
+		$query = "
+			SELECT setup_id
+			FROM ".Setup::SETUP_TABLE."
+		";
+		$setup_ids = $Mysql->fetch_value_array($query);
+		call($setup_ids);
+
+		if (0 == $_P['setup_id']) {
+			shuffle($setup_ids);
+			shuffle($setup_ids);
+			$_P['setup_id'] = (int) reset($setup_ids);
+			sort($setup_ids);
+		}
+
+		// make sure the setup id is valid
+		if ( ! in_array($_P['setup_id'], $setup_ids)) {
+			throw new MyException(__METHOD__.': Setup is not valid');
+		}
+
 		// create the game
 		$required = array(
 			'invitor_id' ,
@@ -384,6 +404,11 @@ class Game
 
 		if (empty($insert_id)) {
 			throw new MyException(__METHOD__.': Invite could not be created');
+		}
+
+		// send the email
+		if ($_DATA['invitee_id']) {
+			Email::send('invite', $_DATA['invitee_id'], array('name' => $GLOBALS['_PLAYERS'][$_DATA['invitor_id']]));
 		}
 
 		return $insert_id;
@@ -454,6 +479,9 @@ class Game
 		// delete the invite
 		$Mysql->delete(self::INVITE_TABLE, " WHERE invite_id = '{$invite_id}' ");
 
+		// send the email
+		Email::send('start', $invite['invitor_id'], array('name' => $GLOBALS['_PLAYERS'][$_SESSION['player_id']]));
+
 		return $insert_id;
 	}
 
@@ -492,6 +520,7 @@ class Game
 
 		$invite_id = (int) $invite_id;
 		$player_id = (int) $player_id;
+		$accept = (bool) $accept;
 
 		$Mysql = Mysql::get_instance( );
 
@@ -510,7 +539,53 @@ class Game
 					{$open}
 				)
 		";
-		return (bool) $Mysql->fetch_value($query);
+		$has_invites = (bool) $Mysql->fetch_value($query);
+
+		return $has_invites;
+	}
+
+
+	// TODO: finish this up
+	// ...with what... i have no idea
+	// sometimes i really love my over-explained comments  =/
+	// email maybe?  stuff to do with winning or losing the game?
+	public function do_move($move)
+	{
+		call(__METHOD__);
+
+		try {
+			$hits = $this->_pharaoh->do_move($move);
+			$winner = $this->_pharaoh->winner;
+		}
+		catch (MyException $e) {
+			throw $e;
+		}
+
+		if ($winner) {
+			if ('draw' == $winner) {
+				$this->state = 'Draw';
+				$this->_players['silver']['object']->add_draw( );
+				$this->_players['red']['object']->add_draw( );
+
+				// send the email
+				Email::send('draw', $this->_players['opponent']['player_id'], array('player' => $this->_players['player']['object']->username));
+			}
+			else {
+				$this->state = 'Finished';
+				$this->_players[$winner]['object']->add_win( );
+				$this->_players[$this->_players[$winner]['opp_color']]['object']->add_loss( );
+
+				// send the email
+				$type = (($this->_players[$winner]['player_id'] == $_SESSION['player_id']) : 'defeated' : 'won');
+				Email::send($type, $this->_players['opponent']['player_id'], array('player' => $this->_players['player']['object']->username));
+			}
+		}
+		else {
+			// send the email
+			Email::send('turn', $this->_players['opponent']['player_id'], array('name' => $this->_players['player']['object']->username));
+		}
+
+		return $hits;
 	}
 
 
@@ -551,7 +626,7 @@ class Game
 		$this->_players['opponent']['object']->add_win( );
 		$this->_players['player']['object']->add_loss( );
 		$this->state = 'Finished';
-		Email::send('resigned', $this->_players['opponent']['object']->id, array('name' => $this->_players['player']['object']->username));
+		Email::send('resigned', $this->_players['opponent']['player_id'], array('name' => $this->_players['player']['object']->username));
 	}
 
 
@@ -578,7 +653,7 @@ class Game
 	 */
 	public function get_color($player = true)
 	{
-		$request = (bool) $player ? 'player' : 'opponent';
+		$request = (((bool) $player) ? 'player' : 'opponent');
 		return ((isset($this->_players[$request]['color'])) ? $this->_players[$request]['color'] : false);
 	}
 
@@ -591,7 +666,11 @@ class Game
 	 */
 	public function is_turn($player = true)
 	{
-		$request = (bool) $player ? 'player' : 'opponent';
+		if ('Playing' != $this->state) {
+			return false;
+		}
+
+		$request = (((bool) $player) ? 'player' : 'opponent');
 		return ((isset($this->_players[$request]['turn'])) ? (bool) $this->_players[$request]['turn'] : false);
 	}
 
@@ -619,9 +698,12 @@ class Game
 	{
 		call(__METHOD__);
 
-		$board = $this->_history[(int) $index]['board'];
+		$index = (int) $index;
+		$expanded = (bool) $expanded;
 
-		if ((bool) $expanded) {
+		$board = $this->_history[$index]['board'];
+
+		if ($expanded) {
 			return $this->expandFEN($board);
 		}
 
@@ -661,20 +743,25 @@ class Game
 
 
 	/** public function get_move
-	 *		Returns the turn for the given move index
+	 *		Returns the data for the given move index
 	 *
 	 * @param int optional move history index
 	 * @param bool optional return as JSON string
 	 * @return array or string previous turn
 	 */
-	public function get_move($index = 0, $JSON = false)
+	public function get_move($index = 0, $json = false)
 	{
 		call(__METHOD__);
+		call($index);
+		call($json);
 
-		$turn = $this->_history[(int) $index];
+		$index = (int) $index;
+		$json = (bool) $json;
+
+		$turn = $this->_history[$index];
 
 		if ( ! $turn['move']) {
-			if ((bool) $JSON) {
+			if ($json) {
 				return 'false';
 			}
 
@@ -683,20 +770,20 @@ class Game
 
 		$move = array( );
 
-		$move[0][0] = Pharaoh::get_target_index(substr($turn['move'], 0, 2));
+		$move[0][0] = Pharaoh::target_to_index(substr($turn['move'], 0, 2));
 
 		if ('-' == $turn['move'][2]) {
 			$move[0][1] = $move[0][0];
 			$move[0][2] = $turn['move'][3];
 		}
 		else {
-			$move[0][1] = Pharaoh::get_target_index(substr($turn['move'], 3, 2));
+			$move[0][1] = Pharaoh::target_to_index(substr($turn['move'], 3, 2));
 			$move[0][2] = (int) (':' == $turn['move'][2]);
 		}
 
-		$move[1] = array_trim($turn['hit'], 'int');
+		$move[1] = array_trim($turn['hits'], 'int');
 
-		if ((bool) $JSON) {
+		if ($json) {
 			return json_encode($move);
 		}
 
@@ -707,7 +794,7 @@ class Game
 		$move['move']['to'] = $old[0][1];
 		$move['move']['extra'] = $old[0][2];
 
-		$move['hit'] = $old[1];
+		$move['hits'] = $old[1];
 
 		return $move;
 	}
@@ -720,26 +807,53 @@ class Game
 	 * @param bool optional return as JSON string
 	 * @return array or JSON string laser path
 	 */
-	public function get_laser_path($index = 0, $JSON = false)
+	public function get_laser_path($index = 0, $json = false)
 	{
 		call(__METHOD__);
+		call($index);
+		call($json);
 
-		$turn = $this->_history[(int) $index];
+		$index = (int) $index;
+		$json = (bool) $json;
 
-		if ( ! $turn['color']) {
-			if ((bool) $JSON) {
+		$count = count($this->_history);
+		call($this->_history[$index]);
+
+		if ((1 == $count) || ($index >= $count)) {
+			if ($json) {
 				return '[]';
 			}
 
 			return false;
 		}
 
-		$test = new Pharaoh( );
-		$test->set_board(self::expandFEN($turn['board']));
-		$test->fire_laser(('white' == $turn['color']) ? 'silver' : 'red');
-		$laser = $test->get_laser_path( );
+		$same = 'silver';
+		$oppo = 'red';
+		if (0 == ($count % 2)) {
+			$same = 'red';
+			$oppo = 'silver';
+		}
 
-		if ((bool) $JSON) {
+		$color = ((0 == ($count - $index)) ? $same : $oppo);
+
+		// here we need to do the move, store the board as is
+		// and then fire the laser.
+		// the reason being: if we just fire the laser at the previous board,
+		// if the piece hit was rotated into the beam, it will not display correctly
+		// and if we try and fire the laser at the current board, it will pass through
+		// any hit piece because it's no longer there (unless it's a stacked obelisk, of course)
+
+		// create a dummy pharaoh class and set the board as it was prior to the laser (+1)
+		$PH = new Pharaoh( );
+		$PH->set_board(self::expandFEN($this->_history[$index + 1]['board']));
+
+		// do the move, but do not fire the laser, and store the board
+		$pre_board = $PH->do_move($this->_history[$index]['move'], false);
+
+		// now fire the laser at that board
+		$laser = $this->_pharaoh->fire_laser($color, $pre_board);
+
+		if ($json) {
 			return json_encode($laser);
 		}
 
@@ -747,27 +861,47 @@ class Game
 	}
 
 
-	/** public function get_move_data
+	/** public function get_hit_data
 	 *		Returns the turn data for the given move index
 	 *
 	 * @param int optional move history index
 	 * @param bool optional return as JSON string
 	 * @return array or string previous turn
 	 */
-	public function get_move_data($index = 0, $JSON = false)
+	public function get_hit_data($index = 0, $json = false)
 	{
 		call(__METHOD__);
+		call($index);
+		call($json);
+
+		$index = (int) $index;
+		$json = (bool) $json;
 
 		$move_data = array( );
 
-		if ($this->_history[$index]['hit']) {
-			$hit = $this->_history[$index]['hit'];
-			$prev_board = self::expandFEN($this->_history[$index + 1]['board']);
-			$piece = $prev_board[$hit];
-			$move_data = compact('hit', 'piece');
+		if ($this->_history[$index]['hits']) {
+			// we need to grab the previous board here, and perform the move
+			// without firing the laser so we get the proper orientation
+			// of the pieces as they were hit in case any pieces were rotated
+			// into the beam
+
+			// create a dummy pharaoh class and set the board as it was prior to the laser (+1)
+			$PH = new Pharaoh( );
+			$PH->set_board(self::expandFEN($this->_history[$index + 1]['board']));
+
+			// do the move and store that board
+			$prev_board = $PH->do_move($this->_history[$index]['move'], false);
+
+			$pieces = array( );
+			$hits = array_trim($this->_history[$index]['hits'], 'int');
+			foreach ($hits as $hit) {
+				$pieces[] = $prev_board[$hit];
+			}
+
+			$move_data = compact('hits', 'pieces');
 		}
 
-		if ((bool) $JSON) {
+		if ($json) {
 			return json_encode($move_data);
 		}
 
@@ -814,7 +948,7 @@ class Game
 
 		$player_id = (int) $this->_players['opponent']['player_id'];
 
-		if ($this->is_turn( ) || ('Finished' == $this->state) || $this->paused) {
+		if ($this->is_turn( ) || ! in_array($this->state, array('Finished', 'Draw')) || $this->paused) {
 			return false;
 		}
 
@@ -899,8 +1033,12 @@ class Game
 
 		$player_id = (int) $player_id;
 
-		if ('Finished' != $this->state) {
+		if ( ! in_array($this->state, array('Finished', 'Draw'))) {
 			return false;
+		}
+
+		if ('Draw' == $this->state) {
+			return array('Draw Game', 'lost');
 		}
 
 		$count = count($this->_history);
@@ -962,10 +1100,6 @@ class Game
 			throw new MyException(__METHOD__.': Game data not found for game #'.$this->id);
 		}
 
-		if (($_SESSION['player_id'] != $result['white_id']) && ($_SESSION['player_id'] != $result['black_id']) && ('Finished' != $result['state'])) {
-			throw new MyException(__METHOD__.': In progress game #'.$this->id.' being accessed by non-playing player ('.$_SESSION['player_id'].')');
-		}
-
 		// set the properties
 		$this->state = $result['state'];
 		$this->paused = (bool) $result['paused'];
@@ -975,10 +1109,12 @@ class Game
 		// set up the players
 		$this->_players['white']['player_id'] = $result['white_id'];
 		$this->_players['white']['object'] = new GamePlayer($result['white_id']);
+		$this->_players['silver'] = & $this->_players['white'];
 
 		$this->_players['black']['player_id'] = $result['black_id'];
 		if (0 != $result['black_id']) { // we may have an open game
 			$this->_players['black']['object'] = new GamePlayer($result['black_id']);
+			$this->_players['red'] = & $this->_players['black'];
 		}
 
 		// we test this first one against the black id, so if it fails because
@@ -1042,6 +1178,7 @@ class Game
 	protected function _save( )
 	{
 		call(__METHOD__);
+Log::write('SAVE ATTEMPT', 'save', true);
 
 		// make sure we don't have a MySQL error here, it may be causing the issues
 		$run_once = false;
@@ -1093,6 +1230,7 @@ class Game
 		}
 
 		if ($update_game) {
+Log::write('UPDATE GAME', 'save', true);
 			$update_modified = true;
 			$this->_mysql->insert(self::GAME_TABLE, $update_game, " WHERE game_id = '{$this->id}' ");
 		}
@@ -1116,12 +1254,19 @@ class Game
 
 		$new_board = $this->packFEN($this->_pharaoh->get_board( ));
 		call($new_board);
+		list($new_move, $new_hits) = $this->_pharaoh->get_move( );
+		call($new_move);
+		call($new_hits);
+
+		if (is_array($new_hits)) {
+			$new_hits = implode(',', $new_hits);
+		}
 
 		if ($new_board != $board) {
+Log::write(var_export($this, true), 'save', true);
 			call('UPDATED BOARD');
 			$update_modified = true;
-			// TODO - need to add more info in here, like if anything was hit, and the move notation
-			$this->_mysql->insert(self::GAME_HISTORY_TABLE, array('board' => $new_board, 'game_id' => $this->id));
+			$this->_mysql->insert(self::GAME_HISTORY_TABLE, array('board' => $new_board, 'move' => $new_move, 'hits' => $new_hits, 'game_id' => $this->id));
 		}
 
 		// update the game modified date
@@ -1145,35 +1290,6 @@ class Game
 			Log::write($msg, __CLASS__);
 		}
 	}
-
-
-	/** protected function _test_winner
-	 *		Tests for a winner in the game
-	 *
-	 * @param void
-	 * @action takes appropriate action if a winner is found
-	 * @return void
-	 */
-#	protected function _test_winner( )
-#	{
-#		call(__METHOD__);
-#
-#		$color = $this->_players['player']['opp_color'];
-#		call($color);
-#
-#		$match = preg_match('/[a-q]/i', $this->_boards[$color]->board);
-#		call($match);
-#
-#		if ( ! $match) {
-#			$this->_players['player']['object']->add_win( );
-#			$this->_players['opponent']['object']->add_loss( );
-#			$this->state = 'Finished';
-#			Email::send('defeated', $this->_players['opponent']['object']->id, array('name' => $this->_players['player']['object']->username));
-#		}
-#		else {
-#			Email::send('turn', $this->_players['opponent']['object']->id, array('name' => $this->_players['player']['object']->username));
-#		}
-#	}
 
 
 	/** protected function _diff
@@ -1226,7 +1342,7 @@ class Game
 		$WHERE = "";
 		if ( ! $all) {
 			$WHERE .= "
-					AND G.state <> 'Finished'
+					AND G.state NOT IN ('Finished', 'Draw')
 					AND (G.white_id = {$player_id}
 						OR G.black_id = {$player_id})
 			";
@@ -1265,7 +1381,7 @@ class Game
 				$game['in_game'] = (int) (($player_id == $game['white_id']) || ($player_id == $game['black_id']));
 				$game['my_turn'] = (int) ( ! empty($game['turn']) && ($player_id == $game[$game['turn'].'_id']));
 
-				if ('Finished' == $game['state']) {
+				if (in_array($game['state'], array('Finished', 'Draw'))) {
 					$game['my_turn'] = 0;
 					$game['in_game'] = 1;
 				}
@@ -1351,14 +1467,14 @@ class Game
 			FROM ".self::INVITE_TABLE."
 			WHERE invitee_id = {$player_id}
 		";
-		$in_vites = $Mysql->fetch_value($query);
+		$in_vites = (int) $Mysql->fetch_value($query);
 
 		$query = "
 			SELECT COUNT(*)
 			FROM ".self::INVITE_TABLE."
 			WHERE invitor_id = {$player_id}
 		";
-		$out_vites = $Mysql->fetch_value($query);
+		$out_vites = (int) $Mysql->fetch_value($query);
 
 		$query = "
 			SELECT COUNT(*)
@@ -1368,7 +1484,7 @@ class Game
 					OR invitee_id = FALSE
 				)
 		";
-		$open_vites = $Mysql->fetch_value($query);
+		$open_vites = (int) $Mysql->fetch_value($query);
 
 		return array($in_vites, $out_vites, $open_vites);
 	}
@@ -1389,7 +1505,7 @@ class Game
 		$query = "
 			SELECT COUNT(*)
 			FROM ".self::GAME_TABLE."
-			WHERE state <> 'Finished'
+			WHERE state NOT IN ('Finished', 'Draw')
 		";
 		$count = (int) $Mysql->fetch_value($query);
 
@@ -1615,10 +1731,7 @@ CREATE TABLE IF NOT EXISTS `bs_game` (
   `game_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `white_id` int(10) unsigned DEFAULT NULL,
   `black_id` int(10) unsigned DEFAULT NULL,
-  `state` enum('Waiting', 'Placing', 'Playing', 'Finished') COLLATE latin1_general_ci NOT NULL DEFAULT 'Waiting',
-  `white_ready` tinyint(1) NOT NULL DEFAULT '0',
-  `black_ready` tinyint(1) NOT NULL DEFAULT '0',
-  `method` enum('Single', 'Five', 'Salvo') COLLATE latin1_general_ci NOT NULL DEFAULT 'Single',
+  `state` enum('Playing', 'Finished', 'Draw') NOT NULL DEFAULT 'Playing',
   `paused` tinyint(1) NOT NULL DEFAULT '0',
   `create_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   `modify_date` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00' ON UPDATE CURRENT_TIMESTAMP,
@@ -1630,17 +1743,34 @@ CREATE TABLE IF NOT EXISTS `bs_game` (
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci ;
 
 
-Boards Table
+History Table
 ----------------------
-CREATE TABLE IF NOT EXISTS `bs_game_board` (
+CREATE TABLE IF NOT EXISTS `bs_game_history` (
   `game_id` int(10) unsigned NOT NULL DEFAULT 0,
-  `white_board` varchar(100) COLLATE latin1_general_ci DEFAULT NULL,
-  `black_board` varchar(100) COLLATE latin1_general_ci NOT NULL DEFAULT '',
-  `move_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `move` VARCHAR( 255 ) NULL DEFAULT NULL,
+  `hits` VARCHAR( 255 ) NULL DEFAULT NULL,
+  `board` varchar(87) NOT NULL,
+  `move_date` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
   KEY `game_id` (`game_id`),
   KEY `move_date` (`move_date`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci ;
+
+
+Invite Table
+----------------------
+CREATE TABLE IF NOT EXISTS `ph_invite` (
+  `invite_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `invitor_id` int(10) unsigned NOT NULL,
+  `invitee_id` int(10) unsigned NOT NULL DEFAULT '0',
+  `setup_id` int(10) unsigned NOT NULL,
+  `extra_info` text COLLATE latin1_general_ci,
+  `invite_date` datetime NOT NULL,
+
+  PRIMARY KEY (`invite_id`),
+  KEY `invitor_id` (`invitor_id`),
+  KEY `invitee_id` (`invitee_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci ;
 
 -- --------------------------------------------------------
 

@@ -37,14 +37,25 @@ $meta['head_data'] = '
 	</style>
 ';
 
+$date_format = 'D, M j, Y g:i a';
+$approve_users = false;
+$new_users = true;
+$max_users = 0;
+if (class_exists('Settings') && Settings::test( )) {
+	$date_format = Settings::read('long_date');
+	$approve_users = Settings::read('approve_users');
+	$new_users = Settings::read('new_users');
+	$max_users = Settings::read('max_users');
+}
+
 echo get_header($meta);
 
 ?>
 		<div id="notes">
-			<div id="date"><?php echo date(Settings::read('long_date')); ?></div>
+			<div id="date"><?php echo date($date_format); ?></div>
 			<p><strong>Welcome to <?php echo GAME_NAME; ?>!</strong></p>
 			<p>Please enter a valid username and password to enter.</p>
-			<?php if (Settings::read('approve_users')) { ?>
+			<?php if ($approve_users) { ?>
 			<p><span class="notice">NOTE</span>: You will be unable to log in if your account has not been approved yet.</p>
 			<p>You should receive an email when your account has been approved.</p>
 			<?php } ?>
@@ -62,7 +73,7 @@ echo get_header($meta);
 				<label for="remember" class="inline"><input type="checkbox" id="remember" name="remember" checked="checked" tabindex="3" />Remember me</label><br />
 				<input type="submit" name="login" value="Log in" tabindex="4" />
 				<?php
-				if ((true == Settings::read('new_users')) && ((0 == Settings::read('max_users')) || (GamePlayer::get_count( ) < Settings::read('max_users')))) {
+				if ((true == $new_users) && ((0 == $max_users) || (GamePlayer::get_count( ) < $max_users))) {
 					?><input type="button" value="Register" onclick="window.open('register.php<?php echo $GLOBALS['_?_DEBUG_QUERY']; ?>', '_self')" tabindex="5" /><?php
 				}
 				?>

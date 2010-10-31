@@ -10,9 +10,9 @@
  * @action ouptuts var to screen
  * @return void
  */
-function call($var = 'Th&F=xUFucreSp2*ezAhe=ApuPR*$axe', $bypass = false, $show_from = true, $new_window = false)
+function call($var = 'Th&F=xUFucreSp2*ezAhe=ApuPR*$axe', $bypass = false, $show_from = true, $new_window = false, $error = false)
 {
-	if ((( ! defined('DEBUG') || ! DEBUG) || (isset($GLOBALS['NODEBUG']) && $GLOBALS['NODEBUG'])) && ! (bool) $bypass) {
+	if ((( ! defined('DEBUG') || ! DEBUG) || ! empty($GLOBALS['NODEBUG'])) && ! (bool) $bypass) {
 		return false;
 	}
 
@@ -79,7 +79,12 @@ function call($var = 'Th&F=xUFucreSp2*ezAhe=ApuPR*$axe', $bypass = false, $show_
 	}
 
 	if ( ! $new_window) {
-		echo "\n\n<pre style=\"background:#FFF;color:#000;font-size:larger;\">{$html}{$contents}\n<hr /></pre>\n\n";
+		$color = '#000';
+		if ($error) {
+			$color = '#F00';
+		}
+
+		echo "\n\n<pre style=\"background:#FFF;color:{$color};font-size:larger;\">{$html}{$contents}\n<hr /></pre>\n\n";
 	}
 	else { ?>
 		<script language="javascript">
@@ -90,8 +95,8 @@ function call($var = 'Th&F=xUFucreSp2*ezAhe=ApuPR*$axe', $bypass = false, $show_
 		</script>
 	<?php }
 }
-function dump($var = 'Th&F=xUFucreSp2*ezAhe=ApuPR*$axe', $bypass = false, $show_from = true) { call($var, $bypass, $show_from); }
-function debug($var = 'Th&F=xUFucreSp2*ezAhe=ApuPR*$axe', $bypass = true, $show_from = true) { call($var, $bypass, $show_from); }
+function dump($var = 'Th&F=xUFucreSp2*ezAhe=ApuPR*$axe', $bypass = false, $show_from = true, $new_window = false, $error = false) { call($var, $bypass, $show_from, $new_window, $error); }
+function debug($var = 'Th&F=xUFucreSp2*ezAhe=ApuPR*$axe', $bypass = true, $show_from = true, $new_window = false, $error = false) { call($var, $bypass, $show_from, $new_window, $error); }
 
 
 

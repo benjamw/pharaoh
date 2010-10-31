@@ -70,9 +70,14 @@ if ( ! $Game->watch_mode || $GLOBALS['Player']->is_admin) {
 				$color = 'red';
 			}
 
+			// preserve spaces in the chat text
+			$chat['message'] = htmlentities($chat['message'], ENT_QUOTES, 'ISO-8859-1', false);
+			$chat['message'] = str_replace("\t", '    ', $chat['message']);
+			$chat['message'] = str_replace('  ', ' &nbsp;', $chat['message']);
+
 			$chat_html .= '
 					<dt class="'.substr($color, 0, 3).'"><span>'.$chat['create_date'].'</span> '.$chat['username'].'</dt>
-					<dd'.($chat['private'] ? ' class="private"' : '').'>'.htmlentities($chat['message'], ENT_QUOTES, 'ISO-8859-1', false).'</dd>';
+					<dd'.($chat['private'] ? ' class="private"' : '').'>'.$chat['message'].'</dd>';
 		}
 	}
 
@@ -119,6 +124,11 @@ else {
 	$turn = '<span class="'.$Game->get_color(false).'">'.$turn.'\'s turn</span>';
 }
 
+if (in_array($Game->state, array('Finished', 'Draw'))) {
+	list($win_text, $win_class) = $Game->get_outcome($_SESSION['player_id']);
+	$turn = '<span class="'.$win_class.'">Game Over: '.$win_text.'</span>';
+}
+
 $meta['title'] = htmlentities($Game->name, ENT_QUOTES, 'ISO-8859-1', false).' - #'.$_SESSION['game_id'];
 $meta['show_menu'] = false;
 $meta['head_data'] = '
@@ -130,8 +140,8 @@ $meta['head_data'] = '
 		var color = "'.(isset($players[$_SESSION['player_id']]) ? (('white' == $players[$_SESSION['player_id']]['color']) ? 'silver' : 'red') : '').'";
 		var state = "'.(( ! $Game->watch_mode) ? (( ! $Game->paused) ? strtolower($Game->state) : 'paused') : 'watching').'";
 		var board = "'.$Game->get_board(0, true).'";
-		var prev_turn = ['.$Game->get_move(0, true).', '.$Game->get_laser_path(0, true).', '.$Game->get_move_data(0, true).'];
-		var invert = '.(('black' == $players[$_SESSION['player_id']]['color']) ? 'true' : 'false').';
+		var prev_turn = ['.$Game->get_move(0, true).', '.$Game->get_laser_path(0, true).', '.$Game->get_hit_data(0, true).'];
+		var invert = '.(( ! empty($players[$_SESSION['player_id']]['color']) && ('black' == $players[$_SESSION['player_id']]['color'])) ? 'true' : 'false').';
 		var my_turn = '.($Game->is_turn( ) ? 'true' : 'false').';
 	/*]]>*/</script>
 	<script type="text/javascript" src="scripts/game.js"></script>
@@ -155,11 +165,26 @@ echo get_header($meta);
 			<div id="board_wrapper">
 				<div id="board"></div> <!-- #board -->
 				<div class="buttons">
+					<a href="javascript;" id="fire_laser">Fire Laser</a> |
 					<a href="javascript;" id="clear_laser">Clear Laser</a>
 				</div> <!-- .buttons -->
 			</div> <!-- #board_wrapper -->
 
 			<?php echo $chat_html; ?>
+
+			<form id="game" method="post" action="<?php echo $_SERVER['REQUEST_URI']; ?>"><div class="formDiv">
+				<input type="hidden" name="token" value="<?php echo $_SESSION['token']; ?>" />
+				<input type="hidden" name="game_id" value="<?php echo $_SESSION['game_id']; ?>" />
+				<input type="hidden" name="player_id" value="<?php echo $_SESSION['player_id']; ?>" />
+				<input type="hidden" name="from" id="from" value="" />
+				<input type="hidden" name="to" id="to" value="" />
+				<?php if ('Playing' == $Game->state) { ?>
+					<input type="button" name="resign" id="resign" value="Resign" />
+				<?php } ?>
+				<?php if ($Game->test_nudge( )) { ?>
+					<input type="button" name="nudge" id="nudge" value="Nudge" />
+				<?php } ?>
+			</div></form>
 
 		</div> <!-- #contents -->
 

@@ -3,23 +3,28 @@
 $GLOBALS['NODEBUG'] = true;
 $GLOBALS['AJAX'] = true;
 
+
 // don't require log in when testing for used usernames and emails
-if (isset($_POST['type'])) {
+if (isset($_POST['validity_test']) || (isset($_GET['validity_test']) && isset($_GET['DEBUG']))) {
 	define('LOGIN', false);
 }
 
+
 require_once 'includes/inc.global.php';
 
-$pos = strpos(__FILE__, preg_replace('%[\\/]+%', DIRECTORY_SEPARATOR, $_SERVER['SCRIPT_NAME']));
 
-if ((false !== $pos) && test_debug( )) {
+// if we are debugging, change some things for us
+// (although REQUEST_METHOD may not always be valid)
+if (('GET' == $_SERVER['REQUEST_METHOD']) && test_debug( )) {
 	$GLOBALS['NODEBUG'] = false;
 	$_GET['token'] = $_SESSION['token'];
-	$_GET['notest'] = true;
+	$_GET['keep_token'] = true;
 	$_POST = $_GET;
+	$DEBUG = true;
 	call('AJAX HELPER');
 	call($_POST);
 }
+
 
 // run the index page refresh checks
 if (isset($_POST['timer'])) {
@@ -31,21 +36,28 @@ if (isset($_POST['timer'])) {
 
 
 // run registration checks
-if (isset($_POST['type'])) {
+if (isset($_POST['validity_test'])) {
 #	if (('email' == $_POST['type']) && ('' == $_POST['value'])) {
 #		echo 'OK';
 #		exit;
 #	}
 
-	switch ($_POST['type']) {
+	$player_id = 0;
+	if ( ! empty($_POST['profile'])) {
+		$player_id = (int) $_SESSION['player_id'];
+	}
+
+	switch ($_POST['validity_test']) {
 		case 'username' :
 		case 'email' :
 			$username = '';
 			$email = '';
-			${$_POST['type']} = sani($_POST['value']);
+			${$_POST['validity_test']} = sani($_POST['value']);
+
+			$player_id = (isset($_POST['player_id']) ? (int) $_POST['player_id'] : 0);
 
 			try {
-				Player::check_database($username, $email);
+				Player::check_database($username, $email, $player_id);
 			}
 			catch (MyException $e) {
 				echo $e->getCode( );
@@ -58,73 +70,6 @@ if (isset($_POST['type'])) {
 	}
 
 	echo 'OK';
-	exit;
-}
-
-
-// run the custom trade table builder
-if (isset($_POST['custom_trades'])) {
-	$table = '';
-	$amount = 0;
-	$array = Game::calculate_trade_values($_POST['custom_trades']);
-
-	$prev_value = 0;
-	foreach ($array as $trade => $value) {
-		$idx = $trade + 1;
-
-		if ('-' == $value[0]) {
-			// if minus, go till 0, then show 0 three times
-			$next_value = $prev_value;
-			while (0 < $next_value) {
-				$next_value += (int) $value;
-				if (0 >= $next_value) {
-					--$idx;
-					break;
-				}
-				$table .= "<tr".((++$amount % 2) ? ' class="alt"' : '')."><td>{$idx}</td><td>{$next_value}</td></tr>\n";
-				++$idx;
-			}
-
-			++$idx;
-			$table .= "<tr".((++$amount % 2) ? ' class="alt"' : '')."><td>{$idx}</td><td>0</td></tr>\n";
-
-			++$idx;
-			$table .= "<tr".((++$amount % 2) ? ' class="alt"' : '')."><td>{$idx}</td><td>0</td></tr>\n";
-
-			++$idx;
-			$table .= "<tr".((++$amount % 2) ? ' class="alt"' : '')."><td>{$idx}</td><td>0 ...</td></tr>\n";
-		}
-		elseif('+' == $value[0]) {
-			// if plus, go for three then append plus value
-			$next_value = $prev_value;
-			for ($i = 1; $i <= 3; ++$i) {
-				$next_value += (int) $value;
-				$table .= "<tr".((++$amount % 2) ? ' class="alt"' : '')."><td>{$idx}</td><td>{$next_value}</td></tr>\n";
-				++$idx;
-			}
-
-			$value = '('.$value.') ...';
-			$table .= "<tr".((++$amount % 2) ? ' class="alt"' : '')."><td>{$idx}</td><td>{$value}</td></tr>\n";
-		}
-		else {
-			// nothing special, just append the value
-			$table .= "<tr".((++$amount % 2) ? ' class="alt"' : '')."><td>{$idx}</td><td>{$value}</td></tr>\n";
-			$prev_value = $value;
-		}
-	}
-
-	// if the last value was not a changer
-	// show the last value three times
-	if ( ! in_array($array[count($array) - 1][0], array('+','-'))) {
-		$idx = count($array) + 1;
-		$value = $array[count($array) - 1];
-		$table .= "<tr".((++$amount % 2) ? ' class="alt"' : '')."><td>{$idx}</td><td>{$value}</td></tr>\n";
-
-		++$idx;
-		$table .= "<tr".((++$amount % 2) ? ' class="alt"' : '')."><td>{$idx}</td><td>{$value} ...</td></tr>\n";
-	}
-
-	echo $table;
 	exit;
 }
 
@@ -142,7 +87,7 @@ if (isset($_POST['chat'])) {
 		$return = $return[0];
 	}
 	catch (MyException $e) {
-		$return['error'] = $e->outputMessage( );
+		$return['error'] = 'ERROR: '.$e->outputMessage( );
 	}
 
 	echo json_encode($return);
@@ -150,7 +95,7 @@ if (isset($_POST['chat'])) {
 }
 
 
-// run the invite button clicks
+// run the invites stuff
 if (isset($_POST['invite'])) {
 	if ('delete' == $_POST['invite']) {
 		// make sure we are one of the two people in the invite
@@ -180,14 +125,21 @@ if (isset($_POST['invite'])) {
 }
 
 
+// init our game
+$Game = new Game((int) $_SESSION['game_id']);
+
+
 // do some more validity checking for the rest of the functions
 
-test_token(isset($_POST['notest']) && $_POST['notest']);
+if (empty($DEBUG) && empty($_POST['notoken'])) {
+	test_token( ! empty($_POST['keep_token']));
+}
 
 if ($_POST['game_id'] != $_SESSION['game_id']) {
 	echo 'ERROR: Incorrect game id given';
 	exit;
 }
+
 
 // make sure we are the player we say we are
 // unless we're an admin, then it's ok
@@ -196,9 +148,6 @@ if (($player_id != $_SESSION['player_id']) && ! $GLOBALS['Player']->is_admin) {
 	echo 'ERROR: Incorrect player id given';
 	exit;
 }
-
-// init our game
-$Game = new Game((int) $_SESSION['game_id']);
 
 
 // run the 'Nudge' button
@@ -210,165 +159,48 @@ if (isset($_POST['nudge'])) {
 		$Game->nudge($player_id);
 	}
 	catch (MyException $e) {
-		$return['error'] = $e->outputMessage( );
+		$return['error'] = 'ERROR: '.$e->outputMessage( );
 	}
 
-	echo json_encode($return);
-	exit;
-}
-
-
-// run the 'Skip' button
-if (isset($_POST['skip'])) {
-	$return = array( );
-	$return['token'] = $_SESSION['token'];
-
-	try {
-		$Game->skip($_POST['skip'], $player_id);
-	}
-	catch (MyException $e) {
-		$return['error'] = $e->outputMessage( );
-	}
-
-	$return['action'] = 'RELOAD';
 	echo json_encode($return);
 	exit;
 }
 
 
 // run the game actions
-if (isset($_POST['state'])) {
+if (isset($_POST['turn'])) {
 	$return = array( );
 	$return['token'] = $_SESSION['token'];
 
-	switch ($_POST['state']) {
-		case 'waiting' : // we are resigning
-			try {
-				$Game->resign($player_id);
-				$return['action'] = 'RELOAD';
-			}
-			catch (MyException $e) {
-				$return['error'] = 'ERROR: '.$e->outputMessage( );
-			}
-			break;
+	try {
+		if (false !== strpos($_POST['to'], 'split')) { // splitting obelisk
+			$to = substr($_POST['to'], 0, 2);
+			call($to);
 
-		case 'trading' :
-			try {
-				$Game->trade_cards($player_id, $_POST['cards'], @$_POST['bonus_card']);
-				$return['action'] = 'RELOAD';
-			}
-			catch (MyException $e) {
-				$return['error'] = 'ERROR: '.$e->outputMessage( );
-			}
-			break;
+			$from = Pharaoh::index_to_target($_POST['from']);
+			$to = Pharaoh::index_to_target($to);
+			call($from.'.'.$to);
 
-		case 'placing' :
-			try {
-				$curState = $Game->state;
-				$Game->place_armies($player_id, (int) $_POST['num_armies'], (int) $_POST['land_id']);
-				$return['state'] = $Game->get_player_state($player_id);
-				$return['armies'] = $Game->get_player_armies($player_id);
-				$return['land_id'] = (int) $_POST['land_id'];
-				$return['num_on_land'] = $Game->get_land_armies((int) $_POST['land_id']);
+			$return['hits'] = $Game->do_move($from.'.'.$to);
+		}
+		elseif ((string) $_POST['to'] === (string) (int) $_POST['to']) { // moving
+			$to = $_POST['to'];
+			call($to);
 
-				// if the game switches from Placing to Playing, and it happens to be
-				// this players turn, it will return more pieces to place, without
-				// reloading and showing the true board
-				if ((0 == $return['armies']) || ($curState != $Game->state)) {
-					$return['action'] = 'RELOAD';
-				}
-			}
-			catch (MyException $e) {
-				$return['error'] = 'ERROR: '.$e->outputMessage( );
-			}
-			break;
+			$from = Pharaoh::index_to_target($_POST['from']);
+			$to = Pharaoh::index_to_target($to);
+			call($from.':'.$to);
 
-		case 'attacking' :
-			try {
-				if (isset($_POST['use_attack_path'])) {
-					$defeated = $Game->attack_path($player_id, $_POST['num_armies'], $_POST['attack_id'], $_POST['attack_path']);
-					$return['action'] = 'RELOAD';
-				}
-				elseif (isset($_POST['till_dead'])) {
-					$defeated = $Game->attack_till_dead($player_id, $_POST['num_armies'], $_POST['attack_id'], $_POST['defend_id']);
-				}
-				else {
-					$defeated = $Game->attack($player_id, $_POST['num_armies'], $_POST['attack_id'], $_POST['defend_id']);
-					$return['dice'] = $Game->get_dice( );
-				}
-
-				$fog = $Game->get_fog_of_war( );
-
-				$return['attack_id'] = (int) $_POST['attack_id'];
-				$return['num_on_attack'] = $Game->get_land_armies((int) $_POST['attack_id']);
-				$return['defend_id'] = (int) $_POST['defend_id'];
-				$return['num_on_defend'] = $Game->get_land_armies((int) $_POST['defend_id']);
-
-				if ( ! $defeated && 'Show None' == $fog['armies']) {
-					$return['num_on_defend'] = '?';
-
-					if (isset($return['dice']['defend'])) {
-						$return['dice']['defend'] = array('?','?','?');
-					}
-				}
-
-				if ('Attacking' != $Game->get_player_state($player_id)) {
-					if ('Occupying' == $Game->get_player_state($player_id)) {
-						$return['state'] = 'occupying';
-						$return['action'] = $Game->draw_action( );
-					}
-					else {
-						$return['action'] = 'RELOAD';
-					}
-				}
-
-				if ('Finished' == $Game->state) {
-					$return['action'] = 'RELOAD';
-				}
-			}
-			catch (MyException $e) {
-				// player may have run out of attackable armies
-				// while attacking, so don't pass the error
-				if (221 != $e->getCode( )) {
-					$return['error'] = 'ERROR: '.$e->outputMessage( );
-				}
-				else {
-					$return['action'] = 'RELOAD';
-				}
-			}
-			break;
-
-		case 'occupying' :
-			try {
-				$Game->occupy($player_id, $_POST['num_armies']);
-				$return['action'] = 'RELOAD';
-			}
-			catch (MyException $e) {
-				$return['error'] = 'ERROR: '.$e->outputMessage( );
-			}
-			break;
-
-		case 'fortifying' :
-			try {
-				$Game->fortify($player_id, $_POST['num_armies'], $_POST['from_id'], $_POST['to_id']);
-
-				$return['from_id'] = (int) $_POST['from_id'];
-				$return['num_on_from'] = $Game->get_land_armies((int) $_POST['from_id']);
-				$return['to_id'] = (int) $_POST['to_id'];
-				$return['num_on_to'] = $Game->get_land_armies((int) $_POST['to_id']);
-
-				if ('Fortifying' != $Game->get_player_state($player_id)) {
-					$return['action'] = 'RELOAD';
-				}
-			}
-			catch (MyException $e) {
-				$return['error'] = 'ERROR: '.$e->outputMessage( );
-				$return['action'] = 'RELOAD';
-			}
-			break;
-
-		default :
-			break;
+			$return['hits'] = $Game->do_move($from.':'.$to);
+		}
+		else { // rotating
+			$target = Pharaoh::index_to_target($_POST['from']);
+			$dir = (int) ('r' == strtolower($_POST['to']));
+			$return['hits'] = $Game->do_move($target.'-'.$dir);
+		}
+	}
+	catch (MyException $e) {
+		$return['error'] = 'ERROR: '.$e->outputMessage( );
 	}
 
 	echo json_encode($return);

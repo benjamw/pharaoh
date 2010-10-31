@@ -208,14 +208,16 @@ class Chat
 
 		// grab the last message and make sure it isn't exactly the same
 		$last = $this->get_box_list(1);
-		$last = $last[0];
-		$last_date = strtotime($last['create_date']);
+		if ($last) {
+			$last = $last[0];
+			$last_date = strtotime($last['create_date']);
 
-		// because there may be a time difference between the DB server and the WebServer
-		$date = strtotime($this->_mysql->fetch_value(" SELECT NOW( ) "));
+			// because there may be a time difference between the DB server and the WebServer
+			$date = strtotime($this->_mysql->fetch_value(" SELECT NOW( ) "));
 
-		if (($message == $last['message']) && ($private == $last['private']) && ($date <= ($last_date + 60))) {
-			throw new MyException(__METHOD__.': Duplicate message');
+			if (($message == $last['message']) && ($private == $last['private']) && ($date <= ($last_date + 60))) {
+				throw new MyException(__METHOD__.': Duplicate message');
+			}
 		}
 
 		// save the message

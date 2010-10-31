@@ -250,5 +250,83 @@ class Setup {
 		$Mysql->query($query);
 	}
 
+
+	/** static public function get_board_ascii
+	 *		Returns the board in an ASCII format
+	 *
+	 * @param string expanded board FEN
+	 * @return string ascii board
+	 */
+	static public function get_board_ascii($board)
+	{
+		$ascii = '
+     A   B   C   D   E   F   G   H   I   J
+   +---+---+---+---+---+---+---+---+---+---+';
+
+		for ($length = strlen($board), $i = 0; $i < $length; ++$i) {
+			$char = $board[$i];
+
+			if (0 == ($i % 10)) {
+				$ascii .= "\n ".(8 - floor($i / 10)).' |';
+			}
+
+			if ('0' == $char) {
+				$char = ' ';
+			}
+
+			$ascii .= ' '.$char.' |';
+
+			if (9 == ($i % 10)) {
+				$ascii .= ' '.(8 - floor($i / 10)).'
+   +---+---+---+---+---+---+---+---+---+---+';
+  			}
+		}
+
+		$ascii .= '
+     A   B   C   D   E   F   G   H   I   J
+';
+
+/*
+     A   B   C   D   E   F   G   H   I   J
+  +---+---+---+---+---+---+---+---+---+---+
+8 | R | S |   |   |   |   |   |   | R | S | 8
+  +---+---+---+---+---+---+---+---+---+---+
+7 | R |   |   |   |   |   |   |   |   | S | 7
+  +---+---+---+---+---+---+---+---+---+---+
+6 | R |   |   |   |   |   |   |   |   | S | 6
+  +---+---+---+---+---+---+---+---+---+---+
+5 | R |   |   |   |   |   |   |   |   | S | 5
+  +---+---+---+---+---o---+---+---+---+---+
+4 | R |   |   |   |   |   |   |   |   | S | 4
+  +---+---+---+---+---+---+---+---+---+---+
+3 | R |   |   |   |   |   |   |   |   | S | 3
+  +---+---+---+---+---+---+---+---+---+---+
+2 | R |   |   |   |   |   |   |   |   | S | 2
+  +---+---+---+---+---+---+---+---+---+---+
+1 | R | S |   |   |   |   |   |   | R | S | 1
+  +---+---+---+---+---+---+---+---+---+---+
+     A   B   C   D   E   F   G   H   I   J
+*/
+
+		return $ascii;
+	}
+
+
+	/** protected function _get_board_ascii
+	 *		Returns the board in an ASCII format
+	 *
+	 * @see get_board_ascii
+	 * @param string optional expanded board FEN
+	 * @return string ascii board
+	 */
+	protected function _get_board_ascii($board = null)
+	{
+		if ( ! $board) {
+			$board = $this->_board;
+		}
+
+		return self::get_board_ascii($board);
+	}
+
 } // end Setup
 
