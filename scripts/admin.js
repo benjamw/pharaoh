@@ -1,6 +1,4 @@
 
-// $Id: admin.js 162 2009-07-16 10:21:42Z cchristensen $
-
 $(document).ready( function( ) {
 	$('#player_all').click( function( ) {
 		$('.player_box').attr('checked', $(this).attr('checked'));

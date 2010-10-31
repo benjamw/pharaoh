@@ -1,7 +1,5 @@
 <?php
 
-// $Id: read.php 196 2009-09-22 23:43:49Z cchristensen $
-
 require_once 'includes/inc.global.php';
 
 if (isset($_POST['type']) && ('' != $_POST['type'])) {

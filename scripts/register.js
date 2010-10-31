@@ -1,8 +1,6 @@
 
 // registration/profile javascript
 
-// $Id: register.js 193 2009-09-20 11:58:51Z cchristensen $
-
 // globals
 var inblur = false;
 

@@ -1,7 +1,5 @@
 <?php
 
-// $Id: index.php 206 2009-10-18 22:47:25Z cchristensen $
-
 require_once 'includes/inc.global.php';
 
 // remove any previous game sessions

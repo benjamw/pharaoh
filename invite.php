@@ -1,7 +1,5 @@
 <?php
 
-// $Id: invite.php 22 2009-12-05 07:11:35Z cchristensen $
-
 require_once 'includes/inc.global.php';
 
 // this has nothing to do with creating a game

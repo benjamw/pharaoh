@@ -1,7 +1,5 @@
 <?php
 
-// $Id: func.html.php 207 2009-10-21 15:01:14Z cchristensen $
-
 /**
  *		HTML FUNCTIONS
  * * * * * * * * * * * * * * * * * * * * * * * * * * */

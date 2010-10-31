@@ -1,7 +1,5 @@
 <?php
 
-// $Id: profile.php 191 2009-09-06 22:50:54Z cchristensen $
-
 require_once 'includes/inc.global.php';
 
 if (isset($_POST['submit'])) {

@@ -1,7 +1,5 @@
 <?php
 
-// $Id: messages.php 210 2009-10-24 11:02:01Z cchristensen $
-
 require_once 'includes/inc.global.php';
 
 if (isset($_POST['action'])) {

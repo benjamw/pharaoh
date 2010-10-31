@@ -1,7 +1,5 @@
 <?php
 
-// $Id: game.php 214 2009-11-02 23:59:44Z cchristensen $
-
 require_once 'includes/inc.global.php';
 
 // grab the game id

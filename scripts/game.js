@@ -1,6 +1,4 @@
 
-// $Id: game.js 191 2009-09-06 22:50:54Z cchristensen $
-
 var stage_1 = false;
 var reload = true; // do not change this
 

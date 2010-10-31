@@ -1,7 +1,5 @@
 <?php
 
-// $Id: inc.global.php 214 2009-11-02 23:59:44Z cchristensen $
-
 define('GAME_NAME', 'Pharaoh');
 
 $debug = false;

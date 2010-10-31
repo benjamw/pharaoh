@@ -1,7 +1,5 @@
 <?php
 
-// $Id: ajax_helper.php 207 2009-10-21 15:01:14Z cchristensen $
-
 $GLOBALS['NODEBUG'] = true;
 $GLOBALS['AJAX'] = true;
 

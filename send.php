@@ -1,7 +1,5 @@
 <?php
 
-// $Id: send.php 162 2009-07-16 10:21:42Z cchristensen $
-
 require_once 'includes/inc.global.php';
 
 if (isset($_POST['submit'])) {

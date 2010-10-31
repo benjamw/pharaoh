@@ -1,7 +1,5 @@
 <?php
 
-// $Id: func.bitwise.php 162 2009-07-16 10:21:42Z cchristensen $
-
 /**
  *		BITWISE FUNCTIONS
  * * * * * * * * * * * * * * * * * * * * * * * * * * */

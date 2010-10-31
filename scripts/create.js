@@ -1,8 +1,6 @@
 
 // create javascript
 
-// $Id: create.js 165 2009-07-30 09:07:51Z cchristensen $
-
 var custom_trades_index = 1;
 $(document).ready( function( ) {
 	// set the add button on custom trades

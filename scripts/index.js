@@ -1,8 +1,6 @@
 
 // index javascript
 
-// $Id: index.js 206 2009-10-18 22:47:25Z cchristensen $
-
 var timer = false;
 var timeout = 30001; // 1 minute
 

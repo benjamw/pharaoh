@@ -1,7 +1,5 @@
 <?php
 
-// $Id: register.php 193 2009-09-20 11:58:51Z cchristensen $
-
 $LOGIN = false;
 require_once 'includes/inc.global.php';
 
