@@ -1,0 +1,4 @@
+/testpages
+/includes/config.php
+/logs/*
+!/logs/.htaccess
