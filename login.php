@@ -1,6 +1,6 @@
 <?php
 
-$LOGIN = false;
+define('LOGIN', false);
 require_once 'includes/inc.global.php';
 
 // i don't care who they are, or where they come from
@@ -78,7 +78,7 @@ echo get_header($meta);
 		<div id="footerspacer">&nbsp;</div>
 
 		<div id="footer">
-			<p><?php echo GAME_NAME; ?> <?php echo VERSION; ?>, last updated <?php echo date('F j, Y', UPDATED); ?></p>
+			<p><?php echo GAME_NAME; ?> <?php echo $GLOBALS['_VERSION']; ?>, last updated <?php echo date('F j, Y', strtotime($GLOBALS['_UPDATED'])); ?></p>
 			<p><?php echo GAME_NAME; ?> is Free Software released under the GNU General Public License (GPL).</p>
 		</div>
 

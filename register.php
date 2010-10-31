@@ -1,6 +1,6 @@
 <?php
 
-$LOGIN = false;
+define('LOGIN', false);
 require_once 'includes/inc.global.php';
 
 // if we have a player_id in session, log them in, and check for admin

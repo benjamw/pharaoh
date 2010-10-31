@@ -5,7 +5,7 @@ $GLOBALS['AJAX'] = true;
 
 // don't require log in when testing for used usernames and emails
 if (isset($_POST['type'])) {
-	$LOGIN = false;
+	define('LOGIN', false);
 }
 
 require_once 'includes/inc.global.php';

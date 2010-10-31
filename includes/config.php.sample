@@ -16,7 +16,7 @@
 /* Root Settings */
 /* ------------- */
 	$GLOBALS['_ROOT_ADMIN'] = 'yourname'; // Permanent admin username (case-sensitive)
-	$GLOBALS['_ROOT_URI']   = 'http://www.yoursite.com/pharaoh/'; // The URL of the game script root (include closing / )
+	$GLOBALS['_ROOT_URI']   = 'http://www.yoursite.com/pharaoh/'; // The home page of the game script (include closing / )
 	$GLOBALS['_USEEMAIL']   = true; // SMTP operations.  Test it before putting it into production
 
 
