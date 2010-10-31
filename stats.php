@@ -33,5 +33,6 @@ $contents = get_table($table_format, $list, $table_meta);
 
 echo get_header($meta);
 echo get_item($contents, $hints, $meta['title']);
+call($GLOBALS);
 echo get_footer( );
 

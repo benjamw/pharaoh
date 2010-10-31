@@ -96,5 +96,6 @@ $hints = array(
 
 echo get_header($meta);
 echo get_item($contents, $hints, $meta['title']);
+call($GLOBALS);
 echo get_footer($meta);
 

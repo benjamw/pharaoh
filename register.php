@@ -108,6 +108,7 @@ EOF;
 
 echo get_item($contents, $hints, $meta['title']);
 
+call($GLOBALS);
 // don't use the usual footer
 
 ?>

@@ -73,6 +73,8 @@ echo get_header($meta);
 			</noscript>
 		</div>
 
+		<?php call($GLOBALS); ?>
+
 		<div id="footerspacer">&nbsp;</div>
 
 		<div id="footer">

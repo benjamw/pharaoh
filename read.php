@@ -174,5 +174,6 @@ echo get_header($meta);
 
 <?php
 
+call($GLOBALS);
 echo get_footer( );
 
