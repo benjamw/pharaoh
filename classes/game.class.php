@@ -579,7 +579,7 @@ class Game
 				$this->_players[$this->_players[$winner]['opp_color']]['object']->add_loss( );
 
 				// send the email
-				$type = (($this->_players[$winner]['player_id'] == $_SESSION['player_id']) : 'defeated' : 'won');
+				$type = (($this->_players[$winner]['player_id'] == $_SESSION['player_id']) ? 'defeated' : 'won');
 				Email::send($type, $this->_players['opponent']['player_id'], array('player' => $this->_players['player']['object']->username));
 			}
 		}
