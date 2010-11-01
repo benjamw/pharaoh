@@ -1584,28 +1584,63 @@ Log::write(var_export($this, true), 'save', true);
 
 
 	/** public function delete_inactive
-	 *		TODO
+	 *		Deletes the inactive games from the database
 	 *
-	 * @param void
+	 * @param int age in days (0 = disable)
 	 * @action deletes the inactive games
 	 * @return void
 	 */
-	static public function delete_inactive( )
+	static public function delete_inactive($age)
 	{
-		// TODO: delete the inactive games
+		$Mysql = Mysql::get_instance( );
+
+		$age = (int) $age;
+
+		if ( ! $age) {
+			return;
+		}
+
+		$query = "
+			SELECT game_id
+			FROM ".self::GAME_TABLE."
+			WHERE modify_date < DATE_SUB(NOW( ), INTERVAL {$age} DAY)
+		";
+		$game_ids = $Mysql->fetch_value_array($query);
+
+		if ($game_ids) {
+			self::delete($game_ids);
+		}
 	}
 
 
 	/** public function delete_finished
-	 *		TODO
+	 *		Deletes the finished games from the database
 	 *
-	 * @param void
+	 * @param int age in days (0 = disable)
 	 * @action deletes the finished games
 	 * @return void
 	 */
-	static public function delete_finished( )
+	static public function delete_finished($age)
 	{
-		// TODO: delete the finished games
+		$Mysql = Mysql::get_instance( );
+
+		$age = (int) $age;
+
+		if ( ! $age) {
+			return;
+		}
+
+		$query = "
+			SELECT game_id
+			FROM ".self::GAME_TABLE."
+			WHERE state = 'Finished'
+				AND modify_date < DATE_SUB(NOW( ), INTERVAL {$age} DAY)
+		";
+		$game_ids = $Mysql->fetch_value_array($query);
+
+		if ($game_ids) {
+			self::delete($game_ids);
+		}
 	}
 
 
