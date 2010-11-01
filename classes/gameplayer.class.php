@@ -676,7 +676,7 @@ CREATE TABLE IF NOT EXISTS `ph_ph_player` (
   `max_games` tinyint(2) unsigned NOT NULL DEFAULT '0',
   `color` varchar(25) NOT NULL DEFAULT 'blue_white',
   `wins` smallint(5) unsigned NOT NULL DEFAULT '0',
-  `kills` smallint(5) unsigned NOT NULL DEFAULT '0',
+  `draws` smallint(5) unsigned NOT NULL DEFAULT '0',
   `losses` smallint(5) unsigned NOT NULL DEFAULT '0',
   `last_online` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00' ON UPDATE CURRENT_TIMESTAMP,
 

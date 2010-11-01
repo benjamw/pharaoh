@@ -45,7 +45,7 @@ $table_format = array(
 );
 $contents = get_table($table_format, $list, $table_meta);
 
-// TODO: possibly add game stats ???
+// TODO: possibly add game stats, like how often certain setups are used ???
 
 echo get_header($meta);
 echo get_item($contents, $hints, $meta['title']);

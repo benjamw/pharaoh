@@ -545,10 +545,13 @@ class Game
 	}
 
 
-	// TODO: finish this up
-	// ...with what... i have no idea
-	// sometimes i really love my over-explained comments  =/
-	// email maybe?  stuff to do with winning or losing the game?
+	/** public function do_move
+	 *		Do the given move and send out emails
+	 *
+	 * @param string move code
+	 * @action performs the move
+	 * @return array indexes hit
+	 */
 	public function do_move($move)
 	{
 		call(__METHOD__);
