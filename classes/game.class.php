@@ -1045,7 +1045,7 @@ class Game
 		}
 
 		$count = count($this->_history);
-		$winner = (0 == ($count % 2)) ? 'black' : 'white';
+		$winner = (0 == ($count % 2)) ? 'white' : 'black';
 
 		if ($player_id == $this->_players[$winner]['player_id']) {
 			return array('You Won !', 'won');
@@ -1342,10 +1342,9 @@ Log::write(var_export($this, true), 'save', true);
 			throw new MyException(__METHOD__.': Player ID required when not pulling all games');
 		}
 
-		$WHERE = "";
+		$WHERE = " WHERE 1 = 1 ";
 		if ( ! $all) {
 			$WHERE .= "
-					AND G.state NOT IN ('Finished', 'Draw')
 					AND (G.white_id = {$player_id}
 						OR G.black_id = {$player_id})
 			";
@@ -1386,7 +1385,6 @@ Log::write(var_export($this, true), 'save', true);
 
 				if (in_array($game['state'], array('Finished', 'Draw'))) {
 					$game['my_turn'] = 0;
-					$game['in_game'] = 1;
 				}
 
 				$game['my_color'] = ($player_id == $game['white_id']) ? 'white' : 'black';

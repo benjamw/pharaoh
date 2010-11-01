@@ -206,7 +206,7 @@ EOF;
 			<ul>';
 
 			foreach ($game_data as $game) {
-				$class = ($game['my_turn']) ? 'playing' : 'waiting';
+				$class = ($game['my_turn']) ? 'playing' : ((in_array($game['state'], array('Finished', 'Draw'))) ? 'finished' : 'waiting');
 				$html .= '
 				<li class="'.$class.'"><a href="game.php?id='.$game['game_id'].$GLOBALS['_&_DEBUG_QUERY'].'">'.htmlentities($game['opponent'], ENT_QUOTES, 'ISO-8859-1', false).'</a></li>';
 			}
