@@ -1049,14 +1049,22 @@ class Game
 			return array('Draw Game', 'lost');
 		}
 
-		$count = count($this->_history);
-		$winner = (0 == ($count % 2)) ? 'white' : 'black';
+		$query = "
+			SELECT G.winner_id
+			FROM ".self::GAME_TABLE." AS G
+			WHERE G.game_id = '{$this->id}'
+		";
+		$winner = $this->_mysql->fetch_value($query);
 
-		if ($player_id == $this->_players[$winner]['player_id']) {
+		if ( ! $winner) {
+			return false;
+		}
+
+		if ($player_id == $winner) {
 			return array('You Won !', 'won');
 		}
 		else {
-			return array($this->_players[$winner]['object']->username.' Won', 'lost');
+			return array($GLOBALS['_PLAYERS'][$winner].' Won', 'lost');
 		}
 	}
 
@@ -1768,11 +1776,15 @@ Log::write(var_export($this, true), 'save', true);
 
 Game table
 ----------------------
-CREATE TABLE IF NOT EXISTS `bs_game` (
+DROP TABLE IF EXISTS `ph_game`;
+CREATE TABLE IF NOT EXISTS `ph_game` (
   `game_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `white_id` int(10) unsigned DEFAULT NULL,
   `black_id` int(10) unsigned DEFAULT NULL,
-  `state` enum('Playing', 'Finished', 'Draw') NOT NULL DEFAULT 'Playing',
+  `state` enum('Playing','Finished','Draw') COLLATE latin1_general_ci NOT NULL DEFAULT 'Playing',
+  `extra_info` text COLLATE latin1_general_ci,
+  `winner_id` int(10) unsigned DEFAULT NULL,
+  `setup_id` int(10) unsigned NOT NULL,
   `paused` tinyint(1) NOT NULL DEFAULT '0',
   `create_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   `modify_date` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00' ON UPDATE CURRENT_TIMESTAMP,
@@ -1786,20 +1798,22 @@ CREATE TABLE IF NOT EXISTS `bs_game` (
 
 History Table
 ----------------------
-CREATE TABLE IF NOT EXISTS `bs_game_history` (
-  `game_id` int(10) unsigned NOT NULL DEFAULT 0,
-  `move` VARCHAR( 255 ) NULL DEFAULT NULL,
-  `hits` VARCHAR( 255 ) NULL DEFAULT NULL,
-  `board` varchar(87) NOT NULL,
-  `move_date` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+DROP TABLE IF EXISTS `ph_game_history`;
+CREATE TABLE IF NOT EXISTS `ph_game_history` (
+  `game_id` int(10) unsigned NOT NULL DEFAULT '0',
+  `move` varchar(255) COLLATE latin1_general_ci DEFAULT NULL,
+  `hits` varchar(255) COLLATE latin1_general_ci DEFAULT NULL,
+  `board` varchar(87) COLLATE latin1_general_ci NOT NULL,
+  `move_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
   KEY `game_id` (`game_id`),
   KEY `move_date` (`move_date`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci ;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci;
 
 
 Invite Table
 ----------------------
+DROP TABLE IF EXISTS `ph_invite`;
 CREATE TABLE IF NOT EXISTS `ph_invite` (
   `invite_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `invitor_id` int(10) unsigned NOT NULL,
@@ -1816,10 +1830,10 @@ CREATE TABLE IF NOT EXISTS `ph_invite` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `wr_game_nudge`
+-- Table structure for table `ph_game_nudge`
 --
 
-DROP TABLE IF EXISTS `bs_game_nudge`;
+DROP TABLE IF EXISTS `ph_game_nudge`;
 CREATE TABLE IF NOT EXISTS `bs_game_nudge` (
   `game_id` int(10) unsigned NOT NULL DEFAULT '0',
   `player_id` int(10) unsigned NOT NULL DEFAULT '0',
