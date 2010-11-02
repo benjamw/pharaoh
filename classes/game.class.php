@@ -704,7 +704,12 @@ class Game
 		$index = (int) $index;
 		$expanded = (bool) $expanded;
 
-		$board = $this->_history[$index]['board'];
+		if (isset($this->_history[$index])) {
+			$board = $this->_history[$index]['board'];
+		}
+		else {
+			return false;
+		}
 
 		if ($expanded) {
 			return $this->expandFEN($board);
