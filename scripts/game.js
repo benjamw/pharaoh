@@ -148,7 +148,7 @@ function blink_move(cont) {
 		.delay(250).fadeIn(50).delay(250).fadeOut(50)
 		.delay(250).fadeIn(50).delay(250).fadeOut(50)
 		.delay(250).fadeIn(50).delay(250).fadeOut(50)
-		.delay(250).fadeIn(50, function( ) {
+		.delay(250).fadeIn(50).delay(250).fadeOut(50, function( ) {
 			show_new_board(cont);
 		});
 
@@ -226,14 +226,6 @@ function fire_laser(path, i) {
 				if (true === path[i + 1][j]) {
 					// show the hit (only one direction)
 					next_dir = 0;
-
-					// blink then fade the hit piece
-					$('img.hit')
-						.delay(250).fadeIn(50).delay(250).fadeOut(50)
-						.delay(250).fadeIn(50).delay(250).fadeOut(50)
-						.delay(250).fadeIn(50).delay(250).fadeOut(50)
-						.delay(250).fadeIn(50).delay(250).fadeOut(50)
-						.delay(250).fadeIn(50).delay(250).fadeTo(50, 0.25);
 				}
 				else {
 					// just run it into the wall
@@ -274,9 +266,7 @@ function fire_laser(path, i) {
 
 
 function fade_laser(end) {
-	if (undefined == typeof end) {
-		end = false;
-	}
+	end = !! (end || false)
 
 	// find the greatest common multiple and use that image
 	// but we only need to search divs with new images
@@ -322,11 +312,23 @@ function fade_laser(end) {
 	if (end) {
 		clearTimeout(timer);
 		timer = false;
+
+		// blink then fade all the hit pieces
+		$('img.hit')
+			.delay(250).fadeIn(50).delay(250).fadeOut(50)
+			.delay(250).fadeIn(50).delay(250).fadeOut(50)
+			.delay(250).fadeIn(50).delay(250).fadeOut(50)
+			.delay(250).fadeIn(50).delay(250).fadeOut(50)
+			.delay(250).fadeIn(50).delay(250).fadeTo(50, 0.25);
 	}
 }
 
 
 function clear_laser( ) {
+	if (old_board) {
+		show_new_board( );
+	}
+
 	clearTimeout(timer);
 	timer = false;
 	$('img.laser').remove( );
@@ -337,6 +339,11 @@ function clear_laser( ) {
 function enable_moves( ) {
 	if ( ! my_turn || ('finished' == state) || ('draw' == state)) {
 		return;
+	}
+
+	if (old_board) {
+		show_new_board( );
+		return false;
 	}
 
 	// make all our pieces clickable
