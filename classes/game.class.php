@@ -762,6 +762,10 @@ class Game
 		$json = (bool) $json;
 
 		$turn = $this->_history[$index];
+		$board = self::expandFEN($turn['board']);
+		if ( ! empty($this->_history[$index + 1])) {
+			$board = self::expandFEN($this->_history[$index + 1]['board']);
+		}
 
 		if ( ! $turn['move']) {
 			if ($json) {
@@ -773,31 +777,27 @@ class Game
 
 		$move = array( );
 
-		$move[0][0] = Pharaoh::target_to_index(substr($turn['move'], 0, 2));
+		$move[0] = Pharaoh::target_to_index(substr($turn['move'], 0, 2));
 
 		if ('-' == $turn['move'][2]) {
-			$move[0][1] = $move[0][0];
-			$move[0][2] = $turn['move'][3];
+			$move[1] = $move[0][0];
+			$move[2] = $turn['move'][3];
 		}
 		else {
-			$move[0][1] = Pharaoh::target_to_index(substr($turn['move'], 3, 2));
-			$move[0][2] = (int) (':' == $turn['move'][2]);
+			$move[1] = Pharaoh::target_to_index(substr($turn['move'], 3, 2));
+			$move[2] = (int) (':' == $turn['move'][2]);
 		}
 
-		$move[1] = array_trim($turn['hits'], 'int');
+		$move[3] = Pharaoh::get_piece_color($board[$move[0]]);
 
 		if ($json) {
 			return json_encode($move);
 		}
 
-		$old = $move;
-		$move = array( );
-
-		$move['move']['from'] = $old[0][0];
-		$move['move']['to'] = $old[0][1];
-		$move['move']['extra'] = $old[0][2];
-
-		$move['hits'] = $old[1];
+		$move['from'] = $move[0];
+		$move['to'] = $move[1];
+		$move['extra'] = $move[2];
+		$move['color'] = $move[3];
 
 		return $move;
 	}
