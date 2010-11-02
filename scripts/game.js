@@ -4,7 +4,7 @@ var old_board = false;
 
 $(document).ready( function( ) {
 	// show the board
-	// this will show the current board if no old board is set
+	// this will show the current board if no old board is available
 	show_old_board(true);
 
 	// show move button
@@ -115,13 +115,14 @@ $(document).ready( function( ) {
 function show_old_board(cont) {
 	cont = !! (cont || false);
 
+	old_board = true;
+
 	if ('' == prev_board) {
 		show_new_board(cont);
 		return false;
 	}
 
 	$('div#board').empty( ).append(create_board(prev_board, invert));
-	old_board = true;
 
 	if (cont) {
 		setTimeout('blink_move(true);', 2000);
