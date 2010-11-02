@@ -1194,7 +1194,6 @@ class Game
 	protected function _save( )
 	{
 		call(__METHOD__);
-Log::write('SAVE ATTEMPT', 'save', true);
 
 		// make sure we don't have a MySQL error here, it may be causing the issues
 		$run_once = false;
@@ -1246,7 +1245,6 @@ Log::write('SAVE ATTEMPT', 'save', true);
 		}
 
 		if ($update_game) {
-Log::write('UPDATE GAME', 'save', true);
 			$update_modified = true;
 			$this->_mysql->insert(self::GAME_TABLE, $update_game, " WHERE game_id = '{$this->id}' ");
 		}
@@ -1279,7 +1277,6 @@ Log::write('UPDATE GAME', 'save', true);
 		}
 
 		if ($new_board != $board) {
-Log::write(var_export($this, true), 'save', true);
 			call('UPDATED BOARD');
 			$update_modified = true;
 			$this->_mysql->insert(self::GAME_HISTORY_TABLE, array('board' => $new_board, 'move' => $new_move, 'hits' => $new_hits, 'game_id' => $this->id));
