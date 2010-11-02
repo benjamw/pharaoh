@@ -140,6 +140,7 @@ $meta['head_data'] = '
 		var color = "'.(isset($players[$_SESSION['player_id']]) ? (('white' == $players[$_SESSION['player_id']]['color']) ? 'silver' : 'red') : '').'";
 		var state = "'.(( ! $Game->watch_mode) ? (( ! $Game->paused) ? strtolower($Game->state) : 'paused') : 'watching').'";
 		var board = "'.$Game->get_board(0, true).'";
+		var prev_board = "'.$Game->get_board(1, true).'";
 		var prev_turn = ['.$Game->get_move(0, true).', '.$Game->get_laser_path(0, true).', '.$Game->get_hit_data(0, true).'];
 		var invert = '.(( ! empty($players[$_SESSION['player_id']]['color']) && ('black' == $players[$_SESSION['player_id']]['color'])) ? 'true' : 'false').';
 		var my_turn = '.($Game->is_turn( ) ? 'true' : 'false').';
@@ -165,6 +166,8 @@ echo get_header($meta);
 			<div id="board_wrapper">
 				<div id="board"></div> <!-- #board -->
 				<div class="buttons">
+					<a href="javascript;" id="show_move">Show Move</a> |
+					<a href="javascript;" id="clear_move">Clear Move</a> |
 					<a href="javascript;" id="fire_laser">Fire Laser</a> |
 					<a href="javascript;" id="clear_laser">Clear Laser</a>
 				</div> <!-- .buttons -->
