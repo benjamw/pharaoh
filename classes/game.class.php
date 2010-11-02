@@ -1242,6 +1242,10 @@ class Game
 		call($this->state);
 		if ($game['state'] != $this->state) {
 			$update_game['state'] = $this->state;
+
+			if ('Finished' == $this->state) {
+				$update_game['winner_id'] = $this->_players[$this->_pharaoh->winner]['player_id'];
+			}
 		}
 
 		if ($update_game) {
