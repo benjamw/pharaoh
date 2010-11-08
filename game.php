@@ -62,11 +62,11 @@ if ( ! $Game->watch_mode || $GLOBALS['Player']->is_admin) {
 			}
 
 			$color = 'blue';
-			if ('white' == $players[$chat['player_id']]['color']) {
+			if ( ! empty($players[$chat['player_id']]['color']) && ('white' == $players[$chat['player_id']]['color'])) {
 				$color = 'silver';
 			}
 
-			if ('black' == $players[$chat['player_id']]['color']) {
+			if ( ! empty($players[$chat['player_id']]['color']) && ('black' == $players[$chat['player_id']]['color'])) {
 				$color = 'red';
 			}
 
