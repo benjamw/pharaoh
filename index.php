@@ -36,12 +36,14 @@ $table_meta = array(
 $table_format = array(
 	array('SPECIAL_HTML', 'true', 'id="g[[[game_id]]]"') ,
 	array('SPECIAL_CLASS', '(1 == \'[[[my_turn]]]\')', 'highlight') ,
+	array('SPECIAL_CLASS', '(in_array(\'[[[state]]]\', array(\'Finished\',\'Draw\')))', 'lowlight') ,
 
 	array('ID', 'game_id') ,
+	array('State', '###(([[[paused]]]) ? \'Paused\' : \'[[[state]]]\')') ,
 	array('Silver', '###(('.$_SESSION['player_id'].' == [[[white_id]]]) ? \'<span class="highlight">[[[white]]]</span>\' : \'[[[white]]]\')') ,
 	array('Red', '###(('.$_SESSION['player_id'].' == [[[black_id]]]) ? \'<span class="highlight">[[[black]]]</span>\' : \'[[[black]]]\')') ,
 	array('Turn', '###((\'white\' == \'[[[turn]]]\') ? \'[[[white]]]\' : \'[[[black]]]\')') ,
-	array('State', '###(([[[paused]]]) ? \'Paused\' : \'[[[state]]]\')') ,
+	array('Moves', '###([[[count]]] - 1)') ,
 	array('Setup', 'setup_name') ,
 	array('Last Move', '###date(Settings::read(\'long_date\'), strtotime(\'[[[last_move]]]\'))', null, ' class="date"') ,
 );
