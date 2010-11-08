@@ -32,6 +32,12 @@ table.history td {
 	border-bottom: 1px solid #222;
 }
 
+table.history td.active {
+	font-weight: bold;
+	background-color: #444;
+	color: #FFF;
+}
+
 table.history td.date {
 	width: 1%;
 	white-space: nowrap;
@@ -46,4 +52,32 @@ table.history td.date {
 #board {
 	width: 550px;
 	height: 450px;
+}
+
+#history .review {
+	margin-bottom: 2px;
+	text-align: center;
+}
+
+#history .review span {
+	padding: 2px 5px 1px;
+	border: 1px solid #AAA;
+	border-radius: 3px;
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
+	cursor: pointer;
+}
+
+#history .review span.disabled {
+	color: #CCC;
+	border-color: #CCC;
+	cursor: default;
+}
+
+#history .review span:hover {
+	border-color: #555;
+}
+
+#history .review span.disabled {
+	border-color: #DDD;
 }

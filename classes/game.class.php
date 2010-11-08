@@ -697,9 +697,13 @@ class Game
 	 * @param int optional history index
 	 * @return string board FEN (or xFEN)
 	 */
-	public function get_board($index = 0, $expanded = false)
+	public function get_board($index = null, $expanded = false)
 	{
 		call(__METHOD__);
+
+		if (is_null($index)) {
+			$index = count($this->_history) - 1;
+		}
 
 		$index = (int) $index;
 		$expanded = (bool) $expanded;
@@ -719,17 +723,17 @@ class Game
 	}
 
 
-	/** public function get_history
+	/** public function get_move_history
 	 *		Returns the game move history
 	 *
 	 * @param void
 	 * @return array game history
 	 */
-	public function get_history( )
+	public function get_move_history( )
 	{
 		call(__METHOD__);
 
-		$history = array_reverse($this->_history);
+		$history = $this->_history;
 		array_shift($history); // remove the empty first move
 
 		$return = array( );
@@ -750,6 +754,42 @@ class Game
 	}
 
 
+	/** public function get_history
+	 *		Returns the game history
+	 *
+	 * @param bool optional return as JSON string
+	 * @return array or string game history
+	 */
+	public function get_history($json = false)
+	{
+		call(__METHOD__);
+		call($json);
+
+		$json = (bool) $json;
+
+		if ( ! $json) {
+			return $this->_history;
+		}
+
+		$history = array( );
+		foreach ($this->_history as $i => $node) {
+			$move = $this->get_move($i);
+			if ($move) {
+				$move = array_unique(array_values($move));
+			}
+
+			$history[] = array(
+				$this->expandFEN($node['board']),
+				$move,
+				$this->get_laser_path($i),
+				$this->get_hit_data($i),
+			);
+		}
+
+		return json_encode($history);
+	}
+
+
 	/** public function get_move
 	 *		Returns the data for the given move index
 	 *
@@ -757,19 +797,23 @@ class Game
 	 * @param bool optional return as JSON string
 	 * @return array or string previous turn
 	 */
-	public function get_move($index = 0, $json = false)
+	public function get_move($index = null, $json = false)
 	{
 		call(__METHOD__);
 		call($index);
 		call($json);
+
+		if (is_null($index)) {
+			$index = count($this->_history) - 1;
+		}
 
 		$index = (int) $index;
 		$json = (bool) $json;
 
 		$turn = $this->_history[$index];
 		$board = self::expandFEN($turn['board']);
-		if ( ! empty($this->_history[$index + 1])) {
-			$board = self::expandFEN($this->_history[$index + 1]['board']);
+		if ( ! empty($this->_history[$index - 1])) {
+			$board = self::expandFEN($this->_history[$index - 1]['board']);
 		}
 
 		if ( ! $turn['move']) {
@@ -815,19 +859,24 @@ class Game
 	 * @param bool optional return as JSON string
 	 * @return array or JSON string laser path
 	 */
-	public function get_laser_path($index = 0, $json = false)
+	public function get_laser_path($index = null, $json = false)
 	{
 		call(__METHOD__);
 		call($index);
 		call($json);
 
+		if (is_null($index)) {
+			$index = count($this->_history) - 1;
+		}
+
 		$index = (int) $index;
 		$json = (bool) $json;
 
 		$count = count($this->_history);
+		call($count);
 		call($this->_history[$index]);
 
-		if ((1 == $count) || ($index >= $count)) {
+		if ((0 >= $index) || ($index > ($count - 1))) {
 			if ($json) {
 				return '[]';
 			}
@@ -835,14 +884,8 @@ class Game
 			return false;
 		}
 
-		$same = 'silver';
-		$oppo = 'red';
-		if (0 == ($count % 2)) {
-			$same = 'red';
-			$oppo = 'silver';
-		}
-
-		$color = ((0 == ($count - $index)) ? $same : $oppo);
+		$color = ((0 != ($index % 2)) ? 'silver' : 'red');
+		call($color);
 
 		// here we need to do the move, store the board as is
 		// and then fire the laser.
@@ -853,7 +896,7 @@ class Game
 
 		// create a dummy pharaoh class and set the board as it was prior to the laser (+1)
 		$PH = new Pharaoh( );
-		$PH->set_board(self::expandFEN($this->_history[$index + 1]['board']));
+		$PH->set_board(self::expandFEN($this->_history[$index - 1]['board']));
 
 		// do the move, but do not fire the laser, and store the board
 		$pre_board = $PH->do_move($this->_history[$index]['move'], false);
@@ -876,11 +919,15 @@ class Game
 	 * @param bool optional return as JSON string
 	 * @return array or string previous turn
 	 */
-	public function get_hit_data($index = 0, $json = false)
+	public function get_hit_data($index = null, $json = false)
 	{
 		call(__METHOD__);
 		call($index);
 		call($json);
+
+		if (is_null($index)) {
+			$index = count($this->_history) - 1;
+		}
 
 		$index = (int) $index;
 		$json = (bool) $json;
@@ -895,7 +942,7 @@ class Game
 
 			// create a dummy pharaoh class and set the board as it was prior to the laser (+1)
 			$PH = new Pharaoh( );
-			$PH->set_board(self::expandFEN($this->_history[$index + 1]['board']));
+			$PH->set_board(self::expandFEN($this->_history[$index - 1]['board']));
 
 			// do the move and store that board
 			$prev_board = $PH->do_move($this->_history[$index]['move'], false);
@@ -1158,19 +1205,20 @@ class Game
 			SELECT *
 			FROM ".self::GAME_HISTORY_TABLE."
 			WHERE game_id = '{$this->id}'
-			ORDER BY move_date DESC
+			ORDER BY move_date ASC
 		";
 		$result = $this->_mysql->fetch_array($query);
 		call($result);
 
 		if ($result) {
+			$count = count($result);
 			$this->_history = $result;
-			$this->turn = ((0 == (count($this->_history) % 2)) ? 'black' : 'white');
-			$this->last_move = strtotime($result[0]['move_date']);
+			$this->turn = ((0 == ($count % 2)) ? 'black' : 'white');
+			$this->last_move = strtotime($result[$count - 1]['move_date']);
 
 			try {
 				$this->_pharaoh = new Pharaoh( );
-				$this->_pharaoh->set_board($this->expandFEN($this->_history[0]['board']));
+				$this->_pharaoh->set_board($this->expandFEN($this->_history[$count - 1]['board']));
 			}
 			catch (MyException $e) {
 				throw $e;

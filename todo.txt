@@ -1,22 +1,11 @@
 
-- find out why when moving a double obelisk onto a single obelisk, the game saves twice
-	making the second save (the one we see) error out
-	- the issue is due to the script adding the "set_square" click handler on the div as
-		a piece, and then again as a highlighted move option
-		this also causes issues when the highlight is removed, so is the click handler
-		for the piece, which makes the piece not clickable anymore
+- when moving a double obelisk onto a single obelisk...
 		- I should probably check and make sure the user wants to move onto that piece as
 			well, and not just assume that they don't want to move the second piece clicked instead
-
-- when game is first loaded, load previous board, wait 1 second, blink the piece moved,
-	refresh board with current board (do the move), wait 1 second, and then fire laser as normal
-
-- get replay buttons working
 
 - don't show success messages if email is not sent
 
 - if same board configuration is seen in a game for the third time, the next player can declare a draw
-    fsdfbsdf
 
 setup table
 ---------------------

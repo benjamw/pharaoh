@@ -97,16 +97,18 @@ $history_html = '
 						</tr>
 					</thead>
 					<tbody>';
-foreach ($Game->get_history( ) as $i => $move) {
+foreach ($Game->get_move_history( ) as $i => $move) {
 	if ( ! is_array($move)) {
 		break;
 	}
 
+	$id = ($i * 2) + 1;
+
 	$history_html .= '
 						<tr>
 							<td>'.($i + 1).'</td>
-							<td>'.$move[0].'</td>
-							<td>'.$move[1].'</td>
+							<td id="mv_'.$id.'">'.$move[0].'</td>
+							<td'.( ! empty($move[1]) ? ' id="mv_'.($id + 1).'"' : '').'>'.$move[1].'</td>
 						</tr>';
 }
 $history_html .= '
@@ -139,11 +141,11 @@ $meta['head_data'] = '
 	<script type="text/javascript">/*<![CDATA[*/
 		var color = "'.(isset($players[$_SESSION['player_id']]) ? (('white' == $players[$_SESSION['player_id']]['color']) ? 'silver' : 'red') : '').'";
 		var state = "'.(( ! $Game->watch_mode) ? (( ! $Game->paused) ? strtolower($Game->state) : 'paused') : 'watching').'";
-		var board = "'.$Game->get_board(0, true).'";
-		var prev_board = "'.$Game->get_board(1, true).'";
-		var prev_turn = ['.$Game->get_move(0, true).', '.$Game->get_laser_path(0, true).', '.$Game->get_hit_data(0, true).'];
 		var invert = '.(( ! empty($players[$_SESSION['player_id']]['color']) && ('black' == $players[$_SESSION['player_id']]['color'])) ? 'true' : 'false').';
 		var my_turn = '.($Game->is_turn( ) ? 'true' : 'false').';
+		var game_history = '.$Game->get_history(true).';
+		var move_count = game_history.length;
+		var move_index = (move_count - 1);
 	/*]]>*/</script>
 	<script type="text/javascript" src="scripts/game.js"></script>
 ';
@@ -160,6 +162,14 @@ echo get_header($meta);
 			<h2>Game #<?php echo $_SESSION['game_id'].': '.htmlentities($Game->name, ENT_QUOTES, 'ISO-8859-1', false); ?> <span class="turn"><?php echo $turn; ?></span></h2>
 
 			<div id="history">
+				<div class="review">
+					<span id="first">|&lt;</span>
+					<span id="prev5">&lt;&lt;</span>
+					<span id="prev">&lt;</span>
+					<span id="next">&gt;</span>
+					<span id="next5">&gt;&gt;</span>
+					<span id="last">&gt;|</span>
+				</div>
 				<?php echo $history_html; ?>
 			</div> <!-- #history -->
 

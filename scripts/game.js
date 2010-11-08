@@ -1,11 +1,15 @@
 
 var reload = true; // do not change this
 var old_board = false;
+var timer = false;
 
 $(document).ready( function( ) {
 	// show the board
 	// this will show the current board if no old board is available
 	show_old_board(true);
+
+	// set our move history active class and disabled review buttons
+	update_history( );
 
 	// show move button
 	$('a#show_move').click( function( ) {
@@ -31,7 +35,7 @@ $(document).ready( function( ) {
 		// show the hit piece
 		$('img.hit').show( ).fadeTo(50, 0.75);
 
-		fire_laser(prev_turn[1]);
+		fire_laser(game_history[move_index][2]);
 		return false;
 	});
 
@@ -40,6 +44,22 @@ $(document).ready( function( ) {
 		clear_laser( );
 		return false;
 	});
+
+	// move history clicks
+	$('table.history td[id^=mv_]').click( function( ) {
+		clear_laser( );
+
+		move_index = parseInt($(this).attr('id').slice(3));
+
+		update_history( );
+
+		show_old_board(true);
+	}).css('cursor', 'pointer');
+
+
+	// review button clicks
+	$('.review span:not(.disabled)').live('click', review);
+
 
 	// nudge button
 	$('#nudge').click( function( ) {
@@ -113,19 +133,23 @@ $(document).ready( function( ) {
 
 
 function show_old_board(cont) {
-	cont = !! (cont || false);
+	move_index = parseInt(move_index) || (move_count - 1);
+	cont = ( !! cont) || false;
+
+	clearTimeout(timer);
+	timer = false;
 
 	old_board = true;
 
-	if ('' == prev_board) {
+	if ('' == game_history[move_index - 1][0]) {
 		show_new_board(cont);
 		return false;
 	}
 
-	$('div#board').empty( ).append(create_board(prev_board, invert));
+	$('div#board').empty( ).append(create_board(game_history[move_index - 1][0], invert));
 
 	if (cont) {
-		setTimeout('blink_move(true);', 2000);
+		blink_move(true);
 	}
 
 	return true;
@@ -133,9 +157,10 @@ function show_old_board(cont) {
 
 
 function blink_move(cont) {
-	cont = !! (cont || false);
+	move_index = parseInt(move_index) || (move_count - 1);
+	cont = ( !! cont) || false;
 
-	if ('undefined' == typeof prev_turn[0][0]) {
+	if ('undefined' == typeof game_history[move_index][1][0]) {
 		return false;
 	}
 
@@ -144,12 +169,11 @@ function blink_move(cont) {
 	}
 
 	// flash the moved piece
-	$('div#idx_'+prev_turn[0][0]+' img.piece')
-		.delay(250).fadeIn(50).delay(250).fadeOut(50)
-		.delay(250).fadeIn(50).delay(250).fadeOut(50)
-		.delay(250).fadeIn(50).delay(250).fadeOut(50)
-		.delay(250).fadeIn(50).delay(250).fadeOut(50)
-		.delay(250).fadeIn(50).delay(250).fadeOut(50, function( ) {
+	$('div#idx_'+game_history[move_index][1][0]+' img.piece')
+		.delay(125).fadeIn(50).delay(125).fadeOut(50)
+		.delay(125).fadeIn(50).delay(125).fadeOut(50)
+		.delay(125).fadeIn(50).delay(125).fadeOut(50)
+		.delay(125).fadeIn(50).delay(125).fadeOut(50, function( ) {
 			show_new_board(cont);
 		});
 
@@ -158,32 +182,38 @@ function blink_move(cont) {
 
 
 function show_new_board(cont) {
-	cont = !! (cont || false);
+	move_index = parseInt(move_index) || (move_count - 1);
+	cont = ( !! cont) || false;
+
+	clearTimeout(timer);
+	timer = false;
 
 	if ( ! old_board) {
 		return true;
 	}
 
-	$('div#board').empty( ).append(create_board(board, invert));
+	$('div#board').empty( ).append(create_board(game_history[move_index][0], invert));
 	old_board = false;
 
 	// add the hit piece (if any)
-	if ('undefined' != typeof prev_turn[2]['hits']) {
+	if ('undefined' != typeof game_history[move_index][3]['hits']) {
 		var piece, i;
-		for (i in prev_turn[2]['hits']) {
-			piece = prev_turn[2]['pieces'][i];
+		for (i in game_history[move_index][3]['hits']) {
+			piece = game_history[move_index][3]['pieces'][i];
 			if (invert) {
 				piece = rotate_piece(piece);
 			}
 
-			$('div#idx_'+prev_turn[2]['hits'][i]).append(create_piece(piece, true));
+			$('div#idx_'+game_history[move_index][3]['hits'][i]).append(create_piece(piece, true));
 		}
 	}
 
-	enable_moves( );
+	if ((move_count - 1) == move_index) {
+		enable_moves( );
+	}
 
 	if (cont) {
-		setTimeout('fire_laser(prev_turn[1]);', 2000);
+		timer = setTimeout('fire_laser(game_history[move_index][2]);', 1000);
 	}
 	else {
 		// hide the hit piece
@@ -194,19 +224,18 @@ function show_new_board(cont) {
 }
 
 
-var timer = false;
 function fire_laser(path, i) {
 	if ( ! path) {
 		return false;
 	}
 
-	i = i || 0;
+	i = parseInt(i) || 0;
 
-	var flip = !! (invert || false);
+	var flip = ( !! invert) || false;
 
 	var j,
 		dir,next_dir,add_dir,nodes,
-		timeout = 200,
+		timeout = 150,
 		dir_flip = {'N':'S','E':'W','S':'N','W':'E'},
 		length = path.length;
 
@@ -267,7 +296,7 @@ function fire_laser(path, i) {
 
 
 function fade_laser(end) {
-	end = !! (end || false)
+	end = ( !! end) || false;
 
 	// find the greatest common multiple and use that image
 	// but we only need to search divs with new images
@@ -275,7 +304,7 @@ function fade_laser(end) {
 	// but don't include hits
 	$('img.laser.new').each( function( ) {
 		var $div = $(this).parent( ),
-			dirs = '';
+			dirs = '',
 			hits = '';
 
 		$('img', $div).each( function( ) {
@@ -316,11 +345,10 @@ function fade_laser(end) {
 
 		// blink then fade all the hit pieces
 		$('img.hit')
-			.delay(250).fadeIn(50).delay(250).fadeOut(50)
-			.delay(250).fadeIn(50).delay(250).fadeOut(50)
-			.delay(250).fadeIn(50).delay(250).fadeOut(50)
-			.delay(250).fadeIn(50).delay(250).fadeOut(50)
-			.delay(250).fadeIn(50).delay(250).fadeTo(50, 0.25);
+			.delay(125).fadeIn(50).delay(125).fadeOut(50)
+			.delay(125).fadeIn(50).delay(125).fadeOut(50)
+			.delay(125).fadeIn(50).delay(125).fadeOut(50)
+			.delay(125).fadeIn(50).delay(125).fadeTo(50, 0.25);
 	}
 }
 
@@ -337,8 +365,71 @@ function clear_laser( ) {
 }
 
 
+function do_full_move(idx) {
+	// stop any previous moves and/or animations
+	show_old_board( );
+	show_new_board( );
+	clear_laser( );
+
+	if (idx >= (move_count - 1)) {
+		return false;
+	}
+
+	// set the global move index
+	move_index = parseInt(move_index) || (move_count - 1);
+
+	// and do the move
+	show_old_board(true);
+}
+
+
+function review( ) {
+	var type = $(this).attr('id');
+
+	switch (type) {
+		case 'first' : move_index = 1; break;
+		case 'prev5' : move_index -= 5; break;
+		case 'prev' : move_index -= 1; break;
+		case 'next' : move_index += 1; break;
+		case 'next5' : move_index += 5; break;
+		case 'last' : move_index = (move_count - 1); break;
+	}
+
+	if (move_index < 1) {
+		move_index = 1;
+	}
+	else if (move_index > (move_count - 1)) {
+		move_index = (move_count - 1);
+	}
+
+	update_history( );
+
+	do_full_move(move_index);
+}
+
+
+function update_history( ) {
+	// update our active move history item
+	$('table.history td.active').removeClass('active');
+	$('td#mv_'+move_index).addClass('active');
+
+	// update our disabled review buttons as needed
+	$('.review .disabled').removeClass('disabled');
+
+	if (1 >= move_index) {
+		$('#prev, #prev5, #first').addClass('disabled');
+	}
+
+	if (move_index >= (move_count - 1)) {
+		$('#next, #next5, #last').addClass('disabled');
+	}
+}
+
+
 function enable_moves( ) {
-	if ( ! my_turn || ('finished' == state) || ('draw' == state)) {
+	move_index = parseInt(move_index) || (move_count - 1);
+
+	if ( ! my_turn || ('finished' == state) || ('draw' == state) || ((move_count - 1) != move_index)) {
 		return;
 	}
 
@@ -470,11 +561,11 @@ function set_square(event) {
 	clear_laser( );
 
 	var $elem = $(event.currentTarget);
-	var index = $elem.attr('id').slice(4).toLowerCase( );
+	var board_index = $elem.attr('id').slice(4).toLowerCase( );
 
 	if ( ! stage_1) {
 		stage_1 = true;
-		from_index = index;
+		from_index = board_index;
 
 		highlight_valid_moves($elem);
 
@@ -482,7 +573,7 @@ function set_square(event) {
 		// if the piece is not an obelisk or pharaoh
 		var piece_code = $elem.attr('class').match(/i_[^\s]+/ig)[0].slice(2).toLowerCase( );
 		if (('v' != piece_code) && ('w' != piece_code) && ('p' != piece_code)) {
-			$('div#idx_'+index)
+			$('div#idx_'+board_index)
 				.append($('<img/>', {
 					'id' : 'rot_r',
 					'class' : 'rotate cw',
@@ -499,24 +590,24 @@ function set_square(event) {
 				}));
 		}
 
-		$('input#from').val(index);
+		$('input#from').val(board_index);
 	}
 	else {
 		var $fr_elem = $('div#idx_'+from_index);
 		var fr_class = $fr_elem.attr('class');
 		var fr_color = fr_class.match(/p_[^\s]+/ig);
 
-		if ( ! isNaN(parseInt(index))) {
-			var $to_elem = $('div#idx_'+index);
+		if ( ! isNaN(parseInt(board_index))) {
+			var $to_elem = $('div#idx_'+board_index);
 			var to_class = $to_elem.attr('class');
 			var to_color = to_class.match(/p_[^\s]+/ig);
 		}
 
 		var rotating = false;
-		if (('r' == index) || ('l' == index)) {
+		if (('r' == board_index) || ('l' == board_index)) {
 			rotating = true;
 		}
-		else if (index == from_index) {
+		else if (board_index == from_index) {
 			// reset
 			stage_1 = false;
 			from_index = -1;
@@ -536,12 +627,12 @@ function set_square(event) {
 			return;
 		}
 		else {
-			// if the from piece is a djed,
+			// if the FROM piece is a djed,
 			// or eye of horus, or obelisk
 			// moving onto another single stack obelisk...
 			var moveable_piece = (fr_color == to_color);
 
-			// set this piece as the to index
+			// set this piece as the TO index
 			// as long as it's okay with the player
 			if (moveable_piece && confirm('Do you want to move this piece instead?\n\nOK- Move this piece | Cancel- Swap this piece')) {
 				// reset
@@ -556,16 +647,22 @@ function set_square(event) {
 			}
 		}
 
-		// set the to value and send the form
-		$('input#to').val(index);
 
-		// if from piece is a stacked obelisk and the to space is empty
+// TODO: somewhere in here needs to have checks for making sure the user wants to
+// move a stacked obelisk top onto a single obelisk instead of just moving the
+// single obelisk
+
+
+		// set the TO value and send the form
+		$('input#to').val(board_index);
+
+		// if FROM piece is a stacked obelisk and the TO space is empty
 		// test for splitting an obelisk and confirm with player
 		if ( ! rotating) {
 			var stacked_obelisk = (-1 != fr_class.indexOf('obelisk_stack'));
 			var empty_to = (-1 == to_class.indexOf('piece'));
 			if (stacked_obelisk && empty_to && confirm('Do you want to split this obelisk stack?\n\nOK- Split obelisk stack | Cancel- Move stack as whole')) {
-				$('input#to').val(index+'-split');
+				$('input#to').val(board_index+'-split');
 			}
 		}
 
@@ -602,7 +699,7 @@ function set_square(event) {
 }
 
 
-// converts dir index to cardinal point
+// converts dir value to cardinal point
 function dc(dir) {
 	switch (dir) {
 		case -10: return 'n';
@@ -629,8 +726,8 @@ function c_sort(dirs) {
 
 
 // TOWER: this is going to get _complicated_
-function get_adjacent(index) {
-	index = parseInt(index);
+function get_adjacent(board_index) {
+	board_index = parseInt(board_index);
 	var val;
 	var test;
 	var adj = [];
@@ -646,12 +743,12 @@ function get_adjacent(index) {
 
 			// make sure we are not going off the edge of the board
 			test = true; // innocent until proven guilty
-			test = (test && (0 <= (index + val))); // top edge
-			test = (test && (80 > (index + val))); // bottom edge
-			test = (test && (2 > Math.abs(((index + val) % 10) - (index % 10)))); // side edges
+			test = (test && (0 <= (board_index + val))); // top edge
+			test = (test && (80 > (board_index + val))); // bottom edge
+			test = (test && (2 > Math.abs(((board_index + val) % 10) - (board_index % 10)))); // side edges
 
 			if (test) {
-				adj.push(index + val);
+				adj.push(board_index + val);
 			}
 		}
 	}
