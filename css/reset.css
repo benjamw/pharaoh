@@ -58,3 +58,7 @@ em {
 em em {
 	font-style: normal;
 }
+
+pre {
+	font-family: monospace;
+}
