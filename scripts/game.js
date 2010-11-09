@@ -11,6 +11,12 @@ $(document).ready( function( ) {
 	// set our move history active class and disabled review buttons
 	update_history( );
 
+	// show full move button
+	$('a#show_full').click( function( ) {
+		show_old_board(true);
+		return false;
+	});
+
 	// show move button
 	$('a#show_move').click( function( ) {
 		show_old_board( );

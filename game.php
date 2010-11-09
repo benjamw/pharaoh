@@ -175,10 +175,11 @@ echo get_header($meta);
 			<div id="board_wrapper">
 				<div id="board"></div> <!-- #board -->
 				<div class="buttons">
-					<a href="javascript;" id="show_move">Show Move</a> |
-					<a href="javascript;" id="clear_move">Clear Move</a> |
-					<a href="javascript;" id="fire_laser">Fire Laser</a> |
-					<a href="javascript;" id="clear_laser">Clear Laser</a>
+					<a href="javascript:;" id="show_full">Show Full Move</a> ||
+					<a href="javascript:;" id="show_move">Show Move</a> |
+					<a href="javascript:;" id="clear_move">Clear Move</a> |
+					<a href="javascript:;" id="fire_laser">Fire Laser</a> |
+					<a href="javascript:;" id="clear_laser">Clear Laser</a>
 				</div> <!-- .buttons -->
 			</div> <!-- #board_wrapper -->
 
