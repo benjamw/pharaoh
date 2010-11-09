@@ -141,7 +141,7 @@ function show_old_board(cont) {
 
 	old_board = true;
 
-	if ('' == game_history[move_index - 1][0]) {
+	if (('undefined' == typeof game_history[move_index - 1]) || ('' == typeof game_history[move_index - 1][0])) {
 		show_new_board(cont);
 		return false;
 	}
