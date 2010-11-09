@@ -1,7 +1,10 @@
 
-- when moving a double obelisk onto a single obelisk...
-		- I should probably check and make sure the user wants to move onto that piece as
-			well, and not just assume that they don't want to move the second piece clicked instead
+- make sure the game is deleting finished games
+
+- add a different method for removing the click on the piece, because clicking the piece again
+	doesn't work for rotatable pieces
+
+- help page on the game that shows the pieces and what they can do
 
 - don't show success messages if email is not sent
 
