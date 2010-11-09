@@ -371,7 +371,7 @@ function do_full_move(idx) {
 	show_new_board( );
 	clear_laser( );
 
-	if (idx >= (move_count - 1)) {
+	if (idx > (move_count - 1)) {
 		return false;
 	}
 
@@ -593,10 +593,14 @@ function set_square(event) {
 		$('input#from').val(board_index);
 	}
 	else {
+		// grab some info about the piece
 		var $fr_elem = $('div#idx_'+from_index);
 		var fr_class = $fr_elem.attr('class');
 		var fr_color = fr_class.match(/p_[^\s]+/ig);
 
+		// if we are not rotating the piece, we need
+		// to grab some more info about where the piece
+		// is going
 		if ( ! isNaN(parseInt(board_index))) {
 			var $to_elem = $('div#idx_'+board_index);
 			var to_class = $to_elem.attr('class');
