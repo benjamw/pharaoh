@@ -5,10 +5,9 @@
 
 #chatbox {
 	margin-left: 712px;
-	border: 2px solid #CCC;
 }
 
-#chatbox input[type=text] {
+#game_page #chatbox input[type=text] {
 	width: 80%;
 }
 

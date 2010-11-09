@@ -87,16 +87,7 @@ if ( ! $Game->watch_mode || $GLOBALS['Player']->is_admin) {
 }
 
 // build the history table
-$history_html = '
-				<table class="history">
-					<thead>
-						<tr>
-							<th>#</th>
-							<th>Silver</th>
-							<th>Red</th>
-						</tr>
-					</thead>
-					<tbody>';
+$history_html = '';
 foreach ($Game->get_move_history( ) as $i => $move) {
 	if ( ! is_array($move)) {
 		break;
@@ -111,9 +102,6 @@ foreach ($Game->get_move_history( ) as $i => $move) {
 							<td'.( ! empty($move[1]) ? ' id="mv_'.($id + 1).'"' : '').'>'.$move[1].'</td>
 						</tr>';
 }
-$history_html .= '
-					</tbody>
-				</table>';
 
 $turn = $Game->get_turn( );
 if ($GLOBALS['Player']->username == $turn) {
@@ -170,7 +158,18 @@ echo get_header($meta);
 					<span id="next5">&gt;&gt;</span>
 					<span id="last">&gt;|</span>
 				</div>
-				<?php echo $history_html; ?>
+				<table class="history">
+					<thead>
+						<tr>
+							<th>#</th>
+							<th>Silver</th>
+							<th>Red</th>
+						</tr>
+					</thead>
+					<tbody>
+						<?php echo $history_html; ?>
+					</tbody>
+				</table>
 			</div> <!-- #history -->
 
 			<div id="board_wrapper">
