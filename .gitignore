@@ -3,3 +3,5 @@
 /logs/*
 !/logs/.htaccess
 /games/*
+.sass-cache
+
