@@ -3,10 +3,6 @@
 	margin: 10px;
 }
 
-#nudge {
-	float: right;
-}
-
 #chatbox {
 	margin-left: 712px;
 	border: 2px solid #CCC;
@@ -82,3 +78,8 @@ table.history td.date {
 	border-color: #DDD;
 }
 
+form#game {
+	clear: both;
+	text-align: center;
+	padding-top: 20px;
+}

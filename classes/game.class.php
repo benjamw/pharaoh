@@ -1003,7 +1003,7 @@ class Game
 
 		$player_id = (int) $this->_players['opponent']['player_id'];
 
-		if ($this->is_turn( ) || ! in_array($this->state, array('Finished', 'Draw')) || $this->paused) {
+		if ($this->is_turn( ) || ('Playing' != $this->state) || $this->paused) {
 			return false;
 		}
 
