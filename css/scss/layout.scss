@@ -26,10 +26,10 @@ h1 {
 	font-size: 16px;
 	font-weight: bold;
 	text-indent: -9999em;
-	background: transparent url(../images/Pharaoh.png) no-repeat scroll 15px center;
 	border-bottom: 2px solid #000;
 
 	a {
+		background: transparent url(../images/Pharaoh.png) no-repeat scroll 15px center;
 		display: block;
 		text-decoration: none;
 		height: 100%;
@@ -123,7 +123,7 @@ legend {
 	font-weight: bold;
 	color: #EEE;
 
-	a	{
+	a {
 		text-decoration: none;
 		padding: 0.3ex 0.75ex;
 		border: 1px solid transparent;
@@ -174,6 +174,7 @@ legend {
 #menu ,
 #mygames {
 	border: 1px solid #777;
+	border-bottom-width: 0;
 
 	a {
 		text-align: right;
@@ -312,6 +313,7 @@ legend {
 	}
 }
 
+
 /* main */
 h2 {
 	font-size: 14px;
@@ -374,7 +376,6 @@ h2 {
 	margin: 3px;
 }
 
-
 #index_page {
 	.tableholder {
 		max-height: 300px;
@@ -420,6 +421,7 @@ h2 {
 	}
 }
 
+
 /* messages */
 h2.subject,
 p.message {
@@ -440,8 +442,6 @@ p.message {
 		float: left;
 	}
 }
-
-
 
 #recipient_list {
 	ul {
@@ -596,12 +596,7 @@ table.game_info {
 	width: 300px;
 }
 
-
 .turn {
 	margin-left: 100px;
 }
 
-
-.sil { background-color: #AAA !important; color: #000 !important; }
-.red { background-color: #E22 !important; color: #FFF !important; }
-.blu { background-color: #36F !important; color: #FFF !important; }

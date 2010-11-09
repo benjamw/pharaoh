@@ -7,14 +7,17 @@
 	config.inc.php file.
 */
 /* basic styles */
+/* line 13, scss/layout.scss */
 body {
   margin: 0;
   padding: 0;
   font-size: 12px;
   line-height: 1.5;
   font-weight: normal;
-  font-family: sans-serif; }
+  font-family: sans-serif;
+}
 
+/* line 22, scss/layout.scss */
 h1 {
   height: 45px;
   margin: 0 0 3px;
@@ -22,192 +25,279 @@ h1 {
   font-size: 16px;
   font-weight: bold;
   text-indent: -9999em;
+  border-bottom: 2px solid #000;
+}
+/* line 31, scss/layout.scss */
+h1 a {
   background: transparent url(../images/Pharaoh.png) no-repeat scroll 15px center;
-  border-bottom: 2px solid #000; }
-  h1 a {
-    display: block;
-    text-decoration: none;
-    height: 100%; }
+  display: block;
+  text-decoration: none;
+  height: 100%;
+}
 
+/* line 39, scss/layout.scss */
 a {
   font-weight: bold;
-  text-decoration: underline; }
-  a:hover {
-    text-decoration: none; }
-  a.help {
-    border: 1px solid #777;
-    font-weight: bold;
-    padding: 0 2px;
-    text-decoration: none; }
-    a.help:hover {
-      border: 1px solid #999; }
+  text-decoration: underline;
+}
+/* line 43, scss/layout.scss */
+a:hover {
+  text-decoration: none;
+}
+/* line 47, scss/layout.scss */
+a.help {
+  border: 1px solid #777;
+  font-weight: bold;
+  padding: 0 2px;
+  text-decoration: none;
+}
+/* line 53, scss/layout.scss */
+a.help:hover {
+  border: 1px solid #999;
+}
 
+/* line 60, scss/layout.scss */
 abbr,
 acronym {
   border-bottom: 1px dashed #777;
-  cursor: help; }
+  cursor: help;
+}
 
+/* line 65, scss/layout.scss */
 hr.fancy {
   height: 5px;
   margin: 1em;
   background-color: #999;
-  border: 1px solid #777; }
+  border: 1px solid #777;
+}
 
+/* line 72, scss/layout.scss */
 p {
   margin: 1em 0;
-  line-height: 1.2; }
+  line-height: 1.2;
+}
 
+/* line 77, scss/layout.scss */
 fieldset {
   padding: 5px;
   margin: 5px;
-  border: 1px solid #777; }
+  border: 1px solid #777;
+}
 
+/* line 83, scss/layout.scss */
 legend {
   font-weight: bold;
-  font-size: larger; }
+  font-size: larger;
+}
 
+/* line 88, scss/layout.scss */
 .warning, .warning * {
   color: #C00;
-  font-weight: bold; }
+  font-weight: bold;
+}
 
+/* line 93, scss/layout.scss */
 .notice, .notice * {
   color: #CC0;
-  font-weight: bold; }
+  font-weight: bold;
+}
 
+/* line 98, scss/layout.scss */
 .highlight, .highlight * {
   color: #00C;
-  font-weight: bold; }
+  font-weight: bold;
+}
 
+/* line 103, scss/layout.scss */
 .instruction, .instruction * {
-  color: #AAA; }
+  color: #AAA;
+}
 
+/* line 107, scss/layout.scss */
 .caption {
-  margin: 1ex 0; }
+  margin: 1ex 0;
+}
 
+/* line 111, scss/layout.scss */
 #date {
   font-size: 10px;
   font-weight: bold;
   white-space: nowrap;
-  text-align: right; }
+  text-align: right;
+}
 
 /* links */
+/* line 120, scss/layout.scss */
 #links {
   float: right;
   margin: 1em;
   font-weight: bold;
-  color: #EEE; }
-  #links a {
-    text-decoration: none;
-    padding: 0.3ex 0.75ex;
-    border: 1px solid transparent;
-    background-color: transparent;
-    color: #333; }
-    #links a:hover {
-      border-color: #000;
-      background-color: #555;
-      color: #EEE; }
+  color: #EEE;
+}
+/* line 126, scss/layout.scss */
+#links a {
+  text-decoration: none;
+  padding: 0.3ex 0.75ex;
+  border: 1px solid transparent;
+  background-color: transparent;
+  color: #333;
+}
+/* line 133, scss/layout.scss */
+#links a:hover {
+  border-color: #000;
+  background-color: #555;
+  color: #EEE;
+}
 
 /* fix some stupid IE7 float bug */
+/* line 141, scss/layout.scss */
 *:first-child + html #links {
   position: absolute;
   top: 0;
   right: 0;
-  z-index: 5; }
+  z-index: 5;
+}
 
 /* wrapper */
+/* line 150, scss/layout.scss */
 #wrapper {
   margin: 0;
-  padding: 0; }
+  padding: 0;
+}
 
 /* menu */
+/* line 157, scss/layout.scss */
 #menuholder {
   width: 1px;
   overflow: visible;
-  float: left; }
-  #menuholder div {
-    float: left;
-    margin: 3px;
-    margin-bottom: 2em; }
-  #menuholder #mygames_title {
-    margin: 0;
-    white-space: nowrap; }
+  float: left;
+}
+/* line 162, scss/layout.scss */
+#menuholder div {
+  float: left;
+  margin: 3px;
+  margin-bottom: 2em;
+}
+/* line 168, scss/layout.scss */
+#menuholder #mygames_title {
+  margin: 0;
+  white-space: nowrap;
+}
 
+/* line 175, scss/layout.scss */
 #menu,
 #mygames {
-  border: 1px solid #777; }
-  #menu a,
-  #mygames a {
-    text-align: right;
-    font-size: 10px;
-    padding: 6px 5px;
-    width: 160px;
-    white-space: nowrap;
-    margin: 0;
-    font-weight: bold;
-    text-decoration: none;
-    display: block;
-    color: #333;
-    background-color: #EEE;
-    border-bottom: 1px solid #555; }
-    #menu a:hover,
-    #mygames a:hover {
-      color: #DDD;
-      background-color: #555; }
-  #menu ul,
-  #mygames ul {
-    margin: 0;
-    padding: 0; }
-  #menu li,
-  #mygames li {
-    text-indent: 0;
-    margin: 0;
-    padding: 0;
-    list-style: none outside none; }
-    #menu li.active a,
-    #mygames li.active a {
-      color: #DDD;
-      background-color: #333;
-      border-color: #333; }
-    #menu li.active .notice,
-    #mygames li.active .notice {
-      color: #99F; }
-
-*:first-child + html #menu li {
-  margin-left: -1.25em; }
-
+  border: 1px solid #777;
+  border-bottom-width: 0;
+}
+/* line 179, scss/layout.scss */
+#menu a,
 #mygames a {
-  white-space: normal; }
+  text-align: right;
+  font-size: 10px;
+  padding: 6px 5px;
+  width: 160px;
+  white-space: nowrap;
+  margin: 0;
+  font-weight: bold;
+  text-decoration: none;
+  display: block;
+  color: #333;
+  background-color: #EEE;
+  border-bottom: 1px solid #555;
+}
+/* line 193, scss/layout.scss */
+#menu a:hover,
+#mygames a:hover {
+  color: #DDD;
+  background-color: #555;
+}
+/* line 199, scss/layout.scss */
+#menu ul,
+#mygames ul {
+  margin: 0;
+  padding: 0;
+}
+/* line 204, scss/layout.scss */
+#menu li,
+#mygames li {
+  text-indent: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none outside none;
+}
+/* line 211, scss/layout.scss */
+#menu li.active a,
+#mygames li.active a {
+  color: #DDD;
+  background-color: #333;
+  border-color: #333;
+}
+/* line 217, scss/layout.scss */
+#menu li.active .notice,
+#mygames li.active .notice {
+  color: #99F;
+}
+
+/* line 223, scss/layout.scss */
+*:first-child + html #menu li {
+  margin-left: -1.25em;
+}
+
+/* line 228, scss/layout.scss */
+#mygames a {
+  white-space: normal;
+}
+/* line 232, scss/layout.scss */
 #mygames .finished a {
-  color: #999; }
+  color: #999;
+}
+/* line 233, scss/layout.scss */
 #mygames .playing a {
-  color: #F00; }
+  color: #F00;
+}
+/* line 234, scss/layout.scss */
 #mygames .my_turn a {
-  color: #FF0; }
+  color: #FF0;
+}
+/* line 235, scss/layout.scss */
 #mygames .none a {
-  color: #FFF; }
+  color: #FFF;
+}
 
 /* notes */
+/* line 240, scss/layout.scss */
 #sidebar {
   float: right;
   width: 160px;
-  overflow: visible; }
-  #sidebar #chatbox {
-    float: right;
-    width: 160px;
-    padding: 5px;
-    margin: 3px;
-    background-color: #EEE;
-    border: 1px solid #777; }
-    #sidebar #chatbox input {
-      width: 95%; }
-  #sidebar #chats {
-    height: 300px; }
-  #sidebar .active {
-    position: relative;
-    top: 0;
-    right: 0;
-    width: 500px; }
+  overflow: visible;
+}
+/* line 245, scss/layout.scss */
+#sidebar #chatbox {
+  float: right;
+  width: 160px;
+  padding: 5px;
+  margin: 3px;
+  background-color: #EEE;
+  border: 1px solid #777;
+}
+/* line 253, scss/layout.scss */
+#sidebar #chatbox input {
+  width: 95%;
+}
+/* line 258, scss/layout.scss */
+#sidebar #chats {
+  height: 300px;
+}
+/* line 262, scss/layout.scss */
+#sidebar .active {
+  position: relative;
+  top: 0;
+  right: 0;
+  width: 500px;
+}
 
+/* line 270, scss/layout.scss */
 #notes {
   float: right;
   width: 160px;
@@ -215,135 +305,209 @@ legend {
   padding: 5px;
   margin: 3px;
   background-color: #EEE;
-  border: 1px solid #777; }
+  border: 1px solid #777;
+}
 
 /* chats */
+/* line 282, scss/layout.scss */
 #chatbox input[type=text] {
-  width: 90%; }
+  width: 90%;
+}
 
+/* line 286, scss/layout.scss */
 #game_page #chatbox input[type=text] {
-  width: auto; }
+  width: auto;
+}
 
+/* line 290, scss/layout.scss */
 #chats {
   height: 200px;
-  overflow: auto; }
-  #chats dt {
-    background: #FFF;
-    color: #000;
-    font-weight: bold;
-    padding: 0 3px; }
-    #chats dt span {
-      float: right;
-      font-size: 80%; }
-  #chats dd {
-    padding: 0 3px;
-    border-bottom: 1px solid #000; }
-  #chats img {
-    float: left; }
+  overflow: auto;
+}
+/* line 294, scss/layout.scss */
+#chats dt {
+  background: #FFF;
+  color: #000;
+  font-weight: bold;
+  padding: 0 3px;
+}
+/* line 300, scss/layout.scss */
+#chats dt span {
+  float: right;
+  font-size: 80%;
+}
+/* line 306, scss/layout.scss */
+#chats dd {
+  padding: 0 3px;
+  border-bottom: 1px solid #000;
+}
+/* line 311, scss/layout.scss */
+#chats img {
+  float: left;
+}
 
 /* main */
+/* line 318, scss/layout.scss */
 h2 {
   font-size: 14px;
   font-weight: bold;
   margin-bottom: 1ex;
-  border-bottom: 1px solid #777; }
+  border-bottom: 1px solid #777;
+}
 
+/* line 325, scss/layout.scss */
 .type {
   font-size: smaller;
-  padding-left: 2em; }
-  .type .number {
-    font-weight: bold;
-    margin-right: 2em; }
-  .type a {
-    margin: 0 2em; }
+  padding-left: 2em;
+}
+/* line 329, scss/layout.scss */
+.type .number {
+  font-weight: bold;
+  margin-right: 2em;
+}
+/* line 334, scss/layout.scss */
+.type a {
+  margin: 0 2em;
+}
 
+/* line 339, scss/layout.scss */
 #content {
-  margin: 3px 185px; }
-  #content.full {
-    margin: 5px; }
-  #content .sidebar {
-    float: right;
-    width: 300px;
-    margin-top: 10px; }
-  #content form .buttons #delete {
-    float: right; }
-  #content form .buttons .prevnext {
-    margin-bottom: 20px; }
-    #content form .buttons .prevnext span {
-      padding: 0 10px; }
-  #content #recipient_list {
-    margin-top: 20px; }
+  margin: 3px 185px;
+}
+/* line 342, scss/layout.scss */
+#content.full {
+  margin: 5px;
+}
+/* line 346, scss/layout.scss */
+#content .sidebar {
+  float: right;
+  width: 300px;
+  margin-top: 10px;
+}
+/* line 354, scss/layout.scss */
+#content form .buttons #delete {
+  float: right;
+}
+/* line 358, scss/layout.scss */
+#content form .buttons .prevnext {
+  margin-bottom: 20px;
+}
+/* line 361, scss/layout.scss */
+#content form .buttons .prevnext span {
+  padding: 0 10px;
+}
+/* line 368, scss/layout.scss */
+#content #recipient_list {
+  margin-top: 20px;
+}
 
+/* line 373, scss/layout.scss */
 .stats {
   width: 150px;
   float: left;
-  margin: 3px; }
+  margin: 3px;
+}
 
+/* line 380, scss/layout.scss */
 #index_page .tableholder {
   max-height: 300px;
-  overflow-y: auto; }
+  overflow-y: auto;
+}
+/* line 385, scss/layout.scss */
 #index_page #chatbox {
-  border: 2px solid #AAA; }
-  #index_page #chatbox input[type=text] {
-    width: 99%; }
+  border: 2px solid #AAA;
+}
+/* line 388, scss/layout.scss */
+#index_page #chatbox input[type=text] {
+  width: 99%;
+}
+/* line 393, scss/layout.scss */
 #index_page #chats {
   height: 500px;
-  margin: 1em; }
-  #index_page #chats dt {
-    height: 50px;
-    width: 150px;
-    float: left;
-    border-bottom: 3px solid #777;
-    padding: 5px;
-    margin: 0 20px 5px 0;
-    position: relative;
-    text-align: right;
-    background: transparent; }
-  #index_page #chats dd {
-    min-height: 50px;
-    border-bottom: 1px solid #AAA;
-    padding: 5px 5px 6px 5px;
-    margin: 0 0 6px 0; }
-  #index_page #chats span {
-    position: absolute;
-    bottom: 5px;
-    right: 5px; }
+  margin: 1em;
+}
+/* line 397, scss/layout.scss */
+#index_page #chats dt {
+  height: 50px;
+  width: 150px;
+  float: left;
+  border-bottom: 3px solid #777;
+  padding: 5px;
+  margin: 0 20px 5px 0;
+  position: relative;
+  text-align: right;
+  background: transparent;
+}
+/* line 409, scss/layout.scss */
+#index_page #chats dd {
+  min-height: 50px;
+  border-bottom: 1px solid #AAA;
+  padding: 5px 5px 6px 5px;
+  margin: 0 0 6px 0;
+}
+/* line 416, scss/layout.scss */
+#index_page #chats span {
+  position: absolute;
+  bottom: 5px;
+  right: 5px;
+}
 
 /* messages */
+/* line 427, scss/layout.scss */
 h2.subject,
 p.message {
-  width: 70ex; }
+  width: 70ex;
+}
 
+/* line 431, scss/layout.scss */
 .sender {
   margin-left: 3em;
-  font-size: smaller; }
+  font-size: smaller;
+}
 
+/* line 436, scss/layout.scss */
 .link_date {
   float: right;
   text-align: right;
-  width: 300px; }
-  .link_date a {
-    float: left; }
+  width: 300px;
+}
+/* line 441, scss/layout.scss */
+.link_date a {
+  float: left;
+}
 
+/* line 447, scss/layout.scss */
 #recipient_list ul {
-  margin: 10px; }
+  margin: 10px;
+}
+/* line 451, scss/layout.scss */
 #recipient_list .unread {
-  font-weight: bold; }
+  font-weight: bold;
+}
+/* line 455, scss/layout.scss */
 #recipient_list .deleted {
-  text-decoration: line-through; }
+  text-decoration: line-through;
+}
 
+/* line 460, scss/layout.scss */
 .messageheader {
-  border-bottom: 1px solid #777; }
+  border-bottom: 1px solid #777;
+}
 
+/* line 464, scss/layout.scss */
 .action select {
-  float: right; }
+  float: right;
+}
 
 /* footer */
+/* line 470, scss/layout.scss */
 #footerspacer {
   height: 100px;
   /* make sure nothing gets hidden behind the footer */
-  clear: both; }
+  clear: both;
+}
 
+/* line 475, scss/layout.scss */
 #footer {
   font-size: 10px;
   font-weight: bold;
@@ -357,91 +521,120 @@ p.message {
   left: 0;
   z-index: 100;
   background: #FFF;
-  border-top: 1px solid #BBB; }
-  #footer span {
-    margin: 0 2em; }
-  #footer p {
-    margin: 0;
-    padding: 0;
-    line-height: 130%; }
+  border-top: 1px solid #BBB;
+}
+/* line 490, scss/layout.scss */
+#footer span {
+  margin: 0 2em;
+}
+/* line 494, scss/layout.scss */
+#footer p {
+  margin: 0;
+  padding: 0;
+  line-height: 130%;
+}
 
 /* other basic styles */
+/* line 503, scss/layout.scss */
 .notice {
-  font-weight: bold; }
+  font-weight: bold;
+}
 
+/* line 507, scss/layout.scss */
 .afterthought {
   font-size: 11px;
-  font-weight: normal; }
+  font-weight: normal;
+}
 
+/* line 512, scss/layout.scss */
 .instruction {
   margin: 0 0 10px 10px;
   font-size: 11px;
-  line-height: 11px; }
+  line-height: 11px;
+}
 
+/* line 518, scss/layout.scss */
 #joined {
-  width: 140px; }
-  #joined li {
-    text-align: left;
-    border: 1px solid #777;
-    margin-bottom: 2px;
-    padding: 2px 3px;
-    font-size: 12px;
-    font-weight: bold;
-    list-style: none outside none; }
+  width: 140px;
+}
+/* line 521, scss/layout.scss */
+#joined li {
+  text-align: left;
+  border: 1px solid #777;
+  margin-bottom: 2px;
+  padding: 2px 3px;
+  font-size: 12px;
+  font-weight: bold;
+  list-style: none outside none;
+}
 
+/* line 534, scss/layout.scss */
 ul.settings li {
   float: left;
-  width: 100%; }
+  width: 100%;
+}
+/* line 539, scss/layout.scss */
 ul.settings label {
-  clear: left; }
+  clear: left;
+}
 
+/* line 544, scss/layout.scss */
 #buttons {
   float: right;
-  margin-right: 1ex; }
-  #buttons li {
-    float: left; }
-  #buttons a {
-    display: block;
-    padding: 0 1em;
-    border: 1px solid #333;
-    border-width: 0 1px;
-    margin: 0 -1px; }
+  margin-right: 1ex;
+}
+/* line 548, scss/layout.scss */
+#buttons li {
+  float: left;
+}
+/* line 552, scss/layout.scss */
+#buttons a {
+  display: block;
+  padding: 0 1em;
+  border: 1px solid #333;
+  border-width: 0 1px;
+  margin: 0 -1px;
+}
 
+/* line 562, scss/layout.scss */
 html div#fancy_div {
   background: #FFF;
-  color: #000; }
+  color: #000;
+}
 
+/* line 567, scss/layout.scss */
 .clone {
   display: none;
-  visibility: hidden; }
+  visibility: hidden;
+}
 
+/* line 574, scss/layout.scss */
 div.help ol,
 div.help ul {
   text-indent: -1em;
-  margin: 0 0 1ex 2em; }
+  margin: 0 0 1ex 2em;
+}
+/* line 579, scss/layout.scss */
 div.help li {
   text-indent: -1em;
-  margin-bottom: 1ex; }
-  div.help li strong {
-    color: #F00; }
+  margin-bottom: 1ex;
+}
+/* line 583, scss/layout.scss */
+div.help li strong {
+  color: #F00;
+}
+/* line 588, scss/layout.scss */
 div.help table {
   width: auto;
-  margin: 0 auto; }
+  margin: 0 auto;
+}
 
+/* line 595, scss/layout.scss */
 table.game_info {
-  width: 300px; }
+  width: 300px;
+}
 
+/* line 599, scss/layout.scss */
 .turn {
-  margin-left: 100px; }
-
-.sil {
-  background-color: #AAA !important;
-  color: #000 !important; }
-
-.red {
-  background-color: #E22 !important;
-  color: #FFF !important; }
-
-.blu {
-  background-color: #36F !important;
-  color: #FFF !important; }
+  margin-left: 100px;
+}

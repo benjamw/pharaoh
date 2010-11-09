@@ -97,7 +97,7 @@ foreach ($Game->get_move_history( ) as $i => $move) {
 
 	$history_html .= '
 						<tr>
-							<td>'.($i + 1).'</td>
+							<td class="turn">'.($i + 1).'</td>
 							<td id="mv_'.$id.'">'.$move[0].'</td>
 							<td'.( ! empty($move[1]) ? ' id="mv_'.($id + 1).'"' : '').'>'.$move[1].'</td>
 						</tr>';

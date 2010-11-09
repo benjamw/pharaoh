@@ -7,6 +7,10 @@
 	margin-left: 712px;
 }
 
+#chats {
+	height: 450px;
+}
+
 #game_page #chatbox input[type=text] {
 	width: 80%;
 }
@@ -21,9 +25,9 @@
 }
 
 table.history td {
-	padding: 3px 5px;
+	padding: 0 5px;
 	font-size: 1.1em;
-	line-height: 150%;
+	line-height: 130%;
 	border-bottom: 1px solid #222;
 }
 
@@ -33,9 +37,9 @@ table.history td.active {
 	color: #FFF;
 }
 
-table.history td.date {
+table.history td.turn {
 	width: 1%;
-	white-space: nowrap;
+	text-align: right;
 }
 
 #board_wrapper {
