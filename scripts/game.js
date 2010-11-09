@@ -634,11 +634,11 @@ function set_square(event) {
 			// if the FROM piece is a djed,
 			// or eye of horus, or obelisk
 			// moving onto another single stack obelisk...
-			var moveable_piece = (fr_color == to_color);
+			var moveable_piece = (fr_color && to_color && (fr_color[0] == to_color[0]));
 
 			// set this piece as the TO index
 			// as long as it's okay with the player
-			if (moveable_piece && confirm('Do you want to move this piece instead?\n\nOK- Move this piece | Cancel- Swap this piece')) {
+			if (moveable_piece && confirm('Do you want to move this piece instead?\n\nOK- Move this new piece | Cancel- Swap these two pieces')) {
 				// reset
 				stage_1 = false;
 				from_index = -1;
@@ -650,12 +650,6 @@ function set_square(event) {
 				return;
 			}
 		}
-
-
-// TODO: somewhere in here needs to have checks for making sure the user wants to
-// move a stacked obelisk top onto a single obelisk instead of just moving the
-// single obelisk
-
 
 		// set the TO value and send the form
 		$('input#to').val(board_index);
