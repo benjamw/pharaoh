@@ -876,7 +876,7 @@ class Game
 		call($count);
 		call($this->_history[$index]);
 
-		if ((0 >= $index) || ($index > ($count - 1))) {
+		if ((1 > $index) || ($index > ($count - 1))) {
 			if ($json) {
 				return '[]';
 			}
