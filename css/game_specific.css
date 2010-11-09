@@ -1,0 +1,11 @@
+
+
+/* Pharaoh specific */
+
+/*
+	this file holds the styles that are specific to pharaoh
+*/
+
+.sil { background-color: #AAA !important; color: #000 !important; }
+.red { background-color: #B00 !important; color: #FFF !important; }
+.blu { background-color: #36F !important; color: #FFF !important; }
