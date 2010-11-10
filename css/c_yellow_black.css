@@ -1,0 +1,262 @@
+/* Game colors */
+/* red-black created by Benjam Welker */
+/*
+	all the layout for the webpages are specified in the layout.css
+	file.  the colors have been seperated out for ease of customization
+*/
+/* basic styles */
+/* line 64, scss/_c_template.scss */
+body {
+  color: #dddddd;
+  background-color: black;
+}
+
+/* line 70, scss/_c_template.scss */
+h1 {
+  border-bottom-color: #777777;
+  background-color: #cccc00;
+  background-image: -webkit-gradient(linear, 0% 0%, 0% 100%, color-stop(11.111%, #cccc00), color-stop(100%, #000000));
+  background-image: -moz-linear-gradient(top, #cccc00 10%, #000000 90%);
+  background-image: linear-gradient(top, #cccc00 10%, #000000 90%);
+}
+
+/* line 80, scss/_c_template.scss */
+a {
+  color: #dddddd;
+}
+/* line 83, scss/_c_template.scss */
+a:hover {
+  color: #cccc00;
+}
+/* line 87, scss/_c_template.scss */
+a.help {
+  border-color: #777777;
+}
+/* line 90, scss/_c_template.scss */
+a.help:hover {
+  border-color: #777777;
+}
+
+/* line 98, scss/_c_template.scss */
+abbr,
+acronym {
+  border-color: #777777;
+}
+
+/* line 103, scss/_c_template.scss */
+hr.fancy {
+  background-color: #777777;
+  border-color: #777777;
+}
+
+/* line 109, scss/_c_template.scss */
+fieldset {
+  border-color: #777777;
+}
+
+/* line 114, scss/_c_template.scss */
+.warning, .warning * {
+  color: #dd0000;
+}
+
+/* line 119, scss/_c_template.scss */
+.notice, .notice * {
+  color: #dddd00;
+}
+
+/* line 124, scss/_c_template.scss */
+.highlight, .highlight * {
+  color: #cccc00;
+}
+
+/* line 129, scss/_c_template.scss */
+.instruction, .instruction * {
+  color: #555555;
+}
+
+/* links */
+/* line 136, scss/_c_template.scss */
+#links a {
+  border-color: transparent;
+  background-color: transparent;
+  color: #dddddd;
+}
+/* line 141, scss/_c_template.scss */
+#links a:hover {
+  border-color: #777777;
+  background-color: black;
+  color: #cccc00;
+}
+
+/* line 151, scss/_c_template.scss */
+#menu,
+#mygames {
+  border-color: #333333;
+}
+/* line 154, scss/_c_template.scss */
+#menu a,
+#mygames a {
+  color: #dddddd;
+  background-color: #111111;
+  border-color: #333333;
+}
+/* line 159, scss/_c_template.scss */
+#menu a:hover,
+#mygames a:hover {
+  color: white;
+  background-color: #444400;
+  border-color: #333333;
+}
+/* line 165, scss/_c_template.scss */
+#menu a .notice,
+#mygames a .notice {
+  color: #dd0000;
+}
+/* line 172, scss/_c_template.scss */
+#menu li.active a,
+#mygames li.active a {
+  color: white;
+  background-color: #999900;
+  border-color: #333333;
+}
+
+/* line 183, scss/_c_template.scss */
+#mygames .finished a {
+  color: #555555;
+}
+/* line 184, scss/_c_template.scss */
+#mygames .playing a {
+  color: #cccc00;
+}
+/* line 185, scss/_c_template.scss */
+#mygames .my_turn a {
+  color: #dddd00;
+}
+/* line 186, scss/_c_template.scss */
+#mygames .none a {
+  color: #dddddd;
+}
+
+/* notes */
+/* line 192, scss/_c_template.scss */
+#sidebar #chatbox {
+  background-color: #111111;
+  border-color: #333333;
+}
+
+/* line 199, scss/_c_template.scss */
+#notes {
+  background-color: #111111;
+  border-color: #333333;
+}
+
+/* chats */
+/* line 207, scss/_c_template.scss */
+#chats dt {
+  background: #777777;
+  color: white;
+}
+/* line 212, scss/_c_template.scss */
+#chats dd {
+  border-color: #777777;
+}
+
+/* main */
+/* line 219, scss/_c_template.scss */
+h2 {
+  border-color: #777777;
+}
+
+/* line 225, scss/_c_template.scss */
+#index_page #chatbox {
+  border-color: #777777;
+}
+/* line 230, scss/_c_template.scss */
+#index_page #chats dt {
+  border-color: #777777;
+  background-color: transparent;
+}
+/* line 235, scss/_c_template.scss */
+#index_page #chats dd {
+  border-color: #777777;
+}
+
+/* footer */
+/* line 243, scss/_c_template.scss */
+#footer {
+  color: #dddddd;
+  background-color: #cccc00;
+  border-color: #777777;
+  background-image: -webkit-gradient(linear, 0% 100%, 0% 0%, color-stop(11.111%, #cccc00), color-stop(100%, #000000));
+  background-image: -moz-linear-gradient(bottom, #cccc00 10%, #000000 90%);
+  background-image: linear-gradient(bottom, #cccc00 10%, #000000 90%);
+}
+
+/* other basic styles */
+/* line 256, scss/_c_template.scss */
+#buttons a {
+  border-color: #777777;
+}
+
+/* line 264, scss/_c_template.scss */
+div.help li strong {
+  color: #dd0000;
+}
+
+/* datatable styles */
+/* line 272, scss/_c_template.scss */
+table {
+  border-color: #777777;
+}
+
+/* line 276, scss/_c_template.scss */
+th {
+  border-bottom-color: #777777;
+  border-right-color: #777777;
+}
+
+/* line 282, scss/_c_template.scss */
+tr:hover > td,
+tr.alt:hover > td {
+  background-color: #888800;
+  color: #dddddd;
+}
+
+/* line 287, scss/_c_template.scss */
+td {
+  border-right-color: #777777;
+}
+
+/* line 291, scss/_c_template.scss */
+tr.alt {
+  background-color: #222222;
+}
+
+/* line 296, scss/_c_template.scss */
+.lowlight,
+.lowlight td {
+  color: #888888;
+}
+
+/* sorted table styles */
+/* line 302, scss/_c_template.scss */
+thead tr th {
+  background-color: black;
+}
+
+/* line 307, scss/_c_template.scss */
+thead tr .headerSortDown,
+thead tr .headerSortUp {
+  background-color: #cccc00;
+  color: black;
+}
+
+/* line 312, scss/_c_template.scss */
+thead tr .headerSortUp {
+  border-top-color: black;
+}
+
+/* line 316, scss/_c_template.scss */
+thead tr .headerSortDown {
+  border-bottom-color: black;
+}
