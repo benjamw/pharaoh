@@ -1112,14 +1112,14 @@ class Game
 	}
 
 
-	/** public function write_game_file
+	/** static public function write_game_file
 	 *		TODO
 	 *
 	 * @param void
 	 * @action void
 	 * @return bool true
 	 */
-	public function write_game_file( )
+	static public function write_game_file( )
 	{
 		// TODO: build a logging system to log game data
 		return true;
