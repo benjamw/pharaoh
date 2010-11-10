@@ -443,6 +443,7 @@ class Game
 			'extra_info' => $invite['extra_info'],
 			'setup_id' => $invite['setup_id'],
 			'create_date ' => 'NOW( )',  // note the trailing space in the field name, this is not a typo
+			'modify_date ' => 'NOW( )',  // note the trailing space in the field name, this is not a typo
 		);
 
 		if (mt_rand(0, 1)) {
@@ -1654,6 +1655,8 @@ class Game
 	 */
 	static public function delete_inactive($age)
 	{
+		call(__METHOD__);
+
 		$Mysql = Mysql::get_instance( );
 
 		$age = (int) $age;
@@ -1666,6 +1669,7 @@ class Game
 			SELECT game_id
 			FROM ".self::GAME_TABLE."
 			WHERE modify_date < DATE_SUB(NOW( ), INTERVAL {$age} DAY)
+				AND create_date < DATE_SUB(NOW( ), INTERVAL {$age} DAY)
 		";
 		$game_ids = $Mysql->fetch_value_array($query);
 
@@ -1684,6 +1688,8 @@ class Game
 	 */
 	static public function delete_finished($age)
 	{
+		call(__METHOD__);
+
 		$Mysql = Mysql::get_instance( );
 
 		$age = (int) $age;
