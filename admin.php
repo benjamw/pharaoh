@@ -163,12 +163,12 @@ $table_meta = array(
 );
 $table_format = array(
 	array('ID', 'game_id') ,
-	array('Name', 'name') ,
-	array('Host', 'hostname') ,
-	array('Current', 'username') ,
-	array('State', '###(([[[paused]]]) ? \'<span class="notice">Paused</span>\' : \'[[[state]]]\')') ,
-	array('Players', '[[[players]]] / [[[capacity]]]') ,
-	array('Created', '###date(Settings::read(\'long_date\'), strtotime(\'[[[create_date]]]\'))', null, ' class="date"') ,
+	array('State', '###(([[[paused]]]) ? \'Paused\' : \'[[[state]]]\')') ,
+	array('Silver', '###(('.$_SESSION['player_id'].' == [[[white_id]]]) ? \'<span class="highlight">[[[white]]]</span>\' : \'[[[white]]]\')') ,
+	array('Red', '###(('.$_SESSION['player_id'].' == [[[black_id]]]) ? \'<span class="highlight">[[[black]]]</span>\' : \'[[[black]]]\')') ,
+	array('Turn', '###((\'white\' == \'[[[turn]]]\') ? \'[[[white]]]\' : \'[[[black]]]\')') ,
+	array('Moves', '###([[[count]]] - 1)') ,
+	array('Setup', 'setup_name') ,
 	array('Last Move', '###date(Settings::read(\'long_date\'), strtotime(\'[[[last_move]]]\'))', null, ' class="date"') ,
 	array('<input type="checkbox" id="game_all" />', '<input type="checkbox" name="ids[]" value="[[[game_id]]]" class="game_box" />', 'false', 'class="edit"') ,
 );
