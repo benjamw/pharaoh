@@ -1,11 +1,11 @@
 /* the board styles ------------
 
 	 do not edit these, if things need to be moved
-	 edit #board, things will break horribly
+	 edit #board in game.css, things will break horribly
 	 if these sizes are changed
 */
 
-#the_board .header, #the_board .header_disabled {
+#the_board .header {
 	text-align: center;
 	font-weight: bold;
 	font-size: 16px;
@@ -63,10 +63,6 @@
 	background-color: #500;
 }
 
-#the_board .c_yellow {
-	background-color: #BB0;
-}
-
 #the_board .highlight {
 	background-color: #550;
 }
@@ -74,13 +70,6 @@
 #the_board .piece {
 	background-position: center center;
 	background-repeat: no-repeat;
-}
-
-#the_board .from,
-#the_board .to,
-#the_board .turned {
-	border: 2px solid #FFF;
-	margin: 0;
 }
 
 #the_board div img {
@@ -98,7 +87,3 @@
 #the_board img.ccw {
 	margin-left: 23px;
 }
-
-.sil { background-color: #AAA !important; color: #000 !important; }
-.red { background-color: #B00 !important; color: #FFF !important; }
-.blu { background-color: #36F !important; color: #FFF !important; }

@@ -19,6 +19,7 @@ body {
 	font-family: sans-serif;
 }
 
+
 h1 {
 	height: 45px;
 	margin: 0 0 3px;
@@ -35,6 +36,7 @@ h1 {
 		height: 100%;
 	}
 }
+
 
 a {
 	font-weight: bold;
@@ -56,11 +58,13 @@ a {
 	}
 }
 
+
 abbr,
 acronym {
 	border-bottom: 1px dashed #777;
 	cursor: help;
 }
+
 
 hr.fancy {
 	height: 5px;
@@ -69,10 +73,12 @@ hr.fancy {
 	border: 1px solid #777;
 }
 
+
 p {
 	margin: 1em 0;
 	line-height: 1.2;
 }
+
 
 fieldset {
 	padding: 5px;
@@ -80,33 +86,40 @@ fieldset {
 	border: 1px solid #777;
 }
 
+
 legend {
 	font-weight: bold;
 	font-size: larger;
 }
+
 
 .warning, .warning * {
 	color: #C00;
 	font-weight: bold;
 }
 
+
 .notice, .notice * {
 	color: #CC0;
 	font-weight: bold;
 }
+
 
 .highlight, .highlight * {
 	color: #00C;
 	font-weight: bold;
 }
 
+
 .instruction, .instruction * {
 	color: #AAA;
 }
 
+
 .caption {
 	margin: 1ex 0;
 }
+
 
 #date {
 	font-size: 10px;
@@ -171,6 +184,7 @@ legend {
 	}
 }
 
+
 #menu ,
 #mygames {
 	border: 1px solid #777;
@@ -194,6 +208,10 @@ legend {
 			color: #DDD;
 			background-color: #555;
 		}
+
+		.notice {
+			color: #99F;
+		}
 	}
 
 	ul {
@@ -213,16 +231,13 @@ legend {
 				background-color: #333;
 				border-color: #333;
 			}
-
-			.notice {
-				color: #99F;
-			}
 		}
 	}
 }
 *:first-child+html #menu li {
 	margin-left: -1.25em;
 }
+
 
 #mygames {
 	a {
@@ -267,6 +282,7 @@ legend {
 	}
 }
 
+
 #notes {
 	float: right;
 	width: 160px;
@@ -283,16 +299,18 @@ legend {
 	width: 90%;
 }
 
+
 #game_page #chatbox input[type=text] {
 	width: auto;
 }
+
 
 #chats {
 	height: 200px;
 	overflow: auto;
 
 	dt {
-		background: #FFF;
+		background: transparent;
 		color: #000;
 		font-weight: bold;
 		padding: 0 3px;
@@ -322,6 +340,7 @@ h2 {
 	border-bottom: 1px solid #777;
 }
 
+
 .type {
 	font-size: smaller;
 	padding-left: 2em;
@@ -335,6 +354,7 @@ h2 {
 		margin: 0 2em;
 	}
 }
+
 
 #content {
 	margin: 3px 185px;
@@ -370,11 +390,13 @@ h2 {
 	}
 }
 
+
 .stats {
 	width: 150px;
 	float: left;
 	margin: 3px;
 }
+
 
 #index_page {
 	.tableholder {
@@ -385,14 +407,14 @@ h2 {
 	#chatbox {
 		border: 1px solid #777;
 
-		input[type=text]{
+		input[type=text] {
 			width: 99%;
 		}
 	}
 
 	#chats {
+		border-top: 1px solid #777;
 		height: 500px;
-		margin: 1em;
 
 		dt {
 			height: 50px;
@@ -428,10 +450,12 @@ p.message {
 	width: 70ex;
 }
 
+
 .sender {
 	margin-left: 3em;
 	font-size: smaller;
 }
+
 
 .link_date {
 	float: right;
@@ -442,6 +466,7 @@ p.message {
 		float: left;
 	}
 }
+
 
 #recipient_list {
 	ul {
@@ -457,9 +482,6 @@ p.message {
 	}
 }
 
-.messageheader {
-	border-bottom: 1px solid #777;
-}
 
 .action select {
 	float: right;
@@ -471,6 +493,7 @@ p.message {
 	height: 100px; /* make sure nothing gets hidden behind the footer */
 	clear: both;
 }
+
 
 #footer {
 	font-size: 10px;
@@ -504,29 +527,17 @@ p.message {
 	font-weight: bold;
 }
 
+
 .afterthought {
 	font-size: 11px;
 	font-weight: normal;
 }
 
+
 .instruction {
 	margin: 0 0 10px 10px;
 	font-size: 11px;
 	line-height: 11px;
-}
-
-#joined {
-	width: 140px;
-
-	li {
-		text-align: left;
-		border: 1px solid #777;
-		margin-bottom: 2px;
-		padding: 2px 3px;
-		font-size: 12px;
-		font-weight: bold;
-		list-style: none outside none;
-	}
 }
 
 
@@ -541,12 +552,14 @@ ul.settings {
 	}
 }
 
+
 #buttons {
 	float: right;
-	margin-right: 1ex;
+	margin-right: 1px;
 
 	li {
 		float: left;
+		margin-left: 1px;
 	}
 
 	a {
@@ -559,15 +572,11 @@ ul.settings {
 }
 
 
-html div#fancy_div {
-	background: #FFF;
-	color: #000;
-}
-
 .clone {
 	display: none;
 	visibility: hidden;
 }
+
 
 div.help {
 	ol,
@@ -591,10 +600,6 @@ div.help {
 	}
 }
 
-
-table.game_info {
-	width: 300px;
-}
 
 .turn {
 	margin-left: 100px;
