@@ -90,6 +90,7 @@ function get_header($meta = null) {
 					position: fixed;
 					top: 0;
 					left: 50%;
+					z-index: 99999;
 					width: 200px;
 					margin-left: -100px;
 					text-align: center;

@@ -5,7 +5,7 @@
 	 if these sizes are changed
 */
 
-.header, .header_disabled {
+#the_board .header, #the_board .header_disabled {
 	text-align: center;
 	font-weight: bold;
 	font-size: 16px;

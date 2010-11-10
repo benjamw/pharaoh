@@ -7,11 +7,6 @@ table {
 	width: 99%;
 	line-height: 120%;
 }
-.dicetable {
-	width: 45%;
-	float: left;
-	margin: 1em 5px;
-}
 
 th {
 	font-weight: bold;
@@ -21,9 +16,6 @@ th {
 	border-right: 1px dashed #777;
 	padding: 2px 1ex 1px;
 	white-space: nowrap;
-}
-.datatable th {
-	cursor: pointer;
 }
 
 tr:hover > td ,
@@ -37,14 +29,6 @@ td {
 	padding: 1px 1ex 2px;
 	text-align: left;
 	vertical-align: middle;
-}
-.dicetable td,
-.dicetable th {
-	text-align: center;
-	vertical-align: middle;
-}
-.dicetable td.lower {
-	border-bottom: 2px solid #000;
 }
 
 .alt {
