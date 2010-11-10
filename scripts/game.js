@@ -96,6 +96,34 @@ $(document).ready( function( ) {
 		}
 	});
 
+
+	// resign button
+	$('#resign').click( function( ) {
+		if (confirm('Are you sure you wish to resign?')) {
+			if (debug) {
+				window.location = 'ajax_helper.php'+debug_query+'&'+$('form#game').serialize( )+'&resign=1';
+				return false;
+			}
+
+			$.ajax({
+				type: 'POST',
+				url: 'ajax_helper.php',
+				data: $('#game_form').serialize( )+'&resign=1',
+				success: function(msg) {
+					var reply = JSON.parse(msg);
+
+					if (reply.error) {
+						alert(reply.error);
+					}
+
+					if (reload) { window.location.reload( ); }
+					return;
+				}
+			});
+		}
+	});
+
+
 	// chat box functions
 	$('#chatbox form').submit( function( ) {
 		if ('' == $.trim($('#chatbox input#chat').val( ))) {

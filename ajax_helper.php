@@ -17,6 +17,7 @@ require_once 'includes/inc.global.php';
 // (although REQUEST_METHOD may not always be valid)
 if (('GET' == $_SERVER['REQUEST_METHOD']) && test_debug( )) {
 	$GLOBALS['NODEBUG'] = false;
+	$GLOBALS['AJAX'] = false;
 	$_GET['token'] = $_SESSION['token'];
 	$_GET['keep_token'] = true;
 	$_POST = $_GET;
@@ -157,6 +158,23 @@ if (isset($_POST['nudge'])) {
 
 	try {
 		$Game->nudge($player_id);
+	}
+	catch (MyException $e) {
+		$return['error'] = 'ERROR: '.$e->outputMessage( );
+	}
+
+	echo json_encode($return);
+	exit;
+}
+
+
+// run the 'Resign' button
+if (isset($_POST['resign'])) {
+	$return = array( );
+	$return['token'] = $_SESSION['token'];
+
+	try {
+		$Game->resign($player_id);
 	}
 	catch (MyException $e) {
 		$return['error'] = 'ERROR: '.$e->outputMessage( );

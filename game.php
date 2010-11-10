@@ -191,7 +191,7 @@ echo get_header($meta);
 				<input type="hidden" name="player_id" value="<?php echo $_SESSION['player_id']; ?>" />
 				<input type="hidden" name="from" id="from" value="" />
 				<input type="hidden" name="to" id="to" value="" />
-				<?php if ('Playing' == $Game->state) { ?>
+				<?php if (('Playing' == $Game->state) && $Game->is_player($_SESSION['player_id'])) { ?>
 					<input type="button" name="resign" id="resign" value="Resign" />
 				<?php } ?>
 				<?php if ($Game->test_nudge( )) { ?>

@@ -621,15 +621,10 @@ class Game
 			throw new MyException(__METHOD__.': Player (#'.$player_id.') trying to resign opponent from a game (#'.$this->id.')');
 		}
 
-		// we need to edit the board of the person resigning if it is not their turn
-		// why?  i forget
-		if ( ! $this->get_turn($player_id)) {
-			$this->_boards['player']->board = str_replace('0', 'W', $this->_boards['player']->board);
-		}
-
 		$this->_players['opponent']['object']->add_win( );
 		$this->_players['player']['object']->add_loss( );
 		$this->state = 'Finished';
+		$this->_pharaoh->winner = 'opponent';
 		Email::send('resigned', $this->_players['opponent']['player_id'], array('name' => $this->_players['player']['object']->username));
 	}
 
@@ -993,7 +988,7 @@ class Game
 
 
 	/** public function test_nudge
-	 *		Tests if the current player can be nudged or not
+	 *		Tests if the current player can nudge or not
 	 *
 	 * @param void
 	 * @return bool player can be nudged
@@ -1004,7 +999,7 @@ class Game
 
 		$player_id = (int) $this->_players['opponent']['player_id'];
 
-		if ($this->is_turn( ) || ('Playing' != $this->state) || $this->paused) {
+		if ( ! $this->is_player($player_id) || $this->is_turn( ) || ('Playing' != $this->state) || $this->paused) {
 			return false;
 		}
 
