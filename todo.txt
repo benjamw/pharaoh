@@ -1,4 +1,6 @@
 
+- fix the admin game table layout
+
 - create the master _c_template.scss file
 
 - make sure the game is deleting finished games
