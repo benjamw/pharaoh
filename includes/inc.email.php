@@ -40,7 +40,7 @@ Please log in and take your turn. Good Luck!'),
 	'won' => array(
 		'subject' => 'You Won!',
 		'message' => '
-Apparently [[[sender]]] did something dumb and lasered their own Pharaoh in the game you were playing at [[[site_name]]].
+Apparently [[[sender]]] did something dumb and blasted their own Pharaoh in the game you were playing at [[[site_name]]].
 
 Log on and invite someone to a new game if you still wish to play.'),
 
@@ -67,11 +67,11 @@ Better luck next time, log on and invite someone to a new game if you still wish
 	'resigned' => array(
 		'subject' => 'Opponent Resigned',
 		'message' => '
-Your opponent, [[[game_name]]], while trying to unleash the forgotton fury of the Gods, attempted to trigger the allmighty deathbeam of Luxor.
+Your opponent, [[[game_name]]], while trying to unleash the forgotten fury of the Gods, attempted to trigger the Almighty Deathbeam of Luxor.
 
-Unfortunately, [[[game_name]]] was not learned in the ways of optical physics and failed to notice the smudge on their lens and eradicated their own Pharoah.
+Unfortunately, [[[game_name]]] was not learned in the ways of optical physics and failed to notice the smudge on their lens and eradicated their entire dynasty.
 
-The dust has settled and you can now claim your prize...  some broken obelisk somewhere with some weird pictures on it.  Yay.'),
+The dust has settled and you can now claim your prize...  a broken obelisk in the sand with some weird pictures on it.  Yay.'),
 
 
 
