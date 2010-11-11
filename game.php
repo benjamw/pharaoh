@@ -147,7 +147,10 @@ echo get_header($meta);
 				<li><a href="index.php<?php echo $GLOBALS['_?_DEBUG_QUERY']; ?>">Main Page</a></li>
 				<li><a href="game.php<?php echo $GLOBALS['_?_DEBUG_QUERY']; ?>">Reload Game Board</a></li>
 			</ul>
-			<h2>Game #<?php echo $_SESSION['game_id'].': '.htmlentities($Game->name, ENT_QUOTES, 'ISO-8859-1', false); ?> <span class="turn"><?php echo $turn; ?></span></h2>
+			<h2>Game #<?php echo $_SESSION['game_id'].': '.htmlentities($Game->name, ENT_QUOTES, 'ISO-8859-1', false); ?>
+				<span class="turn"><?php echo $turn; ?></span>
+				<span class="setup"><a href="#setup" class="fancybox"><?php echo $Game->get_setup_name( ); ?></a> <a href="help/pieces.help" class="help">?</a></span>
+			</h2>
 
 			<div id="history">
 				<div class="review">
@@ -200,6 +203,10 @@ echo get_header($meta);
 			</div></form>
 
 		</div> <!-- #contents -->
+
+		<script type="text/javascript">
+			document.write('<'+'div id="setup">'+create_board('<?php echo Game::expandFEN($Game->get_setup( )); ?>', invert, true)+'<'+'/div>');
+		</script>
 
 <?php
 
