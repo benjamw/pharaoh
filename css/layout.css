@@ -612,3 +612,25 @@ div.help table {
 .turn {
   margin-left: 100px;
 }
+
+/* Pharaoh specific */
+/*
+	this file holds the styles that are specific to pharaoh
+*/
+/* line 9, scss/_game_layout.scss */
+.sil {
+  background-color: #AAA !important;
+  color: #000 !important;
+}
+
+/* line 10, scss/_game_layout.scss */
+.red {
+  background-color: #B00 !important;
+  color: #FFF !important;
+}
+
+/* line 11, scss/_game_layout.scss */
+.blu {
+  background-color: #36F !important;
+  color: #FFF !important;
+}
