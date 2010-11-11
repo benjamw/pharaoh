@@ -5,13 +5,13 @@
 	file.  the colors have been seperated out for ease of customization
 */
 /* basic styles */
-/* line 68, scss/_c_template.scss */
+/* line 69, scss/_c_template.scss */
 body {
   color: #dddddd;
   background-color: black;
 }
 
-/* line 74, scss/_c_template.scss */
+/* line 75, scss/_c_template.scss */
 h1 {
   border-bottom-color: #777777;
   background-color: #cccc00;
@@ -20,179 +20,179 @@ h1 {
   background-image: linear-gradient(top, #cccc00 10%, #000000 90%);
 }
 
-/* line 84, scss/_c_template.scss */
+/* line 85, scss/_c_template.scss */
 a {
   color: #dddddd;
 }
-/* line 87, scss/_c_template.scss */
+/* line 88, scss/_c_template.scss */
 a:hover {
   color: #cccc00;
 }
-/* line 91, scss/_c_template.scss */
+/* line 92, scss/_c_template.scss */
 a.help {
   border-color: #777777;
 }
-/* line 94, scss/_c_template.scss */
+/* line 95, scss/_c_template.scss */
 a.help:hover {
   border-color: #777777;
 }
 
-/* line 102, scss/_c_template.scss */
+/* line 103, scss/_c_template.scss */
 abbr,
 acronym {
   border-color: #777777;
 }
 
-/* line 107, scss/_c_template.scss */
+/* line 108, scss/_c_template.scss */
 hr.fancy {
   background-color: #777777;
   border-color: #777777;
 }
 
-/* line 113, scss/_c_template.scss */
+/* line 114, scss/_c_template.scss */
 fieldset {
   border-color: #777777;
 }
 
-/* line 118, scss/_c_template.scss */
+/* line 119, scss/_c_template.scss */
 .warning, .warning * {
   color: #dd0000;
 }
 
-/* line 123, scss/_c_template.scss */
+/* line 124, scss/_c_template.scss */
 .notice, .notice * {
   color: #dddd00;
 }
 
-/* line 128, scss/_c_template.scss */
+/* line 129, scss/_c_template.scss */
 .highlight, .highlight * {
   color: #cccc00;
 }
 
-/* line 133, scss/_c_template.scss */
+/* line 134, scss/_c_template.scss */
 .instruction, .instruction * {
   color: #555555;
 }
 
 /* links */
-/* line 140, scss/_c_template.scss */
+/* line 141, scss/_c_template.scss */
 #links a {
   border-color: transparent;
   background-color: transparent;
   color: #dddddd;
 }
-/* line 145, scss/_c_template.scss */
+/* line 146, scss/_c_template.scss */
 #links a:hover {
   border-color: #777777;
   background-color: black;
   color: #cccc00;
 }
 
-/* line 155, scss/_c_template.scss */
+/* line 156, scss/_c_template.scss */
 #menu,
 #mygames {
   border-color: #cccc00;
 }
-/* line 158, scss/_c_template.scss */
+/* line 159, scss/_c_template.scss */
 #menu a,
 #mygames a {
   color: #dddddd;
   background-color: #111111;
   border-color: #333333;
 }
-/* line 163, scss/_c_template.scss */
+/* line 164, scss/_c_template.scss */
 #menu a:hover,
 #mygames a:hover {
   color: white;
   background-color: #444400;
   border-color: #333333;
 }
-/* line 168, scss/_c_template.scss */
+/* line 169, scss/_c_template.scss */
 #menu a:hover .notice,
 #mygames a:hover .notice {
   color: #dd0000;
 }
-/* line 173, scss/_c_template.scss */
+/* line 174, scss/_c_template.scss */
 #menu a .notice,
 #mygames a .notice {
   color: #dd0000;
 }
-/* line 180, scss/_c_template.scss */
+/* line 181, scss/_c_template.scss */
 #menu li.active a,
 #mygames li.active a {
   color: white;
   background-color: #999900;
   border-color: #333333;
 }
-/* line 185, scss/_c_template.scss */
+/* line 186, scss/_c_template.scss */
 #menu li.active a .notice,
 #mygames li.active a .notice {
   color: white;
 }
 
-/* line 195, scss/_c_template.scss */
+/* line 196, scss/_c_template.scss */
 #mygames .finished a {
   color: #555555;
 }
-/* line 196, scss/_c_template.scss */
+/* line 197, scss/_c_template.scss */
 #mygames .playing a {
   color: #cccc00;
 }
-/* line 197, scss/_c_template.scss */
+/* line 198, scss/_c_template.scss */
 #mygames .my_turn a {
   color: #dddd00;
 }
-/* line 198, scss/_c_template.scss */
+/* line 199, scss/_c_template.scss */
 #mygames .none a {
   color: #dddddd;
 }
 
 /* notes */
-/* line 204, scss/_c_template.scss */
+/* line 205, scss/_c_template.scss */
 #sidebar #chatbox {
   background-color: #111111;
   border-color: #333333;
 }
 
-/* line 211, scss/_c_template.scss */
+/* line 212, scss/_c_template.scss */
 #notes {
   background-color: #111111;
   border-color: #cccc00;
 }
 
 /* chats */
-/* line 219, scss/_c_template.scss */
+/* line 220, scss/_c_template.scss */
 #chats dt {
   background: #777777;
   color: white;
 }
-/* line 224, scss/_c_template.scss */
+/* line 225, scss/_c_template.scss */
 #chats dd {
   border-color: #777777;
 }
 
 /* main */
-/* line 231, scss/_c_template.scss */
+/* line 232, scss/_c_template.scss */
 h2 {
   border-color: #777777;
 }
 
-/* line 237, scss/_c_template.scss */
+/* line 238, scss/_c_template.scss */
 #index_page #chatbox {
   border-color: #777777;
 }
-/* line 242, scss/_c_template.scss */
+/* line 243, scss/_c_template.scss */
 #index_page #chats dt {
   border-color: #777777;
   background-color: transparent;
 }
-/* line 247, scss/_c_template.scss */
+/* line 248, scss/_c_template.scss */
 #index_page #chats dd {
   border-color: #777777;
 }
 
 /* footer */
-/* line 255, scss/_c_template.scss */
+/* line 256, scss/_c_template.scss */
 #footer {
   color: #dddddd;
   background-color: #cccc00;
@@ -203,70 +203,76 @@ h2 {
 }
 
 /* other basic styles */
-/* line 268, scss/_c_template.scss */
+/* line 269, scss/_c_template.scss */
 #buttons a {
   border-color: #777777;
 }
 
-/* line 276, scss/_c_template.scss */
+/* line 277, scss/_c_template.scss */
 div.help li strong {
   color: #dd0000;
 }
 
 /* datatable styles */
-/* line 284, scss/_c_template.scss */
+/* line 285, scss/_c_template.scss */
 table {
   border-color: #777777;
 }
 
-/* line 288, scss/_c_template.scss */
+/* line 289, scss/_c_template.scss */
 th {
   border-bottom-color: #777777;
   border-right-color: #777777;
 }
 
-/* line 294, scss/_c_template.scss */
+/* line 295, scss/_c_template.scss */
 tr:hover > td,
 tr.alt:hover > td {
   background-color: #888800;
   color: #dddddd;
 }
 
-/* line 299, scss/_c_template.scss */
+/* line 300, scss/_c_template.scss */
 td {
   border-right-color: #777777;
 }
 
-/* line 303, scss/_c_template.scss */
+/* line 304, scss/_c_template.scss */
 tr.alt {
   background-color: #222222;
 }
 
-/* line 308, scss/_c_template.scss */
+/* line 309, scss/_c_template.scss */
 .lowlight,
 .lowlight td {
   color: #888888;
 }
 
 /* sorted table styles */
-/* line 314, scss/_c_template.scss */
+/* line 315, scss/_c_template.scss */
 thead tr th {
   background-color: black;
 }
 
-/* line 319, scss/_c_template.scss */
+/* line 320, scss/_c_template.scss */
 thead tr .headerSortDown,
 thead tr .headerSortUp {
   background-color: #cccc00;
   color: black;
 }
 
-/* line 324, scss/_c_template.scss */
+/* line 325, scss/_c_template.scss */
 thead tr .headerSortUp {
   border-top-color: black;
 }
 
-/* line 328, scss/_c_template.scss */
+/* line 329, scss/_c_template.scss */
 thead tr .headerSortDown {
   border-bottom-color: black;
+}
+
+/* fancybox overrides */
+/* line 335, scss/_c_template.scss */
+#fancybox-content {
+  background-color: black;
 }

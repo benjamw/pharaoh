@@ -7,6 +7,7 @@
 	file.  the colors have been seperated out for ease of customization
 */
 
+// TODO: check webrisk for a yellow-black layout, and change below to match
 
 $back_grad: 1; // set to 1 for a gradient on header and footer
 
@@ -63,6 +64,8 @@ $links_border: transparent;
 $links_hover_text: $color;
 $links_hover_back: $back;
 $links_hover_border: $border_dark;
+
+$fancybox_back: #000 !default;
 
 
 @import "c_template";

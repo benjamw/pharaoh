@@ -61,6 +61,7 @@ $links_hover_text: $color !default;
 $links_hover_back: $back !default;
 $links_hover_border: $border_dark !default;
 
+$fancybox_back: #FFF !default;
 
 // start the styles
 
@@ -327,3 +328,8 @@ thead tr .headerSortDown {
 	border-bottom-color: $back;
 }
 
+
+/* fancybox overrides */
+#fancybox-content {
+	background-color: $fancybox_back;
+}
