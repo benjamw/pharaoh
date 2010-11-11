@@ -6,6 +6,19 @@
 	this file holds the styles that are specific to pharaoh
 */
 
+
+.turn,
+.setup {
+	margin-left: 100px;
+}
+
+
 .sil { background-color: #AAA !important; color: #000 !important; }
 .red { background-color: #B00 !important; color: #FFF !important; }
 .blu { background-color: #36F !important; color: #FFF !important; }
+
+
+#fancybox-content {
+	background-color: #000 !important;
+}
+

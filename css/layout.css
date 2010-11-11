@@ -587,50 +587,60 @@ ul.settings label {
   visibility: hidden;
 }
 
-/* line 586, scss/layout.scss */
+/* line 584, scss/layout.scss */
+div.help {
+  padding: 10px;
+}
+/* line 588, scss/layout.scss */
 div.help ol,
 div.help ul {
   text-indent: -1em;
   margin: 0 0 1ex 2em;
 }
-/* line 591, scss/layout.scss */
+/* line 593, scss/layout.scss */
 div.help li {
   text-indent: -1em;
   margin-bottom: 1ex;
 }
-/* line 595, scss/layout.scss */
+/* line 597, scss/layout.scss */
 div.help li strong {
   color: #F00;
 }
-/* line 600, scss/layout.scss */
+/* line 602, scss/layout.scss */
 div.help table {
   width: auto;
   margin: 0 auto;
-}
-
-/* line 607, scss/layout.scss */
-.turn {
-  margin-left: 100px;
 }
 
 /* Pharaoh specific */
 /*
 	this file holds the styles that are specific to pharaoh
 */
-/* line 9, scss/_game_layout.scss */
+/* line 11, scss/_game_layout.scss */
+.turn,
+.setup {
+  margin-left: 100px;
+}
+
+/* line 16, scss/_game_layout.scss */
 .sil {
   background-color: #AAA !important;
   color: #000 !important;
 }
 
-/* line 10, scss/_game_layout.scss */
+/* line 17, scss/_game_layout.scss */
 .red {
   background-color: #B00 !important;
   color: #FFF !important;
 }
 
-/* line 11, scss/_game_layout.scss */
+/* line 18, scss/_game_layout.scss */
 .blu {
   background-color: #36F !important;
   color: #FFF !important;
+}
+
+/* line 21, scss/_game_layout.scss */
+#fancybox-content {
+  background-color: #000 !important;
 }

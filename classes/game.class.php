@@ -142,6 +142,19 @@ class Game
 	public $watch_mode = false;
 
 
+	/** protected property _setup
+	 *		Holds the game's initial setup
+	 *		as an associative array
+	 *		array(
+	 *			'id' => [setup_id],
+	 *			'name' => [setup_name],
+	 *		);
+	 *
+	 * @var array
+	 */
+	protected $_setup;
+
+
 	/** protected property _extra_info
 	 *		Holds the extra game info
 	 *
@@ -960,6 +973,32 @@ class Game
 	}
 
 
+	/** public function get_setup_name
+	 *		Returns the name of the initial setup
+	 *		used for this game
+	 *
+	 * @param void
+	 * @return string initial setup name
+	 */
+	public function get_setup_name( )
+	{
+		return $this->_setup['name'];
+	}
+
+
+	/** public function get_setup
+	 *		Returns the board of the initial setup
+	 *		used for this game
+	 *
+	 * @param void
+	 * @return string initial setup name
+	 */
+	public function get_setup( )
+	{
+		return $this->_setup['board'];
+	}
+
+
 	/** public function nudge
 	 *		Nudges the given player to take their turn
 	 *
@@ -1164,6 +1203,23 @@ class Game
 		$this->paused = (bool) $result['paused'];
 		$this->create_date = strtotime($result['create_date']);
 		$this->modify_date = strtotime($result['modify_date']);
+
+		// grab the initial setup
+		// TODO: convert to the setup object
+		// (need to build more in the setup object)
+		$query = "
+			SELECT *
+			FROM ".Setup::SETUP_TABLE."
+			WHERE setup_id = '{$result['setup_id']}'
+		";
+		$setup = $this->_mysql->fetch_assoc($query);
+		call($setup);
+
+		$this->_setup = array(
+			'id' => $result['setup_id'],
+			'name' => $setup['name'],
+			'board' => $setup['board'],
+		);
 
 		// set up the players
 		$this->_players['white']['player_id'] = $result['white_id'];
