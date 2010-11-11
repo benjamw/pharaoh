@@ -188,7 +188,6 @@ legend {
 #menu ,
 #mygames {
 	border: 1px solid #777;
-	border-bottom-width: 0;
 
 	a {
 		text-align: right;
@@ -231,6 +230,10 @@ legend {
 				background-color: #333;
 				border-color: #333;
 			}
+		}
+
+		&:last-child a {
+			border-bottom: 0;
 		}
 	}
 }

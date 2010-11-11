@@ -43,16 +43,19 @@ $border_med: #777;
 $border_med_light: #555;
 $border_light: #333;
 
+$nav_outer_border: $color;
 $nav_text: $text;
+$nav_notice: $warning;
 $nav_back: $sub_back;
 $nav_border: $border_light;
 $nav_hover_text: $dark_text;
+$nav_hover_notice: $warning;
 $nav_hover_back: #440;
 $nav_hover_border: $nav_border;
 $nav_active_text: $dark_text;
+$nav_active_notice: $nav_active_text;
 $nav_active_back: #990;
 $nav_active_border: $nav_border;
-$nav_notice: $warning;
 
 $links_text: #DDD;
 $links_back: transparent;
