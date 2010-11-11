@@ -163,6 +163,18 @@ $(document).ready( function( ) {
 
 		return false;
 	});
+
+
+	// tha fancybox stuff
+	$('a.fancybox').fancybox({
+		autoDimensions : true,
+		onStart : function(link) {
+			$($(link).attr('href')).show( );
+		},
+		onCleanup : function( ) {
+			$(this.href).hide( );
+		}
+	});
 });
 
 

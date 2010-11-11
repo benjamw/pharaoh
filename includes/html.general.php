@@ -113,9 +113,8 @@ function get_header($meta = null) {
 	$GAME_NAME = GAME_NAME;
 
 	$html = <<< EOF
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
-	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<!DOCTYPE html>
+<html>
 <head>
 
 	<title>{$title}</title>
@@ -129,20 +128,14 @@ function get_header($meta = null) {
 		{$query_strings}
 	/*]]>*/</script>
 
-	<link rel="stylesheet" type="text/css" media="screen" href="css/reset.css" />
-	<link rel="stylesheet" type="text/css" media="screen" href="css/layout.css" />
-	<link rel="stylesheet" type="text/css" media="screen" href="css/datatable.css" />
-	<link rel="stylesheet" type="text/css" media="screen" href="css/forms.css" />
-	<link rel="stylesheet" type="text/css" media="screen" href="css/c_{$GLOBALS['_DEFAULT_COLOR']}.css" />
-
 	<script type="text/javascript" src="scripts/json.js"></script>
-	<script type="text/javascript" src="scripts/jquery-1.4.2.min.js"></script>
+	<script type="text/javascript" src="scripts/jquery-1.4.3.min.js"></script>
 	<script type="text/javascript" src="scripts/jquery.tablesorter.js"></script>
 	<!-- <script type="text/javascript" src="scripts/jquery.color.js"></script> -->
 
 	<!-- fancybox -->
-	<link rel="stylesheet" type="text/css" media="screen" href="scripts/jquery.fancybox/jquery.fancybox-1.3.1.css" />
-	<script type="text/javascript" src="scripts/jquery.fancybox/jquery.fancybox-1.3.1.pack.js"></script>
+	<link rel="stylesheet" type="text/css" media="screen" href="scripts/jquery.fancybox/jquery.fancybox-1.3.3.css" />
+	<script type="text/javascript" src="scripts/jquery.fancybox/jquery.fancybox-1.3.3.pack.js"></script>
 	<script type="text/javascript">//<![CDATA[
 		$(document).ready( function( ) {
 			$('a.help').fancybox({
@@ -159,6 +152,12 @@ function get_header($meta = null) {
 	<style type="text/css">/*<![CDATA[*/
 		#fancy_title { display: none !important; }
 	/*]]>*/</style>
+
+	<link rel="stylesheet" type="text/css" media="screen" href="css/reset.css" />
+	<link rel="stylesheet" type="text/css" media="screen" href="css/layout.css" />
+	<link rel="stylesheet" type="text/css" media="screen" href="css/datatable.css" />
+	<link rel="stylesheet" type="text/css" media="screen" href="css/forms.css" />
+	<link rel="stylesheet" type="text/css" media="screen" href="css/c_{$GLOBALS['_DEFAULT_COLOR']}.css" />
 
 	{$head_data}
 	{$flash}

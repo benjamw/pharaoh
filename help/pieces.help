@@ -1,0 +1,58 @@
+<div class="help">
+
+	<h3>Pieces</h3>
+
+	<p>The pieces in the game are as follows:</p>
+
+	<ul>
+		<li>
+			<img src="images/pieces/silver_pharaoh.png" />
+			<img src="images/pieces/red_pharaoh.png" />
+			Pharaoh - the Pharaoh can move one space in any direction so long as the space is unoccupied.
+			The Pharaoh can not rotate.  The game ends if the Pharaoh is shot from any direction.
+		</li>
+
+		<li>
+			<img src="images/pieces/silver_obelisk.png" />
+			<img src="images/pieces/red_obelisk.png" />
+			Obelisk - the Obelisk can move one space in any direction so long as the space is unoccupied.
+			Two Obelisks can join to create an Obelisk Stack.
+			The Obelisk can not rotate.
+		</li>
+
+		<li>
+			<img src="images/pieces/silver_obelisk_stack.png" />
+			<img src="images/pieces/red_obelisk_stack.png" />
+			Obelisk Stack - the Obelisk Stack behaves just like an Obelisk.  An Obelisk Stack can be split into two Obelisks.
+			An Obelisk Stack can take two hits from the laser before being completely destroyed: the first hit destroys the top Obelisk leaving
+			a single Obelisk which takes the second hit.
+		</li>
+
+		<li>
+			<img src="images/pieces/silver_pyramid_ne.png" />
+			<img src="images/pieces/red_pyramid_ne.png" />
+			Pyramid - the Pyramid can move one space in any direction so long as the space is unoccupied.
+			The Pyramid can also rotate.  The Pyramid can be destroyed if the laser hits either of the two non-mirrored sides.
+		</li>
+
+		<li>
+			<img src="images/pieces/silver_djed_ne.png" />
+			<img src="images/pieces/red_djed_ne.png" />
+			Djed - the Djed can move one space in any direction as well as swap places with a Pyramid or Obelisk.
+			The Djed can also rotate.  The Djed is mirrored on both sides and therefore can not be destroyed.
+		</li>
+
+		<li>
+			<img src="images/pieces/silver_horus_ne.png" />
+			<img src="images/pieces/red_horus_ne.png" />
+			Eye of Horus - the Eye of Horus can move one space in any direction as well as swap places with a Pyramid or Obelisk.
+			The Eye of Horus can also rotate.  The Eye of Horus is mirrored on both sides and therefore can not be destroyed.
+			The Eye of Horus is a beam splitter and will split the laser beam into two beams, one traveling directly through
+			the piece, and the other reflecting off the face.  The game can end in a tie if both Pharaohs are shot in the same
+			turn due to the laser beam being split via the Eye of Horus.  The Eye of Horus is not present in all setups.
+
+		</li>
+
+	</ul>
+
+</div>

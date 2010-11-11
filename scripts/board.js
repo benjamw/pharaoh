@@ -86,8 +86,9 @@ function rotate_piece(piece, rotation) {
 }
 
 
-function create_board(xFEN, flip) {
+function create_board(xFEN, flip, blank) {
 	flip = !! flip;
+	blank = ( !! blank) || false;
 
 	if ( ! xFEN) {
 		return false;
@@ -100,7 +101,9 @@ function create_board(xFEN, flip) {
 		classes = [],
 		silver = 'silver',
 		red = 'red',
-		temp;
+		temp,
+		id = ' id="the_board"',
+		idx_id;
 
 	// chunk the xFEN into rows
 	xFEN = xFEN.match(RegExp('.{1,10}','g'));
@@ -117,7 +120,11 @@ function create_board(xFEN, flip) {
 		xFEN = xFEN.reverse( );
 	}
 
-	html += '<div id="the_board">'
+	if (blank) {
+		id = '';
+	}
+
+	html += '<div'+id+' class="a_board">'
 			+'<div class="header corner">&nbsp;</div>';
 
 	for (i = 0; i < 10; ++i) {
@@ -154,7 +161,12 @@ function create_board(xFEN, flip) {
 				idx = 79 - idx;
 			}
 
-			html += '<div id="idx_'+idx+'"';
+			idx_id = ' id="idx_'+idx+'"';
+			if (blank) {
+				idx_id = '';
+			}
+
+			html += '<div'+idx_id;
 
 			if ((0 == j) || ((0 == i) && (8 == j)) || ((7 == i) && (8 == j))) {
 				classes.push('c_'+red);
@@ -190,7 +202,11 @@ function create_board(xFEN, flip) {
 	}
 
 	html += '<div class="header corner">&nbsp;</div>'
-		+ '</div> <!-- #the_board -->';
+		+ '</div> <!-- .a_board -->';
+
+	if ( ! blank) {
+		html += ' <!-- #the_board -->';
+	}
 
 	return html;
 }
