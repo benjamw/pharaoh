@@ -24,7 +24,7 @@ table.history td.active {
 
 #history .review span {
 	border-color: $review_border;
-	@include border-radius(4px);
+	@include border-radius(2px);
 }
 
 
