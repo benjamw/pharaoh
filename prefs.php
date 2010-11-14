@@ -35,7 +35,7 @@ $hints = array(
 $allow_email_cb = '<input type="checkbox" id="allow_email" name="allow_email" '.get_selected(true, $GLOBALS['Player']->allow_email, false).'/>';
 
 if (is_array($GLOBALS['_COLORS']) && (0 != count($GLOBALS['_COLORS']))) {
-	$color_select = '<div><label for="color">Theme Color</label><select id="color" name="color">';
+	$color_select = '<div><label for="color">Theme Color</label><select id="color" name="color"><option value="">Use Default</option>';
 
 	foreach ($GLOBALS['_COLORS'] as $color) {
 		$color_select .= '<option value="'.$color.'"'.get_selected($GLOBALS['Player']->color, $color).'>'.ucwords(str_replace('_', ' ', $color)).'</option>';

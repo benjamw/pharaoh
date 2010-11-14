@@ -168,6 +168,11 @@ if (( ! defined('LOGIN') || LOGIN) && isset($Mysql)) {
 	if (0 != $_SESSION['player_id']) {
 		$Message = new Message($_SESSION['player_id'], $GLOBALS['Player']->is_admin);
 	}
+
+	// set the default color for the player
+	if (('' != $GLOBALS['Player']->color) && (in_array($GLOBALS['Player']->color, $GLOBALS['_COLORS']))) {
+		$GLOBALS['_DEFAULT_COLOR'] = $GLOBALS['Player']->color;
+	}
 }
 
 // grab the list of players
