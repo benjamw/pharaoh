@@ -1866,6 +1866,7 @@ class Game
 	static public function packFEN($xFEN, $row_length = 10)
 	{
 		$xFEN = preg_replace('/\s+/', '', $xFEN); // remove spaces
+		$xFEN = preg_replace('/\//', '', $xFEN); // remove any row separators
 
 		$xFEN = trim(chunk_split($xFEN, $row_length, '/'), '/'); // add the row separaters
 		$FEN = preg_replace('/(0+)/e', "strlen('\\1')", $xFEN); // pack the 0s
