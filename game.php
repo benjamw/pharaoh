@@ -123,7 +123,6 @@ $meta['title'] = htmlentities($Game->name, ENT_QUOTES, 'ISO-8859-1', false).' - 
 $meta['show_menu'] = false;
 $meta['head_data'] = '
 	<link rel="stylesheet" type="text/css" media="screen" href="css/game.css" />
-	<link rel="stylesheet" type="text/css" media="screen" href="css/board.css" />
 
 	<script type="text/javascript" src="scripts/board.js"></script>
 	<script type="text/javascript">/*<![CDATA[*/

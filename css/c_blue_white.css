@@ -7,26 +7,23 @@
 /* basic styles */
 /* line 70, scss/_c_template.scss */
 body {
-  color: #dddddd;
-  background-color: black;
+  color: #333333;
+  background-color: white;
 }
 
 /* line 76, scss/_c_template.scss */
 h1 {
   border-color: black;
-  background-color: #cccc00;
-  background-image: -webkit-gradient(linear, 0% 0%, 0% 100%, color-stop(11.111%, #cccc00), color-stop(100%, #000000));
-  background-image: -moz-linear-gradient(top, #cccc00 10%, #000000 90%);
-  background-image: linear-gradient(top, #cccc00 10%, #000000 90%);
+  background-color: #666bab;
 }
 
 /* line 86, scss/_c_template.scss */
 a {
-  color: #dddddd;
+  color: #333333;
 }
 /* line 89, scss/_c_template.scss */
 a:hover {
-  color: #cccc00;
+  color: #666bab;
 }
 /* line 93, scss/_c_template.scss */
 a.help {
@@ -34,7 +31,7 @@ a.help {
 }
 /* line 96, scss/_c_template.scss */
 a.help:hover {
-  border-color: #777777;
+  border-color: black;
 }
 
 /* line 104, scss/_c_template.scss */
@@ -45,7 +42,7 @@ acronym {
 
 /* line 109, scss/_c_template.scss */
 hr.fancy {
-  background-color: #777777;
+  background-color: black;
   border-color: #777777;
 }
 
@@ -69,13 +66,13 @@ fieldset {
 /* line 133, scss/_c_template.scss */
 .highlight,
 .highlight * {
-  color: #bbbb00;
+  color: #0000dd;
 }
 
 /* line 139, scss/_c_template.scss */
 .instruction,
 .instruction * {
-  color: #555555;
+  color: #aaaaaa;
 }
 
 /* links */
@@ -89,27 +86,27 @@ fieldset {
 #links a:hover {
   border-color: black;
   background-color: white;
-  color: #cccc00;
+  color: #666bab;
 }
 
 /* line 161, scss/_c_template.scss */
 #menu,
 #mygames {
-  border-color: #999900;
+  border-color: #666bab;
 }
 /* line 164, scss/_c_template.scss */
 #menu a,
 #mygames a {
-  color: #dddddd;
-  background-color: #111111;
-  border-color: #333333;
+  color: #333333;
+  background-color: #eeeeee;
+  border-color: #cccccc;
 }
 /* line 169, scss/_c_template.scss */
 #menu a:hover,
 #mygames a:hover {
-  color: white;
-  background-color: #444400;
-  border-color: #333333;
+  color: #30356f;
+  background-color: #dddff3;
+  border-color: #cccccc;
 }
 /* line 174, scss/_c_template.scss */
 #menu a:hover .notice,
@@ -125,8 +122,8 @@ fieldset {
 #menu li.active a,
 #mygames li.active a {
   color: white;
-  background-color: #999900;
-  border-color: #333333;
+  background-color: #666bab;
+  border-color: #cccccc;
 }
 /* line 191, scss/_c_template.scss */
 #menu li.active a .notice,
@@ -136,11 +133,11 @@ fieldset {
 
 /* line 201, scss/_c_template.scss */
 #mygames .finished a {
-  color: #555555;
+  color: #999999;
 }
 /* line 202, scss/_c_template.scss */
 #mygames .playing a {
-  color: #dddd00;
+  color: #dd0000;
 }
 /* line 203, scss/_c_template.scss */
 #mygames .my_turn a {
@@ -148,31 +145,31 @@ fieldset {
 }
 /* line 204, scss/_c_template.scss */
 #mygames .none a {
-  color: #dddddd;
+  color: #333333;
 }
 
 /* notes */
 /* line 210, scss/_c_template.scss */
 #sidebar #chatbox {
-  background-color: #111111;
-  border-color: #333333;
+  background-color: #eeeeee;
+  border-color: #cccccc;
 }
 
 /* line 217, scss/_c_template.scss */
 #notes {
-  background-color: #111111;
-  border-color: #999900;
+  background-color: #eeeeee;
+  border-color: #666bab;
 }
 
 /* chats */
 /* line 225, scss/_c_template.scss */
 #chats dt {
   background: #777777;
-  color: white;
+  color: black;
 }
 /* line 230, scss/_c_template.scss */
 #chats dd {
-  border-color: #777777;
+  border-color: black;
 }
 
 /* main */
@@ -199,11 +196,8 @@ h2 {
 /* line 261, scss/_c_template.scss */
 #footer {
   color: #dddddd;
-  background-color: #cccc00;
+  background-color: #666bab;
   border-color: black;
-  background-image: -webkit-gradient(linear, 0% 100%, 0% 0%, color-stop(11.111%, #cccc00), color-stop(100%, #000000));
-  background-image: -moz-linear-gradient(bottom, #cccc00 10%, #000000 90%);
-  background-image: linear-gradient(bottom, #cccc00 10%, #000000 90%);
 }
 
 /* other basic styles */
@@ -225,7 +219,7 @@ table {
 
 /* line 294, scss/_c_template.scss */
 th {
-  border-bottom-color: #777777;
+  border-bottom-color: black;
   border-right-color: #777777;
 }
 
@@ -234,8 +228,8 @@ tr:hover > td,
 tr:hover > td *,
 tr.alt:hover > td,
 tr.alt:hover > td * {
-  background-color: #888800;
-  color: #dddddd !important;
+  background-color: #666bab;
+  color: white !important;
 }
 
 /* line 307, scss/_c_template.scss */
@@ -245,42 +239,42 @@ td {
 
 /* line 311, scss/_c_template.scss */
 tr.alt {
-  background-color: #222222;
+  background-color: #e7e7e7;
 }
 
 /* line 316, scss/_c_template.scss */
 .lowlight,
 .lowlight td {
-  color: #888888;
+  color: #666666;
 }
 
 /* sorted table styles */
 /* line 322, scss/_c_template.scss */
 thead tr th {
-  background-color: black;
+  background-color: #dddddd;
 }
 
 /* line 327, scss/_c_template.scss */
 thead tr .headerSortDown,
 thead tr .headerSortUp {
-  background-color: #cccc00;
-  color: black;
+  background-color: #666bab;
+  color: white;
 }
 
 /* line 332, scss/_c_template.scss */
 thead tr .headerSortUp {
-  border-top-color: black;
+  border-top-color: white;
 }
 
 /* line 336, scss/_c_template.scss */
 thead tr .headerSortDown {
-  border-bottom-color: black;
+  border-bottom-color: white;
 }
 
 /* fancybox overrides */
 /* line 342, scss/_c_template.scss */
 #fancybox-content {
-  background-color: black;
+  background-color: white;
 }
 
 /*

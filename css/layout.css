@@ -6,8 +6,90 @@
 	the name of the css file you wish to use in the
 	config.inc.php file.
 */
+/* line 9, scss/_reset.scss */
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, font, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  outline: 0;
+  font-weight: inherit;
+  font-style: inherit;
+  font-size: 100%;
+  font-family: inherit;
+}
+
+/* remember to define focus styles! */
+/* line 20, scss/_reset.scss */
+:focus {
+  outline: 0;
+}
+
+/* line 23, scss/_reset.scss */
+body {
+  line-height: 1;
+  color: black;
+  background: white;
+}
+
+/* line 28, scss/_reset.scss */
+ol, ul {
+  list-style: none;
+}
+
+/* tables still need 'cellspacing="0"' in the markup */
+/* line 32, scss/_reset.scss */
+table {
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+/* line 36, scss/_reset.scss */
+caption, th, td {
+  text-align: left;
+  font-weight: normal;
+}
+
+/* line 41, scss/_reset.scss */
+blockquote:before, blockquote:after,
+q:before, q:after {
+  content: "";
+}
+
+/* line 44, scss/_reset.scss */
+blockquote, q {
+  quotes: "" "";
+}
+
+/* now set some default styles that have been removed */
+/* line 50, scss/_reset.scss */
+strong {
+  font-weight: bold;
+}
+
+/* line 54, scss/_reset.scss */
+em {
+  font-style: italic;
+}
+
+/* line 58, scss/_reset.scss */
+em em {
+  font-style: normal;
+}
+
+/* line 62, scss/_reset.scss */
+pre {
+  font-family: monospace;
+}
+
 /* basic styles */
-/* line 13, scss/layout.scss */
+/* line 15, scss/layout.scss */
 body {
   margin: 0;
   padding: 0;
@@ -17,7 +99,7 @@ body {
   font-family: sans-serif;
 }
 
-/* line 23, scss/layout.scss */
+/* line 25, scss/layout.scss */
 h1 {
   height: 45px;
   margin: 0 0 3px;
@@ -27,7 +109,7 @@ h1 {
   text-indent: -9999em;
   border-bottom: 2px solid #000;
 }
-/* line 32, scss/layout.scss */
+/* line 34, scss/layout.scss */
 h1 a {
   background: transparent url(../images/Pharaoh.png) no-repeat scroll 15px center;
   display: block;
@@ -35,35 +117,35 @@ h1 a {
   height: 100%;
 }
 
-/* line 41, scss/layout.scss */
+/* line 43, scss/layout.scss */
 a {
   font-weight: bold;
   text-decoration: underline;
 }
-/* line 45, scss/layout.scss */
+/* line 47, scss/layout.scss */
 a:hover {
   text-decoration: none;
 }
-/* line 49, scss/layout.scss */
+/* line 51, scss/layout.scss */
 a.help {
   border: 1px solid #777;
   font-weight: bold;
   padding: 0 2px;
   text-decoration: none;
 }
-/* line 55, scss/layout.scss */
+/* line 57, scss/layout.scss */
 a.help:hover {
   border: 1px solid #999;
 }
 
-/* line 63, scss/layout.scss */
+/* line 65, scss/layout.scss */
 abbr,
 acronym {
   border-bottom: 1px dashed #777;
   cursor: help;
 }
 
-/* line 69, scss/layout.scss */
+/* line 71, scss/layout.scss */
 hr.fancy {
   height: 5px;
   margin: 1em;
@@ -71,54 +153,54 @@ hr.fancy {
   border: 1px solid #777;
 }
 
-/* line 77, scss/layout.scss */
+/* line 79, scss/layout.scss */
 p {
   margin: 1em 0;
   line-height: 1.2;
 }
 
-/* line 83, scss/layout.scss */
+/* line 85, scss/layout.scss */
 fieldset {
   padding: 5px;
   margin: 5px;
   border: 1px solid #777;
 }
 
-/* line 90, scss/layout.scss */
+/* line 92, scss/layout.scss */
 legend {
   font-weight: bold;
   font-size: larger;
 }
 
-/* line 96, scss/layout.scss */
+/* line 98, scss/layout.scss */
 .warning, .warning * {
   color: #C00;
   font-weight: bold;
 }
 
-/* line 102, scss/layout.scss */
+/* line 104, scss/layout.scss */
 .notice, .notice * {
   color: #CC0;
   font-weight: bold;
 }
 
-/* line 108, scss/layout.scss */
+/* line 110, scss/layout.scss */
 .highlight, .highlight * {
   color: #00C;
   font-weight: bold;
 }
 
-/* line 114, scss/layout.scss */
+/* line 116, scss/layout.scss */
 .instruction, .instruction * {
   color: #AAA;
 }
 
-/* line 119, scss/layout.scss */
+/* line 121, scss/layout.scss */
 .caption {
   margin: 1ex 0;
 }
 
-/* line 124, scss/layout.scss */
+/* line 126, scss/layout.scss */
 #date {
   font-size: 10px;
   font-weight: bold;
@@ -127,14 +209,14 @@ legend {
 }
 
 /* links */
-/* line 133, scss/layout.scss */
+/* line 135, scss/layout.scss */
 #links {
   float: right;
   margin: 1em;
   font-weight: bold;
   color: #EEE;
 }
-/* line 139, scss/layout.scss */
+/* line 141, scss/layout.scss */
 #links a {
   text-decoration: none;
   padding: 0.3ex 0.75ex;
@@ -142,7 +224,7 @@ legend {
   background-color: transparent;
   color: #333;
 }
-/* line 146, scss/layout.scss */
+/* line 148, scss/layout.scss */
 #links a:hover {
   border-color: #000;
   background-color: #555;
@@ -150,7 +232,7 @@ legend {
 }
 
 /* fix some stupid IE7 float bug */
-/* line 154, scss/layout.scss */
+/* line 156, scss/layout.scss */
 *:first-child + html #links {
   position: absolute;
   top: 0;
@@ -159,37 +241,37 @@ legend {
 }
 
 /* wrapper */
-/* line 163, scss/layout.scss */
+/* line 165, scss/layout.scss */
 #wrapper {
   margin: 0;
   padding: 0;
 }
 
 /* menu */
-/* line 170, scss/layout.scss */
+/* line 172, scss/layout.scss */
 #menuholder {
   width: 1px;
   overflow: visible;
   float: left;
 }
-/* line 175, scss/layout.scss */
+/* line 177, scss/layout.scss */
 #menuholder div {
   float: left;
   margin: 3px;
   margin-bottom: 2em;
 }
-/* line 181, scss/layout.scss */
+/* line 183, scss/layout.scss */
 #menuholder #mygames_title {
   margin: 0;
   white-space: nowrap;
 }
 
-/* line 189, scss/layout.scss */
+/* line 191, scss/layout.scss */
 #menu,
 #mygames {
   border: 1px solid #777;
 }
-/* line 192, scss/layout.scss */
+/* line 194, scss/layout.scss */
 #menu a,
 #mygames a {
   text-align: right;
@@ -205,24 +287,24 @@ legend {
   background-color: #EEE;
   border-bottom: 1px solid #555;
 }
-/* line 206, scss/layout.scss */
+/* line 208, scss/layout.scss */
 #menu a:hover,
 #mygames a:hover {
   color: #DDD;
   background-color: #555;
 }
-/* line 211, scss/layout.scss */
+/* line 213, scss/layout.scss */
 #menu a .notice,
 #mygames a .notice {
   color: #99F;
 }
-/* line 216, scss/layout.scss */
+/* line 218, scss/layout.scss */
 #menu ul,
 #mygames ul {
   margin: 0;
   padding: 0;
 }
-/* line 221, scss/layout.scss */
+/* line 223, scss/layout.scss */
 #menu li,
 #mygames li {
   text-indent: 0;
@@ -230,53 +312,53 @@ legend {
   padding: 0;
   list-style: none outside none;
 }
-/* line 228, scss/layout.scss */
+/* line 230, scss/layout.scss */
 #menu li.active a,
 #mygames li.active a {
   color: #DDD;
   background-color: #333;
   border-color: #333;
 }
-/* line 235, scss/layout.scss */
+/* line 237, scss/layout.scss */
 #menu li:last-child a,
 #mygames li:last-child a {
   border-bottom: 0;
 }
 
-/* line 240, scss/layout.scss */
+/* line 242, scss/layout.scss */
 *:first-child + html #menu li {
   margin-left: -1.25em;
 }
 
-/* line 246, scss/layout.scss */
+/* line 248, scss/layout.scss */
 #mygames a {
   white-space: normal;
 }
-/* line 250, scss/layout.scss */
+/* line 252, scss/layout.scss */
 #mygames .finished a {
   color: #999;
 }
-/* line 251, scss/layout.scss */
+/* line 253, scss/layout.scss */
 #mygames .playing a {
   color: #F00;
 }
-/* line 252, scss/layout.scss */
+/* line 254, scss/layout.scss */
 #mygames .my_turn a {
   color: #FF0;
 }
-/* line 253, scss/layout.scss */
+/* line 255, scss/layout.scss */
 #mygames .none a {
   color: #FFF;
 }
 
 /* notes */
-/* line 258, scss/layout.scss */
+/* line 260, scss/layout.scss */
 #sidebar {
   float: right;
   width: 160px;
   overflow: visible;
 }
-/* line 263, scss/layout.scss */
+/* line 265, scss/layout.scss */
 #sidebar #chatbox {
   float: right;
   width: 160px;
@@ -285,15 +367,15 @@ legend {
   background-color: #EEE;
   border: 1px solid #777;
 }
-/* line 271, scss/layout.scss */
+/* line 273, scss/layout.scss */
 #sidebar #chatbox input {
   width: 95%;
 }
-/* line 276, scss/layout.scss */
+/* line 278, scss/layout.scss */
 #sidebar #chats {
   height: 300px;
 }
-/* line 280, scss/layout.scss */
+/* line 282, scss/layout.scss */
 #sidebar .active {
   position: relative;
   top: 0;
@@ -301,7 +383,7 @@ legend {
   width: 500px;
 }
 
-/* line 289, scss/layout.scss */
+/* line 291, scss/layout.scss */
 #notes {
   float: right;
   width: 160px;
@@ -313,45 +395,45 @@ legend {
 }
 
 /* chats */
-/* line 301, scss/layout.scss */
+/* line 303, scss/layout.scss */
 #chatbox input[type=text] {
   width: 90%;
 }
 
-/* line 306, scss/layout.scss */
+/* line 308, scss/layout.scss */
 #game_page #chatbox input[type=text] {
   width: auto;
 }
 
-/* line 311, scss/layout.scss */
+/* line 313, scss/layout.scss */
 #chats {
   height: 200px;
   overflow: auto;
 }
-/* line 315, scss/layout.scss */
+/* line 317, scss/layout.scss */
 #chats dt {
   background: transparent;
   color: #000;
   font-weight: bold;
   padding: 0 3px;
 }
-/* line 321, scss/layout.scss */
+/* line 323, scss/layout.scss */
 #chats dt span {
   float: right;
   font-size: 80%;
 }
-/* line 327, scss/layout.scss */
+/* line 329, scss/layout.scss */
 #chats dd {
   padding: 0 3px;
   border-bottom: 1px solid #000;
 }
-/* line 332, scss/layout.scss */
+/* line 334, scss/layout.scss */
 #chats img {
   float: left;
 }
 
 /* main */
-/* line 339, scss/layout.scss */
+/* line 341, scss/layout.scss */
 h2 {
   font-size: 14px;
   font-weight: bold;
@@ -359,78 +441,78 @@ h2 {
   border-bottom: 1px solid #777;
 }
 
-/* line 347, scss/layout.scss */
+/* line 349, scss/layout.scss */
 .type {
   font-size: smaller;
   padding-left: 2em;
 }
-/* line 351, scss/layout.scss */
+/* line 353, scss/layout.scss */
 .type .number {
   font-weight: bold;
   margin-right: 2em;
 }
-/* line 356, scss/layout.scss */
+/* line 358, scss/layout.scss */
 .type a {
   margin: 0 2em;
 }
 
-/* line 362, scss/layout.scss */
+/* line 364, scss/layout.scss */
 #content {
   margin: 3px 185px;
 }
-/* line 365, scss/layout.scss */
+/* line 367, scss/layout.scss */
 #content.full {
   margin: 5px;
 }
-/* line 369, scss/layout.scss */
+/* line 371, scss/layout.scss */
 #content .sidebar {
   float: right;
   width: 300px;
   margin-top: 10px;
 }
-/* line 377, scss/layout.scss */
+/* line 379, scss/layout.scss */
 #content form .buttons #delete {
   float: right;
 }
-/* line 381, scss/layout.scss */
+/* line 383, scss/layout.scss */
 #content form .buttons .prevnext {
   margin-bottom: 20px;
 }
-/* line 384, scss/layout.scss */
+/* line 386, scss/layout.scss */
 #content form .buttons .prevnext span {
   padding: 0 10px;
 }
-/* line 391, scss/layout.scss */
+/* line 393, scss/layout.scss */
 #content #recipient_list {
   margin-top: 20px;
 }
 
-/* line 397, scss/layout.scss */
+/* line 399, scss/layout.scss */
 .stats {
   width: 150px;
   float: left;
   margin: 3px;
 }
 
-/* line 405, scss/layout.scss */
+/* line 407, scss/layout.scss */
 #index_page .tableholder {
   max-height: 300px;
   overflow-y: auto;
 }
-/* line 410, scss/layout.scss */
+/* line 412, scss/layout.scss */
 #index_page #chatbox {
   border: 1px solid #777;
 }
-/* line 413, scss/layout.scss */
+/* line 415, scss/layout.scss */
 #index_page #chatbox input[type=text] {
   width: 99%;
 }
-/* line 418, scss/layout.scss */
+/* line 420, scss/layout.scss */
 #index_page #chats {
   border-top: 1px solid #777;
   height: 500px;
 }
-/* line 422, scss/layout.scss */
+/* line 424, scss/layout.scss */
 #index_page #chats dt {
   height: 50px;
   width: 150px;
@@ -442,14 +524,14 @@ h2 {
   text-align: right;
   background: transparent;
 }
-/* line 434, scss/layout.scss */
+/* line 436, scss/layout.scss */
 #index_page #chats dd {
   min-height: 50px;
   border-bottom: 1px solid #AAA;
   padding: 5px 5px 6px 5px;
   margin: 0 0 6px 0;
 }
-/* line 441, scss/layout.scss */
+/* line 443, scss/layout.scss */
 #index_page #chats span {
   position: absolute;
   bottom: 5px;
@@ -457,56 +539,56 @@ h2 {
 }
 
 /* messages */
-/* line 452, scss/layout.scss */
+/* line 454, scss/layout.scss */
 h2.subject,
 p.message {
   width: 70ex;
 }
 
-/* line 457, scss/layout.scss */
+/* line 459, scss/layout.scss */
 .sender {
   margin-left: 3em;
   font-size: smaller;
 }
 
-/* line 463, scss/layout.scss */
+/* line 465, scss/layout.scss */
 .link_date {
   float: right;
   text-align: right;
   width: 300px;
 }
-/* line 468, scss/layout.scss */
+/* line 470, scss/layout.scss */
 .link_date a {
   float: left;
 }
 
-/* line 475, scss/layout.scss */
+/* line 477, scss/layout.scss */
 #recipient_list ul {
   margin: 10px;
 }
-/* line 479, scss/layout.scss */
+/* line 481, scss/layout.scss */
 #recipient_list .unread {
   font-weight: bold;
 }
-/* line 483, scss/layout.scss */
+/* line 485, scss/layout.scss */
 #recipient_list .deleted {
   text-decoration: line-through;
 }
 
-/* line 489, scss/layout.scss */
+/* line 491, scss/layout.scss */
 .action select {
   float: right;
 }
 
 /* footer */
-/* line 495, scss/layout.scss */
+/* line 497, scss/layout.scss */
 #footerspacer {
   height: 100px;
   /* make sure nothing gets hidden behind the footer */
   clear: both;
 }
 
-/* line 501, scss/layout.scss */
+/* line 503, scss/layout.scss */
 #footer {
   font-size: 10px;
   font-weight: bold;
@@ -522,11 +604,11 @@ p.message {
   background: #FFF;
   border-top: 1px solid #BBB;
 }
-/* line 516, scss/layout.scss */
+/* line 518, scss/layout.scss */
 #footer span {
   margin: 0 2em;
 }
-/* line 520, scss/layout.scss */
+/* line 522, scss/layout.scss */
 #footer p {
   margin: 0;
   padding: 0;
@@ -534,45 +616,45 @@ p.message {
 }
 
 /* other basic styles */
-/* line 529, scss/layout.scss */
+/* line 531, scss/layout.scss */
 .notice {
   font-weight: bold;
 }
 
-/* line 534, scss/layout.scss */
+/* line 536, scss/layout.scss */
 .afterthought {
   font-size: 11px;
   font-weight: normal;
 }
 
-/* line 540, scss/layout.scss */
+/* line 542, scss/layout.scss */
 .instruction {
   margin: 0 0 10px 10px;
   font-size: 11px;
   line-height: 11px;
 }
 
-/* line 548, scss/layout.scss */
+/* line 550, scss/layout.scss */
 ul.settings li {
   float: left;
   width: 100%;
 }
-/* line 553, scss/layout.scss */
+/* line 555, scss/layout.scss */
 ul.settings label {
   clear: left;
 }
 
-/* line 559, scss/layout.scss */
+/* line 561, scss/layout.scss */
 #buttons {
   float: right;
   margin-right: 1px;
 }
-/* line 563, scss/layout.scss */
+/* line 565, scss/layout.scss */
 #buttons li {
   float: left;
   margin-left: 1px;
 }
-/* line 568, scss/layout.scss */
+/* line 570, scss/layout.scss */
 #buttons a {
   display: block;
   padding: 0 1em;
@@ -581,32 +663,32 @@ ul.settings label {
   margin: 0 -1px;
 }
 
-/* line 578, scss/layout.scss */
+/* line 580, scss/layout.scss */
 .clone {
   display: none;
   visibility: hidden;
 }
 
-/* line 584, scss/layout.scss */
+/* line 586, scss/layout.scss */
 div.help {
   padding: 10px;
 }
-/* line 588, scss/layout.scss */
+/* line 590, scss/layout.scss */
 div.help ol,
 div.help ul {
   text-indent: -1em;
   margin: 0 0 1ex 2em;
 }
-/* line 593, scss/layout.scss */
+/* line 595, scss/layout.scss */
 div.help li {
   text-indent: -1em;
   margin-bottom: 1ex;
 }
-/* line 597, scss/layout.scss */
+/* line 599, scss/layout.scss */
 div.help li strong {
   color: #F00;
 }
-/* line 602, scss/layout.scss */
+/* line 604, scss/layout.scss */
 div.help table {
   width: auto;
   margin: 0 auto;
@@ -643,4 +725,290 @@ div.help table {
 /* line 21, scss/_game_layout.scss */
 #fancybox-content {
   background-color: #000 !important;
+}
+
+/* line 2, scss/_datatable.scss */
+table {
+  border-collapse: collapse;
+  border: 1px solid #777;
+  height: 1px;
+  margin: 1em 0;
+  width: 100%;
+  line-height: 120%;
+}
+
+/* line 11, scss/_datatable.scss */
+th {
+  font-weight: bold;
+  text-align: center;
+  vertical-align: bottom;
+  border-bottom: 2px solid #000;
+  border-right: 1px dashed #777;
+  padding: 2px 1ex 1px;
+  white-space: nowrap;
+}
+
+/* line 22, scss/_datatable.scss */
+tr:hover > td,
+tr.alt:hover > td {
+  background-color: #444;
+  color: #FFF;
+}
+
+/* line 27, scss/_datatable.scss */
+td {
+  border-right: 1px dashed #777;
+  padding: 1px 1ex 2px;
+  text-align: left;
+  vertical-align: middle;
+}
+
+/* line 34, scss/_datatable.scss */
+.alt {
+  background-color: #DDD;
+}
+
+/* line 38, scss/_datatable.scss */
+td.numeric {
+  text-align: right;
+}
+
+/* line 43, scss/_datatable.scss */
+td.date,
+td.fortify {
+  white-space: nowrap;
+}
+
+/* line 49, scss/_datatable.scss */
+td.join,
+td.remove,
+td.edit {
+  text-align: center;
+  vertical-align: middle;
+  width: 1px;
+}
+
+/* line 56, scss/_datatable.scss */
+.highlight,
+.highlight td {
+  font-weight: bold;
+}
+
+/* line 61, scss/_datatable.scss */
+.lowlight,
+.lowlight td {
+  color: #666;
+}
+
+/* line 65, scss/_datatable.scss */
+th.remove {
+  width: 1px;
+}
+
+/* line 69, scss/_datatable.scss */
+caption {
+  margin-top: 1em;
+  font-weight: bold;
+}
+
+/* sorted table styles */
+/* line 76, scss/_datatable.scss */
+thead tr th {
+  background-color: #DDD;
+}
+
+/* line 80, scss/_datatable.scss */
+thead tr .header {
+  cursor: pointer;
+}
+
+/* line 85, scss/_datatable.scss */
+thead tr .headerSortDown,
+thead tr .headerSortUp {
+  background-color: #333;
+  color: #FFF;
+}
+
+/* line 90, scss/_datatable.scss */
+thead tr .headerSortUp {
+  border-top: 2px solid #EEE;
+}
+
+/* line 94, scss/_datatable.scss */
+thead tr .headerSortDown {
+  border-bottom: 2px solid #EEE;
+}
+
+/* line 2, scss/_forms.scss */
+#formdiv hr {
+  border: 0;
+  border-bottom: 2px solid #AAA;
+  width: 90%;
+  height: 1px;
+  margin: 0 auto;
+}
+
+/* line 10, scss/_forms.scss */
+.label {
+  font-weight: bold;
+}
+
+/* line 14, scss/_forms.scss */
+label {
+  margin-right: 1ex;
+  margin-top: 1px;
+  font-weight: bold;
+  float: left;
+  width: 120px;
+}
+
+/* line 24, scss/_forms.scss */
+label.unlabel,
+label.inside,
+label.inline {
+  float: none;
+  width: auto;
+  margin: 0;
+}
+
+/* line 30, scss/_forms.scss */
+label.unlabel {
+  font-weight: normal;
+}
+
+/* line 34, scss/_forms.scss */
+label.error {
+  display: none !important;
+  border: 0;
+}
+
+/* line 39, scss/_forms.scss */
+.error {
+  border: 1px solid #C00;
+}
+
+/* line 43, scss/_forms.scss */
+.info {
+  color: #999;
+}
+
+/* line 47, scss/_forms.scss */
+li.info {
+  margin-top: 1em;
+  color: inherit;
+}
+
+/* line 52, scss/_forms.scss */
+li.color {
+  margin-top: 1em;
+}
+
+/* line 56, scss/_forms.scss */
+div.info {
+  margin: 0 0 0 130px;
+  width: 400px;
+}
+
+/* line 61, scss/_forms.scss */
+.forminfo {
+  width: 400px;
+  color: #444;
+  margin-bottom: 1em;
+}
+
+/* line 70, scss/_forms.scss */
+.input,
+input,
+textarea,
+select {
+  margin: 1px;
+}
+
+/* line 74, scss/_forms.scss */
+.input {
+  line-height: 2;
+  font-weight: bold;
+}
+
+/* line 81, scss/_forms.scss */
+.input,
+input,
+select {
+  vertical-align: middle;
+}
+
+/* line 86, scss/_forms.scss */
+input[type="checkbox"],
+input[type="radio"] {
+  margin: 3px 3px 3px 4px;
+}
+
+/* line 92, scss/_forms.scss */
+input[type="text"]:focus,
+input[type="password"]:focus,
+textarea:focus {
+  border: 2px solid #848B97;
+}
+
+/* line 98, scss/_forms.scss */
+input[type="text"].error:focus,
+input[type="password"].error:focus,
+textarea.error:focus {
+  border-color: #C00;
+}
+
+/* line 102, scss/_forms.scss */
+.req:before {
+  content: '*';
+  font-size: larger;
+  color: #C00;
+  font-weight: bold;
+  padding-right: 2px;
+  vertical-align: middle;
+}
+
+/* line 111, scss/_forms.scss */
+#formdiv .submit {
+  border-top: 1px solid #AAA;
+  text-align: center;
+  padding: 10px;
+}
+
+/* line 117, scss/_forms.scss */
+#formdiv .errors {
+  border-top: 1px solid #AAA;
+  border-bottom: 1px dashed #AAA;
+  display: none;
+  color: #C00;
+  font-weight: bold;
+  font-size: 14px;
+  padding: 10px;
+  text-align: center;
+}
+
+/* line 128, scss/_forms.scss */
+.test img {
+  vertical-align: middle;
+}
+
+/* line 132, scss/_forms.scss */
+table.form {
+  width: auto;
+}
+
+/* overlabels */
+/* line 137, scss/_forms.scss */
+.overlabel-apply {
+  position: absolute;
+  top: 1px;
+  left: 5px;
+  z-index: 5;
+  color: #AAA;
+}
+
+/* line 145, scss/_forms.scss */
+.overlabel-float {
+  float: left;
+  margin: 2px;
+  position: relative;
 }

@@ -14,10 +14,10 @@ body {
 /* line 76, scss/_c_template.scss */
 h1 {
   border-color: black;
-  background-color: #cccc00;
-  background-image: -webkit-gradient(linear, 0% 0%, 0% 100%, color-stop(11.111%, #cccc00), color-stop(100%, #000000));
-  background-image: -moz-linear-gradient(top, #cccc00 10%, #000000 90%);
-  background-image: linear-gradient(top, #cccc00 10%, #000000 90%);
+  background-color: #00cc00;
+  background-image: -webkit-gradient(linear, 0% 0%, 0% 100%, color-stop(11.111%, #00cc00), color-stop(100%, #000000));
+  background-image: -moz-linear-gradient(top, #00cc00 10%, #000000 90%);
+  background-image: linear-gradient(top, #00cc00 10%, #000000 90%);
 }
 
 /* line 86, scss/_c_template.scss */
@@ -26,7 +26,7 @@ a {
 }
 /* line 89, scss/_c_template.scss */
 a:hover {
-  color: #cccc00;
+  color: #00cc00;
 }
 /* line 93, scss/_c_template.scss */
 a.help {
@@ -69,7 +69,7 @@ fieldset {
 /* line 133, scss/_c_template.scss */
 .highlight,
 .highlight * {
-  color: #bbbb00;
+  color: #00bb00;
 }
 
 /* line 139, scss/_c_template.scss */
@@ -89,13 +89,13 @@ fieldset {
 #links a:hover {
   border-color: black;
   background-color: white;
-  color: #cccc00;
+  color: #00cc00;
 }
 
 /* line 161, scss/_c_template.scss */
 #menu,
 #mygames {
-  border-color: #999900;
+  border-color: #009900;
 }
 /* line 164, scss/_c_template.scss */
 #menu a,
@@ -108,7 +108,7 @@ fieldset {
 #menu a:hover,
 #mygames a:hover {
   color: white;
-  background-color: #444400;
+  background-color: #004400;
   border-color: #333333;
 }
 /* line 174, scss/_c_template.scss */
@@ -125,7 +125,7 @@ fieldset {
 #menu li.active a,
 #mygames li.active a {
   color: white;
-  background-color: #999900;
+  background-color: #009900;
   border-color: #333333;
 }
 /* line 191, scss/_c_template.scss */
@@ -140,7 +140,7 @@ fieldset {
 }
 /* line 202, scss/_c_template.scss */
 #mygames .playing a {
-  color: #dddd00;
+  color: #dd0000;
 }
 /* line 203, scss/_c_template.scss */
 #mygames .my_turn a {
@@ -161,7 +161,7 @@ fieldset {
 /* line 217, scss/_c_template.scss */
 #notes {
   background-color: #111111;
-  border-color: #999900;
+  border-color: #009900;
 }
 
 /* chats */
@@ -199,11 +199,11 @@ h2 {
 /* line 261, scss/_c_template.scss */
 #footer {
   color: #dddddd;
-  background-color: #cccc00;
+  background-color: #00cc00;
   border-color: black;
-  background-image: -webkit-gradient(linear, 0% 100%, 0% 0%, color-stop(11.111%, #cccc00), color-stop(100%, #000000));
-  background-image: -moz-linear-gradient(bottom, #cccc00 10%, #000000 90%);
-  background-image: linear-gradient(bottom, #cccc00 10%, #000000 90%);
+  background-image: -webkit-gradient(linear, 0% 100%, 0% 0%, color-stop(11.111%, #00cc00), color-stop(100%, #000000));
+  background-image: -moz-linear-gradient(bottom, #00cc00 10%, #000000 90%);
+  background-image: linear-gradient(bottom, #00cc00 10%, #000000 90%);
 }
 
 /* other basic styles */
@@ -234,7 +234,7 @@ tr:hover > td,
 tr:hover > td *,
 tr.alt:hover > td,
 tr.alt:hover > td * {
-  background-color: #888800;
+  background-color: #008800;
   color: #dddddd !important;
 }
 
@@ -263,7 +263,7 @@ thead tr th {
 /* line 327, scss/_c_template.scss */
 thead tr .headerSortDown,
 thead tr .headerSortUp {
-  background-color: #cccc00;
+  background-color: #00cc00;
   color: black;
 }
 

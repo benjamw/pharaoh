@@ -131,7 +131,6 @@ function get_header($meta = null) {
 	<script type="text/javascript" src="scripts/json.js"></script>
 	<script type="text/javascript" src="scripts/jquery-1.4.3.min.js"></script>
 	<script type="text/javascript" src="scripts/jquery.tablesorter.js"></script>
-	<!-- <script type="text/javascript" src="scripts/jquery.color.js"></script> -->
 
 	<!-- fancybox -->
 	<link rel="stylesheet" type="text/css" media="screen" href="scripts/jquery.fancybox/jquery.fancybox-1.3.3.css" />
@@ -153,13 +152,11 @@ function get_header($meta = null) {
 		#fancy_title { display: none !important; }
 	/*]]>*/</style>
 
-	<link rel="stylesheet" type="text/css" media="screen" href="css/reset.css" />
+	{$head_data}
+
 	<link rel="stylesheet" type="text/css" media="screen" href="css/layout.css" />
-	<link rel="stylesheet" type="text/css" media="screen" href="css/datatable.css" />
-	<link rel="stylesheet" type="text/css" media="screen" href="css/forms.css" />
 	<link rel="stylesheet" type="text/css" media="screen" href="css/c_{$GLOBALS['_DEFAULT_COLOR']}.css" />
 
-	{$head_data}
 	{$flash}
 	{$admin_css}
 

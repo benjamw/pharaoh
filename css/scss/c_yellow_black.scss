@@ -18,25 +18,8 @@ $text: #DDD;
 $dark_text: #FFF;
 $sub_text: #888;
 
-$table_head_back: #000;
-$table_alt_back: #222;
-$table_hover_text: $text;
-$table_hover_back: #880;
-
 $link: $text;
 $hover: $color;
-
-$lowlight: #888;
-$highlight: $color;
-
-$warning: #D00;
-$notice: #DD0;
-$instruction: #555;
-
-$finished: #555;
-$playing: $color;
-$my_turn: $notice;
-$none: $text;
 
 $border_dark: #777;
 $border_med_dark: #777;
@@ -44,7 +27,25 @@ $border_med: #777;
 $border_med_light: #555;
 $border_light: #333;
 
-$nav_outer_border: $color;
+$header_border: #000;
+
+$table_head_back: #000;
+$table_alt_back: #222;
+$table_hover_text: $text;
+$table_hover_back: #880;
+
+$lowlight: #888;
+$highlight: #BB0;
+
+$warning: #D00;
+$notice: #DD0;
+$instruction: #555;
+
+$finished: #555;
+$playing: #DD0;
+$my_turn: $notice;
+$none: $text;
+
 $nav_text: $text;
 $nav_notice: $warning;
 $nav_back: $sub_back;
@@ -57,13 +58,14 @@ $nav_active_text: $dark_text;
 $nav_active_notice: $nav_active_text;
 $nav_active_back: #990;
 $nav_active_border: $nav_border;
+$nav_outer_border: $nav_active_back;
 
 $links_text: #DDD;
 $links_back: transparent;
 $links_border: transparent;
 $links_hover_text: $color;
-$links_hover_back: $back;
-$links_hover_border: $border_dark;
+$links_hover_back: #FFF;
+$links_hover_border: #000;
 
 $fancybox_back: #000 !default;
 

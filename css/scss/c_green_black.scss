@@ -10,7 +10,7 @@
 
 $back_grad: 1; // set to 1 for a gradient on header and footer
 
-$color: #C00;
+$color: #0C0;
 $back: #000;
 $sub_back: #111;
 $text: #DDD;
@@ -31,10 +31,10 @@ $header_border: #000;
 $table_head_back: #000;
 $table_alt_back: #222;
 $table_hover_text: $text;
-$table_hover_back: #800;
+$table_hover_back: #080;
 
 $lowlight: #888;
-$highlight: #B00;
+$highlight: #0B0;
 
 $warning: #D00;
 $notice: #DD0;
@@ -51,11 +51,11 @@ $nav_back: $sub_back;
 $nav_border: $border_light;
 $nav_hover_text: $dark_text;
 $nav_hover_notice: $warning;
-$nav_hover_back: #400;
+$nav_hover_back: #040;
 $nav_hover_border: $nav_border;
 $nav_active_text: $dark_text;
 $nav_active_notice: $nav_active_text;
-$nav_active_back: #900;
+$nav_active_back: #090;
 $nav_active_border: $nav_border;
 $nav_outer_border: $nav_active_back;
 

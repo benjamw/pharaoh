@@ -9,6 +9,8 @@
 	config.inc.php file.
 */
 
+@import "reset";
+
 /* basic styles */
 body {
 	margin: 0;
@@ -607,3 +609,7 @@ div.help {
 
 
 @import "game_layout";
+@import "datatable";
+@import "forms";
+
+

@@ -13,13 +13,21 @@ $text: #333 !default;
 $dark_text: #000 !default;
 $sub_text: #666 !default;
 
-$table_head_back: #DDD !default;
-$table_alt_back: #E7E7E7 !default;
-$table_hover_text: #E7E7E7 !default;
-$table_hover_back: #E7E7E7 !default;
-
 $link: $text !default;
 $hover: $color !default;
+
+$border_dark: #000 !default;
+$border_med_dark: #555 !default;
+$border_med: #777 !default;
+$border_med_light: #999 !default;
+$border_light: #CCC !default;
+
+$header_border: $border_dark !default;
+
+$table_head_back: #DDD !default;
+$table_alt_back: #E7E7E7 !default;
+$table_hover_text: $back !default;
+$table_hover_back: $color !default;
 
 $lowlight: #666 !default;
 $highlight: #00D !default;
@@ -33,26 +41,19 @@ $playing: $warning !default;
 $my_turn: $notice !default;
 $none: $text !default;
 
-$border_dark: #000 !default;
-$border_med_dark: #555 !default;
-$border_med: #777 !default;
-$border_med_light: #999 !default;
-$border_light: #CCC !default;
-
-$nav_outer_border: $color !default;
 $nav_text: $text !default;
 $nav_notice: $warning !default;
 $nav_back: $sub_back !default;
 $nav_border: $border_light !default;
-$nav_hover_text: $back !default;
-$nav_hover_notice: $warning !default;
-$nav_hover_back: $color !default;
+$nav_hover_text: #30356F !default;
+$nav_hover_notice: $nav_notice !default;
+$nav_hover_back: #DDDFF3 !default;
 $nav_hover_border: $nav_border !default;
-$nav_active_text: #30356F !default;
+$nav_active_text: $back !default;
 $nav_active_notice: $nav_active_text !default;
-$nav_active_back: #DDDFF3 !default;
+$nav_active_back: $color !default;
 $nav_active_border: $nav_border !default;
-$nav_notice: $warning !default;
+$nav_outer_border: $nav_active_back !default;
 
 $links_text: #DDD !default;
 $links_back: transparent !default;
@@ -73,7 +74,7 @@ body {
 
 
 h1 {
-	border-bottom-color: $border_med_dark;
+	border-color: $header_border;
 	background-color: $color;
 	@if $back_grad == 1 {
 		@include linear-gradient(color-stops($color 0.1, $back 0.9), top);
@@ -98,7 +99,7 @@ a {
 }
 
 
-abbr,
+abbr ,
 acronym {
 	border-color: $border_med;
 }
@@ -115,22 +116,26 @@ fieldset {
 }
 
 
-.warning, .warning * {
+.warning ,
+.warning * {
 	color: $warning;
 }
 
 
-.notice, .notice * {
+.notice ,
+.notice * {
 	color: $notice;
 }
 
 
-.highlight, .highlight * {
+.highlight ,
+.highlight * {
 	color: $highlight;
 }
 
 
-.instruction, .instruction * {
+.instruction ,
+.instruction * {
 	color: $instruction;
 }
 
@@ -255,7 +260,7 @@ h2 {
 #footer {
 	color: $links_text;
 	background-color: $color;
-	border-color: $border_med_dark;
+	border-color: $header_border;
 	@if $back_grad == 1 {
 		@include linear-gradient(color-stops($color 0.1, $back 0.9), bottom);
 	}
@@ -290,9 +295,11 @@ th {
 }
 
 tr:hover > td ,
-tr.alt:hover > td {
+tr:hover > td * ,
+tr.alt:hover > td ,
+tr.alt:hover > td * {
 	background-color: $table_hover_back;
-	color: $table_hover_text;
+	color: $table_hover_text !important;
 }
 
 td {
@@ -303,7 +310,7 @@ tr.alt {
 	background-color: $table_alt_back;
 }
 
-.lowlight,
+.lowlight ,
 .lowlight td {
 	color: $sub_text;
 }
@@ -314,7 +321,7 @@ thead tr th {
 	background-color: $table_head_back;
 }
 
-thead tr .headerSortDown,
+thead tr .headerSortDown ,
 thead tr .headerSortUp {
 	background-color: $color;
 	color: $back;
@@ -333,3 +340,8 @@ thead tr .headerSortDown {
 #fancybox-content {
 	background-color: $fancybox_back;
 }
+
+
+
+@import "c_game_template"
+
