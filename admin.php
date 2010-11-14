@@ -112,11 +112,19 @@ $game_list = Game::get_list( );
 foreach ($player_list as $key => $player) {
 	if ($GLOBALS['_ROOT_ADMIN'] == $player['username']) {
 		unset($player_list[$key]);
+		continue;
 	}
 
 	if ($_SESSION['player_id'] == $player['player_id']) {
 		unset($player_list[$key]);
+		continue;
 	}
+
+	list($player['games'], $player['turn']) = Game::get_my_count($player['player_id']);
+
+	$player['played'] = $player['wins'] + $player['draws'] + $player['losses'];
+
+	$player_list[$key] = $player;
 }
 
 $table_meta = array(
@@ -130,6 +138,7 @@ $table_format = array(
 	array('First Name', 'first_name') ,
 	array('Last Name', 'last_name') ,
 	array('Email', 'email') ,
+	array(array('Games', '(Total | Current | Turn)'), '[[[played]]] | [[[games]]] | [[[turn]]]') ,
 	array('Admin', '###(([[[full_admin]]] | [[[half_admin]]]) ? \'<span class="notice">Yes</span>\' : \'No\')') ,
 	array('Approved', '###(([[[is_approved]]]) ? \'Yes\' : \'<span class="notice">No</span>\')') ,
 	array('Last Online', '###date(Settings::read(\'long_date\'), strtotime(\'[[[last_online]]]\'))', null, ' class="date"') ,
@@ -162,11 +171,13 @@ $table_meta = array(
 	'caption' => 'Games' ,
 );
 $table_format = array(
+	array('SPECIAL_CLASS', '(in_array(\'[[[state]]]\', array(\'Finished\',\'Draw\')))', 'lowlight') ,
+
 	array('ID', 'game_id') ,
 	array('State', '###(([[[paused]]]) ? \'Paused\' : \'[[[state]]]\')') ,
 	array('Silver', '###(('.$_SESSION['player_id'].' == [[[white_id]]]) ? \'<span class="highlight">[[[white]]]</span>\' : \'[[[white]]]\')') ,
 	array('Red', '###(('.$_SESSION['player_id'].' == [[[black_id]]]) ? \'<span class="highlight">[[[black]]]</span>\' : \'[[[black]]]\')') ,
-	array('Turn', '###((\'white\' == \'[[[turn]]]\') ? \'[[[white]]]\' : \'[[[black]]]\')') ,
+	array('Turn', '###((\'draw\' == \'[[[turn]]]\') ? \'Draw\' : ((\'white\' == \'[[[turn]]]\') ? \'[[[white]]]\' : \'[[[black]]]\'))') ,
 	array('Moves', '###([[[count]]] - 1)') ,
 	array('Setup', 'setup_name') ,
 	array('Last Move', '###date(Settings::read(\'long_date\'), strtotime(\'[[[last_move]]]\'))', null, ' class="date"') ,

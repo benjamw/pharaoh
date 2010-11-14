@@ -42,7 +42,7 @@ $table_format = array(
 	array('State', '###(([[[paused]]]) ? \'Paused\' : \'[[[state]]]\')') ,
 	array('Silver', '###(('.$_SESSION['player_id'].' == [[[white_id]]]) ? \'<span class="highlight">[[[white]]]</span>\' : \'[[[white]]]\')') ,
 	array('Red', '###(('.$_SESSION['player_id'].' == [[[black_id]]]) ? \'<span class="highlight">[[[black]]]</span>\' : \'[[[black]]]\')') ,
-	array('Turn', '###((\'white\' == \'[[[turn]]]\') ? \'[[[white]]]\' : \'[[[black]]]\')') ,
+	array('Turn', '###((\'draw\' == \'[[[turn]]]\') ? \'Draw\' : ((\'white\' == \'[[[turn]]]\') ? \'[[[white]]]\' : \'[[[black]]]\'))') ,
 	array('Moves', '###([[[count]]] - 1)') ,
 	array('Setup', 'setup_name') ,
 	array('Last Move', '###date(Settings::read(\'long_date\'), strtotime(\'[[[last_move]]]\'))', null, ' class="date"') ,

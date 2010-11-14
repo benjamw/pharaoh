@@ -1491,7 +1491,7 @@ class Game
 
 		if (0 != $player_id) {
 			// run though the list and find games the user needs action on
-			foreach ($list as $key => $game) {
+			foreach ($list as & $game) {
 				$game['turn'] = (0 == ($game['count'] % 2)) ? 'black' : 'white';
 
 				$game['in_game'] = (int) (($player_id == $game['white_id']) || ($player_id == $game['black_id']));
@@ -1505,10 +1505,22 @@ class Game
 				$game['opp_color'] = ($player_id == $game['white_id']) ? 'black' : 'white';
 
 				$game['opponent'] = ($player_id == $game['white_id']) ? $game['black'] : $game['white'];
+			}
+			unset($game); // kill the reference
+		}
 
-				$list[$key] = $game;
+		// run through the games, and set the current player to the winner if the game is finished
+		foreach ($list as & $game) {
+			if ('Finished' == $game['state']) {
+				if ($game['winner_id']) {
+					$game['turn'] = ($game['winner_id'] == $game['white_id']) ? 'white' : 'black';
+				}
+				else {
+					$game['turn'] = 'draw';
+				}
 			}
 		}
+		unset($game); // kill the reference
 
 		return $list;
 	}

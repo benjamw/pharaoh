@@ -120,14 +120,20 @@ function get_table($table_format, $table_data, $meta = null)
 	$total_cols = array( );
 	foreach ($table_format as $col) {
 		// test for SPECIAL data first
-		if ('SPECIAL_' == substr($col[TYPE], 0, 8)) {
+		if ( ! is_array($col[TYPE]) && ('SPECIAL_' == substr($col[TYPE], 0, 8))) {
 			${$col[TYPE]}[] = $col; // will be named either SPECIAL_CLASS or SPECIAL_HTML
 		}
 		else {
 			$sort_types[] = (isset($col[SORT])) ? $col[SORT] : null;
 
-			$headhtml .= '
+			if ( ! is_array($col[HEADER])) {
+				$headhtml .= '
 				<th>'.$col[HEADER].'</th>';
+			}
+			else {
+				$headhtml .= '
+				<th title="'.$col[HEADER][1].'">'.$col[HEADER][0].'</th>';
+			}
 
 			// do some stuff for the totals row
 			if ($opts['totals'] && isset($col[TOTAL])) {
@@ -227,7 +233,7 @@ function get_table($table_format, $table_data, $meta = null)
 				continue;
 			}
 
-			if ('SPECIAL_' == substr($col[TYPE], 0, 8)) {
+			if ( ! is_array($col[TYPE]) && ('SPECIAL_' == substr($col[TYPE], 0, 8))) {
 				continue;
 			}
 
