@@ -114,14 +114,12 @@ function get_header($meta = null) {
 
 	$html = <<< EOF
 <!DOCTYPE html>
-<html>
+<html lang="en-us">
 <head>
 
 	<title>{$title}</title>
 
-	<meta http-equiv="Content-Language" content="en-us" />
-	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
-	<meta http-equiv="Content-Style-Type" content="text/css" />
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 
 	<script type="text/javascript">//<![CDATA[
 		{$debug_string}
@@ -140,7 +138,6 @@ function get_header($meta = null) {
 			$('a.help').fancybox({
 				autoDimensions : false,
 				width: 500,
-				height: 400,
 				padding : 10,
 				overlayOpacity : 0.7,
 				hideOnContentClick : false
