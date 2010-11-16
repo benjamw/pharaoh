@@ -3,7 +3,7 @@
 require_once 'includes/inc.global.php';
 
 // make sure we are an admin
-if ( ! isset($GLOBALS['Player']) || (true != $GLOBALS['Player']->is_admin)) {
+if ( ! isset($GLOBALS['Player']) || (true !== $GLOBALS['Player']->is_admin)) {
 	Flash::store('Nice try');
 }
 

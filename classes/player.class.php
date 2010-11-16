@@ -481,31 +481,31 @@ class Player
 	/** public function admin_approve
 	 *		Approves the given players registrations
 	 *
-	 * @param mixed csv or array of user ids
+	 * @param mixed csv or array of player ids
 	 * @action approves the players registration
 	 * @return void
 	 */
-	public function admin_approve($user_ids)
+	public function admin_approve($player_ids)
 	{
 		// make sure the user doing this is an admin
 		if ( ! $this->is_admin) {
 			throw new MyException(__METHOD__.': Player is not an admin');
 		}
 
-		array_trim($user_ids, 'int');
-		$user_ids[] = 0;
-		$user_ids = implode(',', $user_ids);
+		array_trim($player_ids, 'int');
+		$player_ids[] = 0;
+		$player_ids = implode(',', $player_ids);
 
-		$this->_mysql->insert(self::PLAYER_TABLE, array('is_approved' => 1), " WHERE player_id IN ({$user_ids}) ");
+		$this->_mysql->insert(self::PLAYER_TABLE, array('is_approved' => 1), " WHERE player_id IN ({$player_ids}) ");
 
-		Email::send('approved', $user_ids);
+		Email::send('approved', $player_ids);
 	}
 
 
 	/** public function admin_delete
 	 *		Deletes the given players from the players database
 	 *
-	 * @param mixed csv or array of user ids
+	 * @param mixed csv or array of player ids
 	 * @action deletes the players from the database
 	 * @return void
 	 */
@@ -533,24 +533,24 @@ class Player
 	/** public function admin_reset_pass
 	 *		Reset the password for the given players
 	 *
-	 * @param mixed csv or array of user ids
+	 * @param mixed csv or array of player ids
 	 * @action resets the password for the given players
 	 * @return void
 	 */
-	public function admin_reset_pass($user_ids)
+	public function admin_reset_pass($player_ids)
 	{
 		// make sure the user doing this is an admin
 		if ( ! $this->is_admin) {
 			throw new MyException(__METHOD__.': Player is not an admin');
 		}
 
-		array_trim($user_ids, 'int');
+		array_trim($player_ids, 'int');
 
 		$data = array(
 			'password' => self::hash_password(Settings::read('default_pass')),
 			'alt_pass' => self::hash_alt_pass(Settings::read('default_pass')),
 		);
-		$this->_mysql->insert(self::PLAYER_TABLE, $data, " WHERE player_id IN (0,".implode(',', $user_ids).") ");
+		$this->_mysql->insert(self::PLAYER_TABLE, $data, " WHERE player_id IN (0,".implode(',', $player_ids).") ");
 	}
 
 
@@ -1062,9 +1062,15 @@ class Player
 			$root_admin = (int) $Mysql->fetch_value($query);
 
 			if (in_array($root_admin, $player_ids)) {
-				unset($user_ids[array_search($root_admin, $player_ids)]);
+				unset($player_ids[array_search($root_admin, $player_ids)]);
 			}
 		}
+
+		// remove the player doing the deleting
+		unset($player_ids[array_search($_SESSION['player_id'], $player_ids)]);
+
+		// remove the admin doing the deleting
+		unset($player_ids[array_search($_SESSION['admin_id'], $player_ids)]);
 
 		return $player_ids;
 	}

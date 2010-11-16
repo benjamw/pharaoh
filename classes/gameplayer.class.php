@@ -275,7 +275,7 @@ class GamePlayer
 	/** public function admin_delete
 	 *		Deletes the given players from the players database
 	 *
-	 * @param mixed csv or array of user ids
+	 * @param mixed csv or array of player ids
 	 * @action deletes the players from the database
 	 * @return void
 	 */
@@ -303,19 +303,19 @@ class GamePlayer
 	/** public function admin_add_admin
 	 *		Gives the given players admin status
 	 *
-	 * @param mixed csv or array of user ids
+	 * @param mixed csv or array of player ids
 	 * @action gives the given players admin status
 	 * @return void
 	 */
-	public function admin_add_admin($user_ids)
+	public function admin_add_admin($player_ids)
 	{
 		// make sure the user doing this is an admin
 		if ( ! $this->is_admin) {
 			throw new MyException(__METHOD__.': Player is not an admin');
 		}
 
-		array_trim($user_ids, 'int');
-		$user_ids[] = 0; // make sure we have at least one entry
+		array_trim($player_ids, 'int');
+		$player_ids[] = 0; // make sure we have at least one entry
 
 		if (isset($GLOBALS['_ROOT_ADMIN'])) {
 			$query = "
@@ -323,29 +323,29 @@ class GamePlayer
 				FROM ".Player::PLAYER_TABLE."
 				WHERE username = '{$GLOBALS['_ROOT_ADMIN']}'
 			";
-			$user_ids[] = (int) $this->_mysql->fetch_value($query);
+			$player_ids[] = (int) $this->_mysql->fetch_value($query);
 		}
 
-		$this->_mysql->insert(self::EXTEND_TABLE, array('is_admin' => 1), " WHERE player_id IN (".implode(',', $user_ids).") ");
+		$this->_mysql->insert(self::EXTEND_TABLE, array('is_admin' => 1), " WHERE player_id IN (".implode(',', $player_ids).") ");
 	}
 
 
 	/** public function admin_remove_admin
 	 *		Removes admin status from the given players
 	 *
-	 * @param mixed csv or array of user ids
+	 * @param mixed csv or array of player ids
 	 * @action removes the given players admin status
 	 * @return void
 	 */
-	public function admin_remove_admin($user_ids)
+	public function admin_remove_admin($player_ids)
 	{
 		// make sure the user doing this is an admin
 		if ( ! $this->is_admin) {
 			throw new MyException(__METHOD__.': Player is not an admin');
 		}
 
-		array_trim($user_ids, 'int');
-		$user_ids[] = 0; // make sure we have at least one entry
+		array_trim($player_ids, 'int');
+		$player_ids[] = 0; // make sure we have at least one entry
 
 		if (isset($GLOBALS['_ROOT_ADMIN'])) {
 			$query = "
@@ -355,12 +355,18 @@ class GamePlayer
 			";
 			$root_admin = (int) $this->_mysql->fetch_value($query);
 
-			if (in_array($root_admin, $user_ids)) {
-				unset($user_ids[array_search($root_admin, $user_ids)]);
+			if (in_array($root_admin, $player_ids)) {
+				unset($player_ids[array_search($root_admin, $player_ids)]);
 			}
 		}
 
-		$this->_mysql->insert(self::EXTEND_TABLE, array('is_admin' => 0), " WHERE player_id IN (".implode(',', $user_ids).") ");
+		// remove the player doing the removing
+		unset($player_ids[array_search($_SESSION['player_id'], $player_ids)]);
+
+		// remove the admin doing the removing
+		unset($player_ids[array_search($_SESSION['admin_id'], $player_ids)]);
+
+		$this->_mysql->insert(self::EXTEND_TABLE, array('is_admin' => 0), " WHERE player_id IN (".implode(',', $player_ids).") ");
 	}
 
 
@@ -440,6 +446,7 @@ return false;
 		$this->max_games = (int) $result['max_games'];
 		$this->color = $result['color'];
 		$this->wins = (int) $result['wins'];
+		$this->draws = (int) $result['draws'];
 		$this->losses = (int) $result['losses'];
 		$this->last_online = strtotime($result['last_online']);
 
