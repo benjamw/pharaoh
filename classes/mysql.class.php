@@ -61,7 +61,7 @@ class Mysql
 	protected $_email_from = 'example@example.com'; // the email address to send error reports from
 	protected $_email_to = 'example@example.com'; // the email address to send error reports to
 
-	static private $instance; // Instance of the MySQL Object
+	static private $_instance; // Instance of the MySQL Object
 
 
 
@@ -69,14 +69,14 @@ class Mysql
 	 *		METHODS
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
-	/** public function __construct
+	/** protected function __construct
 	 *		Class constructor.
 	 *		Initializes the host, user, pswd, and db vars.
 	 *
 	 * @param array optional configuration array
 	 * @return void
 	 */
-	public function __construct($config = null)
+	protected function __construct($config = null)
 	{
 		if (empty($config) && isset($GLOBALS['_DEFAULT_DATABASE'])) {
 			$config = $GLOBALS['_DEFAULT_DATABASE'];
@@ -131,7 +131,7 @@ class Mysql
 
 		@mysql_close($this->link_id);
 		$this->link_id = null;
-		self::$instance = null;
+		self::$_instance = null;
 	}
 
 
@@ -333,7 +333,7 @@ class Mysql
 		}
 
 		$done = true; // innocent until proven guilty
-
+		
 		// start time logging
 		$time = microtime_float( );
 		$this->result = @mysql_query($this->query, $this->link_id);
@@ -987,18 +987,18 @@ class Mysql
 	static public function get_instance($config = null)
 	{
 		try {
-			if (is_null(self::$instance)) {
-				self::$instance = new Mysql($config);
+			if (is_null(self::$_instance)) {
+				self::$_instance = new Mysql($config);
 			}
 
-			self::$instance->test_connection( );
-			self::$instance->_log(__METHOD__.' --------------------------------------');
+			self::$_instance->test_connection( );
+			self::$_instance->_log(__METHOD__.' --------------------------------------');
 		}
 		catch (MySQLException $e) {
 			throw $e;
 		}
 
-		return self::$instance;
+		return self::$_instance;
 	}
 
 
