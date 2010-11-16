@@ -297,7 +297,7 @@ class Settings
 	 */
 	static public function get_instance( )
 	{
-		if (is_null(self::$_instance)) {
+		if (is_null(self::$_instance) && self::test( )) {
 			self::$_instance = new Settings( );
 		}
 
@@ -382,6 +382,10 @@ class Settings
 	 */
 	static public function test( )
 	{
+		if ( ! is_null(self::$_instance)) {
+			return true;
+		}
+
 		if ( ! Mysql::test( )) {
 			return false;
 		}
