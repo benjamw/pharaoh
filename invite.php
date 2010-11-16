@@ -71,8 +71,8 @@ $meta['head_data'] = '
 		};
 	/*]]>*/</script>
 
-	<script type="text/javascript" src="scripts/invite.js"></script>
 	<script type="text/javascript" src="scripts/board.js"></script>
+	<script type="text/javascript" src="scripts/invite.js"></script>
 ';
 
 $hints = array(
