@@ -138,6 +138,7 @@ $table_format = array(
 	array('First Name', 'first_name') ,
 	array('Last Name', 'last_name') ,
 	array('Email', 'email') ,
+	array('Color', 'color') ,
 	array(array('Games', '(Total | Current | Turn)'), '[[[played]]] | [[[games]]] | [[[turn]]]') ,
 	array('Admin', '###(([[[full_admin]]] | [[[half_admin]]]) ? \'<span class="notice">Yes</span>\' : \'No\')') ,
 	array('Approved', '###(([[[is_approved]]]) ? \'Yes\' : \'<span class="notice">No</span>\')') ,
