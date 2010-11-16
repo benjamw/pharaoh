@@ -25,7 +25,9 @@
 
 // TODO: comments & organize better
 
-require_once INCLUDE_DIR.'func.array.php';
+if (defined('INCLUDE_DIR')) {
+	require_once INCLUDE_DIR.'func.array.php';
+}
 
 class Game
 {
