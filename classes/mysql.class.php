@@ -333,7 +333,7 @@ class Mysql
 		}
 
 		$done = true; // innocent until proven guilty
-		
+
 		// start time logging
 		$time = microtime_float( );
 		$this->result = @mysql_query($this->query, $this->link_id);

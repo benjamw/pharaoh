@@ -295,9 +295,9 @@ th {
 }
 
 tr:hover > td ,
-tr:hover > td * ,
+tr:hover > td span ,
 tr.alt:hover > td ,
-tr.alt:hover > td * {
+tr.alt:hover > td span {
 	background-color: $table_hover_back;
 	color: $table_hover_text !important;
 }
