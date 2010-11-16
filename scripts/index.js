@@ -1,6 +1,7 @@
 
 // index javascript
 
+var reload = false; // do not change this
 var timer = false;
 var timeout = 30001; // 1 minute
 
@@ -104,12 +105,12 @@ function ajax_refresh( ) {
 				// we don't care what the hash is, just refresh is there is a hash
 				// (the user may have silenced the sounds with #silent)
 				if ('' != window.location.hash) {
-					window.location.reload( );
+					if (reload) { window.location.reload( ); }
 				}
 				else {
 					// stick the hash on the end of the URL
 					window.location = window.location.href+'#refresh'
-					window.location.reload( );
+					if (reload) { window.location.reload( ); }
 				}
 			}
 		}
