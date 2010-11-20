@@ -186,3 +186,46 @@ function test_debug( ) {
 	return true;
 }
 
+
+
+/** function expandFEN
+ *		This function expands a packed FEN into a
+ *		string where each index is a valid location
+ *
+ * @param string packed FEN
+ * @return string expanded FEN
+ */
+function expandFEN($FEN)
+{
+	$FEN = preg_replace('/\s+/', '', $FEN); // remove spaces
+
+	$FEN = preg_replace_callback('/\d+/', 'replace_callback', $FEN); // unpack the 0s
+	$xFEN = str_replace('/', '', $FEN); // remove the row separators
+
+	return $xFEN;
+}
+function replace_callback($match) {
+	return (((int) $match[0]) ? str_repeat('0', (int) $match[0]) : $match[0]);
+}
+
+
+
+/** function packFEN
+ *		This function packs an expanded FEN into a
+ *		string that takes up less space
+ *
+ * @param string expanded FEN
+ * @param int [optional] length of rows
+ * @return string packed FEN
+ */
+function packFEN($xFEN, $row_length = 10)
+{
+	$xFEN = preg_replace('/\s+/', '', $xFEN); // remove spaces
+	$xFEN = preg_replace('/\//', '', $xFEN); // remove any row separators
+
+	$xFEN = trim(chunk_split($xFEN, $row_length, '/'), '/'); // add the row separaters
+	$FEN = preg_replace('/(0+)/e', "strlen('\\1')", $xFEN); // pack the 0s
+
+	return $FEN;
+}
+

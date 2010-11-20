@@ -196,28 +196,6 @@ class Setup {
 	}
 
 
-	static public function expandFEN($FEN)
-	{
-		$FEN = preg_replace('/\s+/', '', $FEN); // remove spaces
-
-		$FEN = preg_replace('/([1-9]0?)/e', "str_repeat('0', \\1)", $FEN); // unpack the 0s
-		$xFEN = str_replace('/', '', $FEN); // remove the row separators
-
-		return $xFEN;
-	}
-
-
-	static public function packFEN($xFEN, $row_length = 10)
-	{
-		$xFEN = preg_replace('/\s+/', '', $xFEN); // remove spaces
-
-		$xFEN = trim(chunk_split($xFEN, $row_length, '/'), '/'); // add the row separaters
-		$FEN = preg_replace('/(0+)/e', "strlen('\\1')", $xFEN); // pack the 0s
-
-		return $FEN;
-	}
-
-
 	static public function get_list( )
 	{
 		call(__METHOD__);
@@ -227,10 +205,37 @@ class Setup {
 		$query = "
 			SELECT *
 			FROM ".self::SETUP_TABLE."
+			ORDER BY has_tower ASC
+				, has_horus ASC
+				, used DESC
+				, name ASC
 		";
 		$setups = $Mysql->fetch_array($query);
 
 		return $setups;
+	}
+
+
+	static public function get_count($player_id = 0)
+	{
+		call(__METHOD__);
+
+		$player_id = (int) $player_id;
+
+		$query = "
+			SELECT COUNT(*)
+			FROM ".self::SETUP_TABLE."
+		";
+		$total = Mysql::get_instance( )->fetch_value($query);
+
+		$query = "
+			SELECT COUNT(*)
+			FROM ".self::SETUP_TABLE."
+			WHERE created_by = '{$player_id}'
+		";
+		$mine = Mysql::get_instance( )->fetch_value($query);
+
+		return array($total, $mine);
 	}
 
 

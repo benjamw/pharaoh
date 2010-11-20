@@ -57,7 +57,7 @@ $setup_javascript = '';
 foreach ($setups as $setup) {
 	$setup_selection .= '
 		<option value="'.$setup['setup_id'].'">'.$setup['name'].'</option>';
-	$setup_javascript .= "'".$setup['setup_id']."' : '".Game::expandFEN($setup['board'])."',\n";
+	$setup_javascript .= "'".$setup['setup_id']."' : '".expandFEN($setup['board'])."',\n";
 }
 $setup_javascript = substr(trim($setup_javascript), 0, -1);
 

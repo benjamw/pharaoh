@@ -204,7 +204,7 @@ echo get_header($meta);
 		</div> <!-- #contents -->
 
 		<script type="text/javascript">
-			document.write('<'+'div id="setup">'+create_board('<?php echo Game::expandFEN($Game->get_setup( )); ?>', invert, true)+'<'+'/div>');
+			document.write('<'+'div id="setup">'+create_board('<?php echo expandFEN($Game->get_setup( )); ?>', invert, true)+'<'+'/div>');
 		</script>
 
 <?php

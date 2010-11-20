@@ -727,7 +727,7 @@ class Game
 		}
 
 		if ($expanded) {
-			return $this->expandFEN($board);
+			return expandFEN($board);
 		}
 
 		return $board;
@@ -790,7 +790,7 @@ class Game
 			}
 
 			$history[] = array(
-				$this->expandFEN($node['board']),
+				expandFEN($node['board']),
 				$move,
 				$this->get_laser_path($i),
 				$this->get_hit_data($i),
@@ -1272,7 +1272,7 @@ class Game
 
 			try {
 				$this->_pharaoh = new Pharaoh( );
-				$this->_pharaoh->set_board($this->expandFEN($this->_history[$count - 1]['board']));
+				$this->_pharaoh->set_board(expandFEN($this->_history[$count - 1]['board']));
 			}
 			catch (MyException $e) {
 				throw $e;
@@ -1372,7 +1372,7 @@ class Game
 		$board = $move['board'];
 		call($board);
 
-		$new_board = $this->packFEN($this->_pharaoh->get_board( ));
+		$new_board = packFEN($this->_pharaoh->get_board( ));
 		call($new_board);
 		list($new_move, $new_hits) = $this->_pharaoh->get_move( );
 		call($new_move);
@@ -1863,29 +1863,6 @@ class Game
 		}
 
 		$Mysql->insert(self::GAME_TABLE, array('paused' => $pause), " WHERE game_id IN (".implode(',', $ids).") ");
-	}
-
-
-	static public function expandFEN($FEN)
-	{
-		$FEN = preg_replace('/\s+/', '', $FEN); // remove spaces
-
-		$FEN = preg_replace('/([1-9]0?)/e', "str_repeat('0', \\1)", $FEN); // unpack the 0s
-		$xFEN = str_replace('/', '', $FEN); // remove the row separators
-
-		return $xFEN;
-	}
-
-
-	static public function packFEN($xFEN, $row_length = 10)
-	{
-		$xFEN = preg_replace('/\s+/', '', $xFEN); // remove spaces
-		$xFEN = preg_replace('/\//', '', $xFEN); // remove any row separators
-
-		$xFEN = trim(chunk_split($xFEN, $row_length, '/'), '/'); // add the row separaters
-		$FEN = preg_replace('/(0+)/e', "strlen('\\1')", $xFEN); // pack the 0s
-
-		return $FEN;
 	}
 
 
