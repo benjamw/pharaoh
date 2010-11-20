@@ -13,6 +13,24 @@
 }
 
 
+#pieces_display {
+	width: 100px;
+	float: left;
+
+	img {
+		border: 2px solid transparent;
+
+		&.selected {
+			border-color: #FFF;
+		}
+	}
+}
+
+#setup_display {
+	float: left;
+}
+
+
 .sil { background-color: #AAA !important; color: #000 !important; }
 .red { background-color: #B00 !important; color: #FFF !important; }
 .blu { background-color: #36F !important; color: #FFF !important; }

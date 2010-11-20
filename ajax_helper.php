@@ -96,6 +96,23 @@ if (isset($_POST['chat'])) {
 }
 
 
+// run setup validation
+if (isset($_POST['test_setup'])) {
+	try {
+		$Setup = new Setup( );
+		$Setup->validate($_POST['setup']);
+
+		$return['valid'] = true;
+	}
+	catch (MyException $e) {
+		$return['error'] = 'ERROR: '.$e->outputMessage( );
+	}
+
+	echo json_encode($return);
+	exit;
+}
+
+
 // run the invites stuff
 if (isset($_POST['invite'])) {
 	if ('delete' == $_POST['invite']) {

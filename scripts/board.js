@@ -44,22 +44,45 @@ var image_dir = 'images/pieces/',
 		'H' : 'horus_ne',
 		'I' : 'horus_nw',
 
-		'T' : 'tower'
+//		'T' : 'tower'
 	};
 
-function rotate_piece(piece, rotation) {
+function rotate_piece(piece, rotation, toggle_color) {
 	var rotate,
-		lower = (piece != piece.toUpperCase( ));
+		lower = (piece !== piece.toUpperCase( ));
 
-	if (undefined == rotation) {
-		rotation = 'origin';
-	}
+	rotation = rotation || 'origin';
+	toggle_color = !! (toggle_color || false);
 
 	switch (rotation.toLowerCase( )) {
 		case 'short' :
+			rotate = {
+				'A' : 'D',
+				'B' : 'C',
+				'C' : 'B',
+				'D' : 'A',
+
+				'X' : 'Y',
+				'Y' : 'X',
+
+				'H' : 'I',
+				'I' : 'H'
+			};
 			break;
 
 		case 'long' :
+			rotate = {
+				'A' : 'B',
+				'B' : 'A',
+				'C' : 'D',
+				'D' : 'C',
+
+				'X' : 'Y',
+				'Y' : 'X',
+
+				'H' : 'I',
+				'I' : 'H'
+			};
 			break;
 
 		case 'origin' :
@@ -68,7 +91,7 @@ function rotate_piece(piece, rotation) {
 				'A' : 'C',
 				'B' : 'D',
 				'C' : 'A',
-				'D' : 'B',
+				'D' : 'B'
 			};
 			break;
 	}
@@ -79,7 +102,10 @@ function rotate_piece(piece, rotation) {
 	}
 
 	if (lower) {
-		piece = piece.toLowerCase( );
+		piece = ( ! toggle_color) ? piece.toLowerCase( ) : piece.toUpperCase( );
+	}
+	else {
+		piece = (toggle_color) ? piece.toLowerCase( ) : piece.toUpperCase( );
 	}
 
 	return piece;
@@ -87,8 +113,8 @@ function rotate_piece(piece, rotation) {
 
 
 function create_board(xFEN, flip, blank) {
-	flip = !! flip;
-	blank = ( !! blank) || false;
+	flip = !! (flip || false);
+	blank = !! (blank || false);
 
 	if ( ! xFEN) {
 		return false;
@@ -213,8 +239,7 @@ function create_board(xFEN, flip, blank) {
 
 
 function create_piece(piece, hit) {
-	hit = hit || false;
-	hit = !! hit;
+	hit = !! (hit || false);
 
 	var color = (piece == piece.toUpperCase( )) ? 'silver' : 'red';
 	var hit = (hit) ? ' hit' : '';
