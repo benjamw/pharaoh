@@ -71,7 +71,7 @@ function call($var = 'Th&F=xUFucreSp2*ezAhe=ApuPR*$axe', $bypass = false, $show_
 			$line1 = $called_from[$j + 1]['line'];
 			$called = "{$file1} : {$line1} called ";
 		}
-		elseif (isset($called_from[$j + 1])) {
+		elseif (isset($called_from[$j + 1]['class'])) {
 			$called = $called_from[$j + 1]['class'].$called_from[$j + 1]['type'].$called_from[$j + 1]['function'].' called ';
 		}
 
