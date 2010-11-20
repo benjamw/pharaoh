@@ -822,9 +822,9 @@ class Game
 		$json = (bool) $json;
 
 		$turn = $this->_history[$index];
-		$board = self::expandFEN($turn['board']);
+		$board = expandFEN($turn['board']);
 		if ( ! empty($this->_history[$index - 1])) {
-			$board = self::expandFEN($this->_history[$index - 1]['board']);
+			$board = expandFEN($this->_history[$index - 1]['board']);
 		}
 
 		if ( ! $turn['move']) {
@@ -907,7 +907,7 @@ class Game
 
 		// create a dummy pharaoh class and set the board as it was prior to the laser (+1)
 		$PH = new Pharaoh( );
-		$PH->set_board(self::expandFEN($this->_history[$index - 1]['board']));
+		$PH->set_board(expandFEN($this->_history[$index - 1]['board']));
 
 		// do the move, but do not fire the laser, and store the board
 		$pre_board = $PH->do_move($this->_history[$index]['move'], false);
@@ -953,7 +953,7 @@ class Game
 
 			// create a dummy pharaoh class and set the board as it was prior to the laser (+1)
 			$PH = new Pharaoh( );
-			$PH->set_board(self::expandFEN($this->_history[$index - 1]['board']));
+			$PH->set_board(expandFEN($this->_history[$index - 1]['board']));
 
 			// do the move and store that board
 			$prev_board = $PH->do_move($this->_history[$index]['move'], false);
