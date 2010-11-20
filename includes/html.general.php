@@ -122,10 +122,10 @@ function get_header($meta = null) {
 
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 
-	<script type="text/javascript">//<![CDATA[
+	<script type="text/javascript">
 		{$debug_string}
 		{$query_strings}
-	/*]]>*/</script>
+	</script>
 
 	<script type="text/javascript" src="scripts/json.js"></script>
 	<script type="text/javascript" src="scripts/jquery-1.4.3.min.js"></script>
@@ -134,7 +134,7 @@ function get_header($meta = null) {
 	<!-- fancybox -->
 	<link rel="stylesheet" type="text/css" media="screen" href="scripts/jquery.fancybox/jquery.fancybox-1.3.3.css" />
 	<script type="text/javascript" src="scripts/jquery.fancybox/jquery.fancybox-1.3.3.pack.js"></script>
-	<script type="text/javascript">//<![CDATA[
+	<script type="text/javascript">
 		$(document).ready( function( ) {
 			$('a.help').fancybox({
 				autoDimensions : false,
@@ -144,11 +144,11 @@ function get_header($meta = null) {
 				hideOnContentClick : false
 			});
 		});
-	/*]]>*/</script>
+	</script>
 	<!-- hide the fancybox titles -->
-	<style type="text/css">/*<![CDATA[*/
+	<style type="text/css">
 		#fancy_title { display: none !important; }
-	/*]]>*/</style>
+	</style>
 
 	{$head_data}
 
