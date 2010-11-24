@@ -23,12 +23,6 @@ $(document).ready( function( ) {
 
 	// blinky menu items
 	$('.blink').fadeOut( ).fadeIn( ).fadeOut( ).fadeIn( ).fadeOut( ).fadeIn( );
-//	var cur_background = $('.blink').css('backgroundColor');
-//	var high_color = $('.active a').css('backgroundColor');
-//	$('.blink')
-//		.animate({ backgroundColor: high_color }, 400).animate({ backgroundColor: cur_background }, 400)
-//		.animate({ backgroundColor: high_color }, 400).animate({ backgroundColor: cur_background }, 400)
-//		.animate({ backgroundColor: high_color }, 400).animate({ backgroundColor: cur_background }, 400);
 
 	// chat box functions
 	$('#chatbox form').submit( function( ) {
@@ -127,3 +121,4 @@ function ajax_refresh( ) {
 
 	timer = setTimeout('ajax_refresh( )', timeout);
 }
+

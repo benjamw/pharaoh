@@ -37,3 +37,4 @@ $(document).ready( function( ) {
 		$(this).parents('form').submit( )
 	});
 });
+
