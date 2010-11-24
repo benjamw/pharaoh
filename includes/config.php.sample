@@ -13,7 +13,7 @@
 	$GLOBALS['_DEFAULT_DATABASE']['log_path'] = LOG_DIR; // the MySQL log path
 
 
-/* Root Settings */
+/* Root settings */
 /* ------------- */
 	$GLOBALS['_ROOT_ADMIN'] = 'yourname'; // Permanent admin username (case-sensitive)
 	$GLOBALS['_ROOT_URI']   = 'http://www.yoursite.com/pharaoh/'; // The home page of the game script (include closing / )
