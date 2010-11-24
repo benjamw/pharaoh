@@ -1,7 +1,7 @@
 
-reload = true;
+var reload = true; // do not change this
 
-$(document).ready( function($) {
+$(document).ready( function( ) {
 	// hide the setup div
 	$('div#setup_display').hide( );
 
