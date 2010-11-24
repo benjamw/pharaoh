@@ -569,7 +569,7 @@ return false;
 					ON (PE.player_id = G.white_id
 						OR PE.player_id = G.black_id)
 			WHERE G.state NOT IN ('Finished', 'Draw')
-				AND PE.max_games <> 0
+				AND PE.max_games > 0
 			GROUP BY PE.player_id
 		";
 		$maxed_players = $Mysql->fetch_array($query);
