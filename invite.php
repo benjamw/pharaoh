@@ -51,15 +51,44 @@ foreach ($players_full as $player) {
 	}
 }
 
+$groups = array(
+	'Normal' => array(0, 0),
+	'Eye of Horus' => array(0, 1),
+	'Tower of Kadesh' => array(1, 0),
+	'Tower & Horus' => array(1, 1),
+);
+$group_names = array_keys($groups);
+$group_markers = array_values($groups);
+
 $setups = Setup::get_list( );
 $setup_selection = '<option value="0">Random</option>';
 $setup_javascript = '';
+$cur_group = false;
+$group_open = false;
 foreach ($setups as $setup) {
+	$marker = array((int) $setup['has_tower'], (int) $setup['has_horus']);
+	$group_index = array_search($marker, $group_markers, true);
+
+	if ($cur_group !== $group_names[$group_index]) {
+		if ($group_open) {
+			$setup_selection .= '</optgroup>';
+			$group_open = false;
+		}
+
+		$cur_group = $group_names[$group_index];
+		$setup_selection .= '<optgroup label="'.$cur_group.'">';
+		$group_open = true;
+	}
+
 	$setup_selection .= '
 		<option value="'.$setup['setup_id'].'">'.$setup['name'].'</option>';
 	$setup_javascript .= "'".$setup['setup_id']."' : '".expandFEN($setup['board'])."',\n";
 }
 $setup_javascript = substr(trim($setup_javascript), 0, -1);
+
+if ($group_open) {
+	$setup_selection .= '</optgroup>';
+}
 
 $meta['title'] = 'Send Game Invitation';
 $meta['head_data'] = '
