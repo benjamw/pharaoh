@@ -191,7 +191,7 @@ if (isset($_POST['resign'])) {
 	$return['token'] = $_SESSION['token'];
 
 	try {
-		$Game->resign($player_id);
+		$Game->resign($_SESSION['player_id']);
 	}
 	catch (MyException $e) {
 		$return['error'] = 'ERROR: '.$e->outputMessage( );
