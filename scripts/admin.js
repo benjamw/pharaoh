@@ -8,6 +8,10 @@ $(document).ready( function( ) {
 		$('.game_box').attr('checked', $(this).attr('checked'));
 	});
 
+	$('#setup_all').click( function( ) {
+		$('.setup_box').attr('checked', $(this).attr('checked'));
+	});
+
 	$('tbody tr').click( function(event) {
 		if ($(event.target).is('input')) {
 			return;
@@ -20,7 +24,7 @@ $(document).ready( function( ) {
 		}
 	});
 
-	$('#player_action, #game_action').change( function( ) {
+	$('#player_action, #game_action, #setup_action').change( function( ) {
 		var val = $(this).find('option:selected').val( );
 
 		if (('delete' == val) && ! confirm('Are you sure?')) {

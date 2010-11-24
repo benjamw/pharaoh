@@ -387,6 +387,42 @@ class Setup {
 	}
 
 
+	/** static public function delete
+	 *		Deletes the given setup and all related data
+	 *
+	 * @param mixed array or csv of setup ids
+	 * @action deletes the setup and all related data from the database
+	 * @return void
+	 */
+	static public function delete($ids)
+	{
+		$Mysql = Mysql::get_instance( );
+
+		array_trim($ids, 'int');
+
+		if (empty($ids)) {
+			throw new MyException(__METHOD__.': No game ids given');
+		}
+
+		foreach ($ids as $id) {
+			self::write_game_file($id);
+		}
+
+		$tables = array(
+			self::GAME_HISTORY_TABLE ,
+			self::GAME_TABLE ,
+		);
+
+		$Mysql->multi_delete($tables, " WHERE game_id IN (".implode(',', $ids).") ");
+
+		$query = "
+			OPTIMIZE TABLE ".self::GAME_TABLE."
+				, ".self::GAME_HISTORY_TABLE."
+		";
+		$Mysql->query($query);
+	}
+
+
 	static public function get_list( )
 	{
 		call(__METHOD__);
@@ -394,12 +430,15 @@ class Setup {
 		$Mysql = Mysql::get_instance( );
 
 		$query = "
-			SELECT *
-			FROM ".self::SETUP_TABLE."
-			ORDER BY has_tower ASC
-				, has_horus ASC
-				, used DESC
-				, name ASC
+			SELECT S.*
+				, COUNT(G.game_id) AS current_games
+			FROM ".self::SETUP_TABLE." AS S
+				LEFT JOIN ".Game::GAME_TABLE." AS G
+					ON (G.setup_id = S.setup_id)
+			GROUP BY S.setup_id
+			ORDER BY S.has_tower ASC
+				, S.has_horus ASC
+				, S.name ASC
 		";
 		$setups = $Mysql->fetch_array($query);
 

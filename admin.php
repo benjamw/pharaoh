@@ -74,6 +74,26 @@ if (isset($_POST['game_action'])) {
 	}
 }
 
+if (isset($_POST['setup_action'])) {
+	test_token( );
+
+	try {
+		switch ($_POST['setup_action']) {
+			case 'delete' :
+				Setup::delete($_POST['ids']);
+				break;
+
+			default :
+				break;
+		}
+
+		Flash::store('Admin Update Successfull', true); // redirect kills form resubmission
+	}
+	catch (MyException $e) {
+		Flash::store('Admin Update FAILED !', true); // redirect kills form resubmission
+	}
+}
+
 if (isset($_POST['submit'])) {
 	test_token( );
 
@@ -104,9 +124,8 @@ $hints = array(
 
 $contents = '';
 
-// grab the lists
+// get the players
 $player_list = GamePlayer::get_list( );
-$game_list = Game::get_list( );
 
 // go through the player list and remove the root admin and ourselves
 foreach ($player_list as $key => $player) {
@@ -166,6 +185,9 @@ else {
 	$contents = $table;
 }
 
+// get the games
+$game_list = Game::get_list( );
+
 $table_meta = array(
 	'sortable' => true ,
 	'no_data' => '<p>There are no games to show</p><!-- NO_GAMES -->' ,
@@ -195,6 +217,50 @@ if (false === strpos($table, 'NO_GAMES')) {
 				<option value="">With Selected:</option>
 				<option value="pause">Pause</option>
 				<option value="unpause">Unpause</option>
+				<option value="delete">Delete</option>
+			</select>
+		</div></form>';
+}
+else {
+	$contents .= $table;
+}
+
+// get the setups
+$setup_list = Setup::get_list( );
+
+// go through the setups list and remove any that currently have games
+foreach ($setup_list as $key => $setup) {
+	if ($setup['current_games']) {
+		unset($setup_list[$key]);
+	}
+}
+
+$table_meta = array(
+	'sortable' => true ,
+	'no_data' => '<p>There are no setups to show</p><!-- NO_GAMES -->' ,
+	'caption' => 'Setups' ,
+);
+$table_format = array(
+	array('SPECIAL_CLASS', '(0 != [[[current_games]]])', 'lowlight') ,
+
+	array('Setup', 'name') ,
+	array('Used', 'used') ,
+	array('Horus', '###(([[[has_horus]]]) ? \'Yes\' : \'No\')') ,
+//	array('Tower', '###(([[[has_tower]]]) ? \'Yes\' : \'No\')') , // TOWER
+	array('Reflection', 'reflection') ,
+	array('Created', '###date(Settings::read(\'long_date\'), strtotime(\'[[[created]]]\'))', null, ' class="date"') ,
+	array('Creator', '###((0 == [[[created_by]]]) ? \'Admin\' : $GLOBALS[\'_PLAYERS\'][[[[created_by]]]])') ,
+	array('<input type="checkbox" id="setup_all" />', '<input type="checkbox" name="ids[]" value="[[[setup_id]]]" class="setup_box" />', 'false', 'class="edit"') ,
+);
+$table = get_table($table_format, $setup_list, $table_meta);
+
+if (false === strpos($table, 'NO_GAMES')) {
+	$contents .= '
+		<form method="post" action="'.$_SERVER['REQUEST_URI'].'"><div class="action">
+			<input type="hidden" name="token" value="'.$_SESSION['token'].'" />
+			'.$table.'
+			<select name="setup_action" id="setup_action">
+				<option value="">With Selected:</option>
 				<option value="delete">Delete</option>
 			</select>
 		</div></form>';
