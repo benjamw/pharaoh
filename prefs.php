@@ -29,7 +29,7 @@ $meta['title'] = 'Update Preferences';
 
 $hints = array(
 	'Here you can update your '.GAME_NAME.' preferences.' ,
-	'Setting a max concurrent games value will prevent you from joining a game after the max games value has been reached.  It will also block people from sending you invites to new games.  Set to 0 to disable.' ,
+	'Setting a max concurrent games value will block people from sending you invites to new games after the max games value has been reached.  Set to 0 to disable.' ,
 );
 
 $allow_email_cb = '<input type="checkbox" id="allow_email" name="allow_email" '.get_selected(true, $GLOBALS['Player']->allow_email, false).'/>';
