@@ -105,7 +105,6 @@ $contents .= $lobby;
 $hints = array(
 	'Select a game from the list and resume play by clicking anywhere on the row.' ,
 	'<span class="highlight">Colored entries</span> indicate that it is your turn.' ,
-	'Games that are displayed: <span class="highlight password">Waiting</span>, are password protected' ,
 	'<span class="warning">WARNING!</span><br />Games will be deleted after '.Settings::read('expire_games').' days of inactivity.' ,
 );
 
