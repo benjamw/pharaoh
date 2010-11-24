@@ -171,7 +171,7 @@ $contents .= get_table($table_format, $out_vites, $table_meta);
 $table_meta = array(
 	'sortable' => true ,
 	'no_data' => '<p>There are no open invites to show</p>' ,
-	'caption' => 'Open Games' ,
+	'caption' => 'Open Invitations' ,
 );
 $table_format = array(
 	array('Invitor', 'invitor') ,
