@@ -7,7 +7,7 @@
  *
  * @param mixed optional var to output
  * @param bool optional bypass debug value and output anyway
- * @action ouptuts var to screen
+ * @action outputs var to screen
  * @return void
  */
 function call($var = 'Th&F=xUFucreSp2*ezAhe=ApuPR*$axe', $bypass = false, $show_from = true, $new_window = false, $error = false)
@@ -223,7 +223,7 @@ function packFEN($xFEN, $row_length = 10)
 	$xFEN = preg_replace('/\s+/', '', $xFEN); // remove spaces
 	$xFEN = preg_replace('/\//', '', $xFEN); // remove any row separators
 
-	$xFEN = trim(chunk_split($xFEN, $row_length, '/'), '/'); // add the row separaters
+	$xFEN = trim(chunk_split($xFEN, $row_length, '/'), '/'); // add the row separators
 	$FEN = preg_replace('/(0+)/e', "strlen('\\1')", $xFEN); // pack the 0s
 
 	return $FEN;

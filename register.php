@@ -41,7 +41,7 @@ if (isset($_POST['register'])) {
 		$Message = new Message($GLOBALS['Player']->id, $GLOBALS['Player']->is_admin);
 		$Message->grab_global_messages( );
 
-		Flash::store('Registration Successfull !', 'login.php');
+		Flash::store('Registration Successful !', 'login.php');
 	}
 	catch (MyException $e) {
 		if ( ! defined('DEBUG') || ! DEBUG) {

@@ -178,7 +178,7 @@ class GamePlayer
 		// this will redirect and exit upon failure
 		parent::log_in( );
 
-		// test an arbitrary property for existance, so we don't _pull twice unnecessarily
+		// test an arbitrary property for existence, so we don't _pull twice unnecessarily
 		if (is_null($this->color)) {
 			$this->_mysql->insert(self::EXTEND_TABLE, array('player_id' => $this->id));
 
@@ -473,7 +473,7 @@ return false;
 	/** static public function get_list
 	 *		Returns a list array of all game players
 	 *		in the database
-	 *		This function supercedes the parent's function and
+	 *		This function supersedes the parent's function and
 	 *		just grabs the whole lot in one query
 	 *
 	 * @param bool restrict to approved players

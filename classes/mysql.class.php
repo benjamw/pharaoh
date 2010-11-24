@@ -146,7 +146,7 @@ class Mysql
 	public function __get($property)
 	{
 		if ( ! property_exists($this, $property)) {
-			throw new MySQLException(__METHOD__.': Trying to access non-existant property ('.$property.')');
+			throw new MySQLException(__METHOD__.': Trying to access non-existent property ('.$property.')');
 		}
 
 		if ('_' === $property[0]) {
@@ -170,7 +170,7 @@ class Mysql
 	public function __set($property, $value)
 	{
 		if ( ! property_exists($this, $property)) {
-			throw new MySQLException(__METHOD__.': Trying to access non-existant property ('.$property.')');
+			throw new MySQLException(__METHOD__.': Trying to access non-existent property ('.$property.')');
 		}
 
 		if ('_' === $property[0]) {
@@ -306,7 +306,7 @@ class Mysql
 
 
 	/** public function query
-	 *		Excute a database query
+	 *		Execute a database query
 	 *		If no query is passed, it executes the last saved query.
 	 *
 	 * @param string [optional] SQL query string
@@ -495,7 +495,7 @@ class Mysql
 	 * @param string table name
 	 * @param array associative data array
 	 * @param bool [optional] whether or not we should replace values (true / false)
-	 * @action execute multiple mysql querys
+	 * @action execute multiple mysql queries
 	 * @return array insert ids for rows (with original keys preserved)
 	 */
 	public function multi_insert($table, $data_array, $replace = false)
@@ -561,7 +561,7 @@ class Mysql
 	 * @param mixed table name array or single string
 	 * @param mixed where clause array or single string
 	 * @param bool optional recursive (default false)
-	 * @action execute multiple mysql querys
+	 * @action execute multiple mysql queries
 	 * @return array results
 	 */
 	public function multi_delete($table_array, $where_array, $recursive = false)
@@ -611,7 +611,7 @@ class Mysql
 
 
 	/** public function fetch_object
-	 *		Excute a database query and return the next result row as object.
+	 *		Execute a database query and return the next result row as object.
 	 *		Each subsequent call to this method returns the next result row.
 	 *
 	 * @param string [optional] SQL query string
@@ -631,7 +631,7 @@ class Mysql
 
 
 	/** public function fetch_row
-	 *		Excute a database query and return result as an indexed array.
+	 *		Execute a database query and return result as an indexed array.
 	 *		Each subsequent call to this method returns the next result row.
 	 *
 	 * @param string [optional] SQL query string
@@ -656,7 +656,7 @@ class Mysql
 
 
 	/** public function fetch_assoc
-	 *		Excute a database query and return result as an associative array.
+	 *		Execute a database query and return result as an associative array.
 	 *		Each subsequent call to this method returns the next result row.
 	 *
 	 * @param string [optional] SQL query string
@@ -681,7 +681,7 @@ class Mysql
 
 
 	/** public function fetch_both
-	 *		Excute a database query and return result as both
+	 *		Execute a database query and return result as both
 	 *		an associative array and indexed array.
 	 *		Each subsequent call to this method returns the next result row.
 	 *
@@ -707,7 +707,7 @@ class Mysql
 
 
 	/** public function fetch_array
-	 *		Excute a database query and return result as
+	 *		Execute a database query and return result as
 	 *		an indexed array of both indexed and associative arrays.
 	 *		This method returns the entire result set in a single call.
 	 *
@@ -733,7 +733,7 @@ class Mysql
 
 
 	/** public function fetch_value
-	 *		Excute a database query and return result as
+	 *		Execute a database query and return result as
 	 *		a single result value.
 	 *		This method only returns the single value at index 0.
 	 *		Each subsequent call to this method returns the next value.
@@ -762,7 +762,7 @@ class Mysql
 
 
 	/** public function fetch_value_array
-	 *		Excute a database query and return result as
+	 *		Execute a database query and return result as
 	 *		an indexed array of single result values.
 	 *		This method returns the entire result set in a single call.
 	 *
@@ -788,7 +788,7 @@ class Mysql
 
 	/** public function paginate NOT TESTED
 	 *		Paginates a query result set based on supplied information
-	 *		NOTE: It is not nesecary to include the SQL_CALC_FOUND_ROWS
+	 *		NOTE: It is not necessary to include the SQL_CALC_FOUND_ROWS
 	 *		nor the LIMIT clause in the query, in fact, including the
 	 *		LIMIT clause in the query will probably break MySQL.
 	 *

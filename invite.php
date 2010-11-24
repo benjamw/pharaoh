@@ -144,8 +144,8 @@ EOT;
 
 $table_meta = array(
 	'sortable' => true ,
-	'no_data' => '<p>There are no recieved invites to show</p>' ,
-	'caption' => 'Invitations Recieved' ,
+	'no_data' => '<p>There are no received invites to show</p>' ,
+	'caption' => 'Invitations Received' ,
 );
 $table_format = array(
 	array('Invitor', 'invitor') ,

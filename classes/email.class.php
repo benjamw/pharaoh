@@ -105,7 +105,7 @@ class Email
 
 			return $return;
 		}
-		// $to is an email address (or comma seperated email addresses)
+		// $to is an email address (or comma separated email addresses)
 		elseif (preg_match('/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i', $to)) {
 			$email = $to;
 		}
@@ -134,7 +134,7 @@ class Email
 		$site_name = Settings::read('site_name');
 
 		if ( ! in_array($type, array_keys($this->email_data))) {
-			throw new MyException(__METHOD__.': Trying to send email with unsupprted type ('.$type.')');
+			throw new MyException(__METHOD__.': Trying to send email with unsupported type ('.$type.')');
 		}
 
 		$subject = $this->email_data[$type]['subject'];

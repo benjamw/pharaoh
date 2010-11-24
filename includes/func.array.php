@@ -200,7 +200,7 @@ function arraySumField($array, $key) { return array_sum_field($array, $key); }
  *		extra divider between key-value pairs
  *		Can be used to create URL GET strings from arrays
  *
- * @param string seperator between elements (for URL GET, use '&')
+ * @param string separator between elements (for URL GET, use '&')
  * @param string divider between key-value pairs (for URL GET, use '=')
  * @param array
  * @param bool optional URL encode flag
@@ -233,7 +233,7 @@ function implodeFull($seperator, $divider, $array, $url = false) { return implod
  *		extra divider between key-value pairs
  *		Can be used to create arrays from URL GET strings
  *
- * @param string seperator between elements (for URL GET, use '&')
+ * @param string separator between elements (for URL GET, use '&')
  * @param string divider between key-value pairs (for URL GET, use '=')
  * @param string
  * @param bool optional URL encode flag
@@ -241,7 +241,7 @@ function implodeFull($seperator, $divider, $array, $url = false) { return implod
  */
 function explode_full($seperator, $divider, $string, $url = false)
 {
-	// explode the string about the seperator
+	// explode the string about the separator
 	$first = explode($seperator, $string);
 
 	// now go through each element in the first array and explode each about the divider
@@ -270,7 +270,7 @@ function kshuffle( & $array)
 
 /** function array_merge_plus
  *		Exactly the same as array_merge except this function
- *		alows entry of non-arrays without throwing errors
+ *		allows entry of non-arrays without throwing errors
  *		If an empty argument is encountered, it removes it.
  *		If a non-empty, non-array value is encountered,
  *		it appends it to the array in the order received.
@@ -346,7 +346,7 @@ function array_compare($array1, $array2) {
 		if ( ! array_key_exists($key, $array1)) {
 			$diff[1][$key] = $value;
 		}
-		// No direct comparsion because matching keys were compared in the
+		// No direct comparison because matching keys were compared in the
 		// left-to-right loop earlier, recursively.
 	}
 

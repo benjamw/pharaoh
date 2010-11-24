@@ -72,9 +72,9 @@ $meta['head_data'] = '
 ';
 
 $hints = array(
-	'Create a new game setup by choosing a layout to edit, chosing your settings, and editing the layout.' ,
+	'Create a new game setup by choosing a layout to edit, choosing your settings, and editing the layout.' ,
 	'Click on a piece to select it, and then click anywhere on the board to place that piece.' ,
-	'Click on the Cancel button to cancel piece selelction.' ,
+	'Click on the Cancel button to cancel piece selection.' ,
 	'Click on the Delete button, and then click on the piece to delete to delete an existing piece.' ,
 	'The reflection setting will also place the reflected pieces along with the pieces you place, making board creation faster and less prone to errors.' ,
 	'The reflections setting will also validate, so if you have a few non-reflected pieces in your layout, set reflection to "None" before submitting.' ,

@@ -39,7 +39,7 @@ if (isset($_POST['player_action'])) {
 				break;
 		}
 
-		Flash::store('Admin Update Successfull', true); // redirect kills form resubmission
+		Flash::store('Admin Update Successful', true); // redirect kills form resubmission
 	}
 	catch (MyException $e) {
 		Flash::store('Admin Update FAILED !', true); // redirect kills form resubmission
@@ -67,7 +67,7 @@ if (isset($_POST['game_action'])) {
 				break;
 		}
 
-		Flash::store('Admin Update Successfull', true); // redirect kills form resubmission
+		Flash::store('Admin Update Successful', true); // redirect kills form resubmission
 	}
 	catch (MyException $e) {
 		Flash::store('Admin Update FAILED !', true); // redirect kills form resubmission
@@ -87,7 +87,7 @@ if (isset($_POST['setup_action'])) {
 				break;
 		}
 
-		Flash::store('Admin Update Successfull', true); // redirect kills form resubmission
+		Flash::store('Admin Update Successful', true); // redirect kills form resubmission
 	}
 	catch (MyException $e) {
 		Flash::store('Admin Update FAILED !', true); // redirect kills form resubmission
@@ -105,7 +105,7 @@ if (isset($_POST['submit'])) {
 
 		Settings::write_all($POST);
 
-		Flash::store('Admin Update Successfull', true); // redirect kills form resubmission
+		Flash::store('Admin Update Successful', true); // redirect kills form resubmission
 	}
 	catch (MyException $e) {
 		Flash::store('Admin Update FAILED !', true); // redirect kills form resubmission

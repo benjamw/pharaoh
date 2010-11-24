@@ -172,7 +172,7 @@ class Player
 	public function __get($property)
 	{
 		if ( ! property_exists($this, $property)) {
-			throw new MyException(__METHOD__.': Trying to access non-existant property ('.$property.')', 2);
+			throw new MyException(__METHOD__.': Trying to access non-existent property ('.$property.')', 2);
 		}
 
 		if ('_' === $property[0]) {
@@ -196,7 +196,7 @@ class Player
 	public function __set($property, $value)
 	{
 		if ( ! property_exists($this, $property)) {
-			throw new MyException(__METHOD__.': Trying to access non-existant property ('.$property.')', 3);
+			throw new MyException(__METHOD__.': Trying to access non-existent property ('.$property.')', 3);
 		}
 
 		if ('_' === $property[0]) {
@@ -368,7 +368,7 @@ class Player
 				self::check_database($_DATA['username'], $_DATA['email']);
 			}
 			catch (MyException $e) {
-				// the data givin is already in the database
+				// the data given is already in the database
 				throw $e;
 			}
 
@@ -437,7 +437,7 @@ class Player
 				self::check_database('', $_DATA['email'], $this->id);
 			}
 			catch (MyException $e) {
-				// the data givin is already in the database
+				// the data given is already in the database
 				throw $e;
 			}
 
@@ -583,7 +583,7 @@ class Player
 	 * @param string old password
 	 * @param string new password
 	 * @action checks current password for validity
-	 * @action stores new password hashs
+	 * @action stores new password hashes
 	 * @return bool success
 	 */
 	public function update_password($old_password, $new_password)
@@ -620,7 +620,7 @@ class Player
 	 *		Sets the player's password in the database
 	 *
 	 * @param string password
-	 * @action stores new password hashs
+	 * @action stores new password hashes
 	 * @return bool success
 	 */
 	protected function _set_password($password)

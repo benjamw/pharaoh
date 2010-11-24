@@ -144,7 +144,7 @@ class Settings
 	public function __get($property)
 	{
 		if ( ! isset($this->_settings[$property]) && ! property_exists($this, $property)) {
-			throw new MyException(__METHOD__.': Trying to access non-existant property ('.$property.')', 2);
+			throw new MyException(__METHOD__.': Trying to access non-existent property ('.$property.')', 2);
 		}
 
 		if ('_' === $property[0]) {

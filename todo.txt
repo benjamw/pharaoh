@@ -19,7 +19,7 @@ times_used
 
 setup only needs to hold silver piece placements
 as red is reflected through the origin.
-(if red pieces are given, don't dissallow, some setups
+(if red pieces are given, don't disallow, some setups
 may not need be reflected)
 
 
