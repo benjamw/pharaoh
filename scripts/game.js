@@ -11,6 +11,15 @@ $(document).ready( function( ) {
 	// set our move history active class and disabled review buttons
 	update_history( );
 
+	// invert board button
+	$('a#invert').click( function( ) {
+		invert = ! invert;
+		show_old_board( );
+		show_new_board( );
+		clear_laser( );
+		return false;
+	});
+
 	// show full move button
 	$('a#show_full').click( function( ) {
 		show_old_board(true);
