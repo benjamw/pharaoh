@@ -293,29 +293,29 @@ function fire_laser(path, i) {
 	for (j = 0; j < nodes; ++j) {
 		// grab the next node and see where we went
 		// if it's an actual node, and not an endpoint
-		if ('boolean' != typeof path[i][j]) {
+		if ('boolean' != typeof path[i][j][0]) {
 			dir = -path[i][j][1];
 
+			// check if we split here, and add the other direction
+			add_dir = 0;
+			if (path[i + 1][j][2]) {
+				add_dir = path[i + 1][path[i + 1][j][2]][1];
+			}
+
 			// if the next node is an endpoint (hit, wall, or looped)
-			if ('boolean' == typeof path[i + 1][j]) {
+			if ('boolean' == typeof path[i + 1][j][0]) {
 				// if it's a hit
-				if (true === path[i + 1][j]) {
+				if (true === path[i + 1][j][0]) {
 					// show the hit (only one direction)
 					next_dir = 0;
 				}
 				else {
 					// just run it into the wall
-					next_dir = -dir;
+					next_dir = path[i + 1][j][1];
 				}
 			}
 			else { // the next node is a valid node
 				next_dir = path[i + 1][j][1];
-
-				// check if we split here, and add the other direction
-				add_dir = 0;
-				if (path[i + 1][j][2]) {
-					add_dir = path[i + 1][path[i + 1][j][2]][1];
-				}
 			}
 
 			if (flip) {
@@ -353,27 +353,27 @@ function fade_laser(end) {
 			dirs = '',
 			hits = '';
 
-		$('img', $div).each( function( ) {
+		$('img.laser', $div).each( function( ) {
 			var match,
 				$img = $(this);
 
 			// make a list of all the directions shown (excluding hits)
-			if (match = $img.attr('src').match(/laser\/(?:new_)?([nwse]{2,4})\.png/i)) {
+			if (match = $img.attr('src').match(/\/(?:new_)?([nwse]{2,4})\.png/i)) {
 				dirs += match[1];
 				$img.remove( );
 			}
 
 			// loop through all faded hits, and convert them all to faded laser
 			// (they'll get filtered out and removed if this is the only dir)
-			if (match = $img.attr('src').match(/laser\/([nwse])\.png/i)) {
-				dirs += match[1];
+			if (match = $img.attr('src').match(/\/([nwse])\.png/i)) {
+				hits += match[1];
 				$img.remove( );
 			}
 
 			// now loop through any new hits, and convert them to faded hits, but still hits
 			// but only if there isn't already a hit image here already
 			// (can happen when firing laser over and over again)
-			if (match = $img.attr('src').match(/laser\/new_([nwse])\.png/i)) {
+			if (match = $img.attr('src').match(/\/new_([nwse])\.png/i)) {
 				$img.removeClass('new').attr('src', $img.attr('src').replace(/new_/i, ''));
 			}
 		});
@@ -382,6 +382,10 @@ function fade_laser(end) {
 
 		if (1 < dirs.length) {
 			$div.append('<img src="'+laser_dir+dirs+'.png" class="laser" />');
+		}
+
+		for (var i = 0; i < hits.length; ++i) {
+			$div.append('<img src="'+laser_dir+hits.charAt(i)+'.png" class="laser" />');
 		}
 	});
 

@@ -22,6 +22,10 @@
 +---------------------------------------------------------------------------
 */
 
+// set some constants for laser path directions
+// directions are stored as values to add to
+// current board index to get next board index
+// when travelling in that direction
 define('I_RIGHT', 1);
 define('I_LEFT', -1);
 define('I_UP', -10);
@@ -97,6 +101,7 @@ class Pharaoh {
 	 *		)
 	 *
 	 *		Path is not necessarily continuous
+	 *		... but most likely
 	 *
 	 * @var array
 	 */
@@ -332,7 +337,7 @@ class Pharaoh {
 	 *		Fires the laser of the given color
 	 *
 	 * @param string color (red or silver)
-	 * @param string hit_board the previous board layout to use for hit checks
+	 * @action creates $this->_laser_path array
 	 * @return array of squares hit (empty array if none)
 	 */
 	protected function _fire_laser($color)
@@ -350,20 +355,6 @@ class Pharaoh {
 			'C' => array(I_RIGHT => I_DOWN,  I_UP   => I_LEFT),  //  \`
 			'D' => array(I_RIGHT => I_UP,    I_DOWN => I_LEFT),  //  /.
 
-			// eye of horus
-			'H' => array( //  \
-				I_RIGHT => array(I_RIGHT, I_DOWN),
-				I_LEFT  => array(I_LEFT,  I_UP),
-				I_DOWN  => array(I_RIGHT, I_DOWN),
-				I_UP    => array(I_LEFT,  I_UP),
-			),
-			'I' => array( //  /
-				I_RIGHT => array(I_RIGHT, I_UP),
-				I_LEFT  => array(I_LEFT,  I_DOWN),
-				I_DOWN  => array(I_LEFT,  I_DOWN),
-				I_UP    => array(I_RIGHT, I_UP),
-			),
-
 			// djed
 			'X' => array( //  \
 				I_RIGHT => I_DOWN,
@@ -376,6 +367,20 @@ class Pharaoh {
 				I_LEFT  => I_DOWN,
 				I_DOWN  => I_LEFT,
 				I_UP    => I_RIGHT,
+			),
+
+			// eye of horus
+			'H' => array( //  \
+				I_RIGHT => array(I_RIGHT, I_DOWN),
+				I_LEFT  => array(I_LEFT,  I_UP),
+				I_DOWN  => array(I_RIGHT, I_DOWN),
+				I_UP    => array(I_LEFT,  I_UP),
+			),
+			'I' => array( //  /
+				I_RIGHT => array(I_RIGHT, I_UP),
+				I_LEFT  => array(I_LEFT,  I_DOWN),
+				I_DOWN  => array(I_LEFT,  I_DOWN),
+				I_UP    => array(I_RIGHT, I_UP),
 			),
 		);
 
@@ -398,14 +403,18 @@ class Pharaoh {
 			$continue = false;
 
 			foreach ($paths as $key => $node) {
-				if ((false == $node) || (true === $node)) {
-					$next[$key] = $node; // propagate the index
+				if ((false === $node[0]) || (true === $node[0])) {
+					unset($node[2]);
+					$next[$key] = $node; // propagate the individual path indexes
 					continue;
 				}
 
 				// let the loop know we still have valid nodes
 				$continue = true;
 
+				// current is the current board index
+				// dir is the direction that the laser was heading
+				// when it entered the current index
 				list($current, $dir) = $node;
 
 				// check the current location for a piece
@@ -414,7 +423,10 @@ class Pharaoh {
 					if ( ! isset($reflections[strtoupper($piece)][$dir])) {
 						$hits[] = $current;
 
-						$next[$key] = true; // stop this path
+						// we store dir here because it keeps the output format consistent
+						// we don't really care at this point because we just hit a piece
+						// ... the laser isn't going any further
+						$next[$key] = array(true, $dir); // stop this path
 						continue;
 					}
 
@@ -436,30 +448,40 @@ class Pharaoh {
 					// of doubling back or going over the same path again, ever
 
 					// before we add to $next, make sure we haven't been here, or hit any walls
-					// check if we hit a wall
 					$do_split = true;
-					$split_dir = $dir[1];
+					$split_dir = $dir[0];
 					$split_current = $current + $split_dir;
-					$long_wall = (0 > $split_current) || (80 <= $split_current);
-					$short_wall = (1 == abs($split_dir)) && (floor($split_current / 10) !== floor(($split_current - $split_dir) / 10));
-					if ($long_wall || $short_wall) {
-						// don't even create a new path
-						$do_split = false;
-					}
 
 					// make sure we haven't been here before
 					if (in_array(array($split_current, $split_dir), $used, true)) {
 						// don't even create a new path
 						$do_split = false;
+						break;
 					}
 
-					if ($do_split) {
-						$next[count($paths) + $split] = array($current + $dir[1], $dir[1]);
-						$used[] = array($current + $dir[1], $dir[1]);
-						$split += 1;
+					// check if we hit a wall
+					$long_wall = (0 > $split_current) || (80 <= $split_current);
+					$short_wall = (1 == abs($split_dir)) && (floor($split_current / 10) !== floor(($split_current - $split_dir) / 10));
+					if ($long_wall || $short_wall) {
+						// set split_current to false, so we know we hit a wall,
+						// but keep going, we need to store the dir so we can show any reflection properly
+						// and we need to add the new path index below
+
+						// we store dir here because we need to know which direction the laser left the node in
+						// for edge/corner piece hits that send the laser through the wall
+						$split_current = false;
 					}
 
-					$dir = $dir[0];
+					$next[count($paths) + $split] = array($split_current, $split_dir);
+
+					if (false !== $split_current) {
+						$used[] = array($split_current, $split_dir);
+					}
+
+					$split += 1;
+
+					// now that the split is done, go back and keep processing the new path
+					$dir = $dir[1];
 				}
 
 				// increment $current and run a few tests
@@ -467,26 +489,38 @@ class Pharaoh {
 				// or loop back on ourselves forever
 				$current += $dir;
 
+				// make sure we haven't been here before
+				if (in_array(array($current, $dir), $used, true)) {
+					// we store dir here because it keeps the output format consistent
+					// we don't really care at this point because we've been here before
+					// and know what's going to happen
+					$next[$key] = array(false, $dir); // stop this path
+					continue;
+				}
+
 				// check if we hit a wall
 				$long_wall = (0 > $current) || (80 <= $current);
 				$short_wall = (1 == abs($dir)) && (floor($current / 10) !== floor(($current - $dir) / 10));
 				if ($long_wall || $short_wall) {
-					$next[$key] = false; // stop this path
-					continue;
-				}
+					// set current to false, so we know we hit a wall,
+					// but keep going, we need to store the dir so we can show any reflection properly
+					// and we need to add the new path index below
 
-				// make sure we haven't been here before
-				if (in_array(array($current, $dir), $used, true)) {
-					$next[$key] = false; // stop this path
-					continue;
+					// we store dir here because we need to know which direction the laser left the node in
+					// for corner piece hits that send the laser through the wall
+					$current = false;
 				}
 
 				$next[$key] = array($current, $dir);
 				if ($do_split) {
+					// add the new path index here so we know which path was the original path
+					// and where are the splits came from
 					$next[$key][2] = count($paths) + $split - 1;
 				}
 
-				$used[] = array($current, $dir);
+				if (false !== $current) {
+					$used[] = array($current, $dir);
+				}
 			} // end foreach $current
 
 			// if we have no valid nodes left
@@ -497,12 +531,10 @@ class Pharaoh {
 
 			// add to our laser path
 			// and pass along to the next round
-			$paths = $next;
-			$this->_laser_path[] = $paths;
+			$this->_laser_path[] = $paths = $next;
 
 			++$i; // keep those pesky infinite loops at bay
 		} // end while
-
 		call($this->_get_laser_ascii( ));
 		call($hits);
 
@@ -830,14 +862,6 @@ class Pharaoh {
 						$board[$node[0]] = (1 == abs($node[1])) ? '-' : '|';
 					}
 				}
-			}
-		}
-
-		// convert the endpoint to an asterisk, so we can follow the beam
-		$final = end($laser_path);
-		foreach ($final as $node) {
-			if (is_array($node)) {
-				$board[$node[0]] = '*';
 			}
 		}
 
