@@ -206,7 +206,7 @@ function arraySumField($array, $key) { return array_sum_field($array, $key); }
  * @param bool optional URL encode flag
  * @return string
  */
-function implode_full($seperator, $divider, $array, $url = false)
+function implode_full($separator, $divider, $array, $url = false)
 {
 	if ( ! is_array($array) || (0 == count($array))) {
 		return $array;
@@ -214,10 +214,10 @@ function implode_full($seperator, $divider, $array, $url = false)
 
 	$str = '';
 	foreach ($array as $key => $val) {
-		$str .= $key.$divider.$val.$seperator;
+		$str .= $key.$divider.$val.$separator;
 	}
 
-	$str = substr($str, 0, -(strlen($seperator)));
+	$str = substr($str, 0, -(strlen($separator)));
 
 	if ($url) {
 		$str = url_encode($str);
@@ -225,7 +225,7 @@ function implode_full($seperator, $divider, $array, $url = false)
 
 	return $str;
 }
-function implodeFull($seperator, $divider, $array, $url = false) { return implode_full($seperator, $divider, $array, $url); }
+function implodeFull($separator, $divider, $array, $url = false) { return implode_full($separator, $divider, $array, $url); }
 
 
 /** function explode_full [explodeFull]
@@ -239,10 +239,10 @@ function implodeFull($seperator, $divider, $array, $url = false) { return implod
  * @param bool optional URL encode flag
  * @return array
  */
-function explode_full($seperator, $divider, $string, $url = false)
+function explode_full($separator, $divider, $string, $url = false)
 {
 	// explode the string about the separator
-	$first = explode($seperator, $string);
+	$first = explode($separator, $string);
 
 	// now go through each element in the first array and explode each about the divider
 	foreach ($first as $element) {
@@ -252,7 +252,7 @@ function explode_full($seperator, $divider, $string, $url = false)
 
 	return $array;
 }
-function explodeFull($seperator, $divider, $string, $url = false) { return explode_full($seperator, $divider, $string, $url); }
+function explodeFull($separator, $divider, $string, $url = false) { return explode_full($separator, $divider, $string, $url); }
 
 
 /** function kshuffle
