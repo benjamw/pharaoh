@@ -1,80 +1,20 @@
 
+- nudge is broken
+
+- add the option for "Laser Battle", possibly make it have options for
+	every hit equals broken, or immune for X turns after hit
+
 - make sure the game is deleting finished games
 
 - add a different method for removing the click on the piece, because clicking the piece again
 	doesn't work for rotatable pieces
 
-- help page on the game that shows the pieces and what they can do
-
-- don't show success messages if email is not sent
-
 - if same board configuration is seen in a game for the third time, the next player can declare a draw
 
-setup table
----------------------
-id
-created_by
-setup
-times_used
-
-setup only needs to hold silver piece placements
-as red is reflected through the origin.
-(if red pieces are given, don't disallow, some setups
-may not need be reflected)
+- don't show success messages if email is not sent
+	for things like nudge, that are only emails
+	possibly for other things like invite, etc.
+	that are largely email dependent
 
 
-board layout (silver, red is lowercase)
-P - pharaoh (target)
-A - pyramid (1-sided mirror, NE .\ ) - needs 4 characters to show orientation
-	B - SE `/
-	C - SW \`
-	D - NW /.
-X - djed (2-sided mirror, NE-SW \ ) - needs 2 characters to show orientation
-	Y - NW-SE /
-V - Obelisk (defense block) - needs 2 characters to show stacking
-	W - double stacked obelisks
-H - eye of horus (splitter, NE-SW \ ) - needs 2 characters to show orientation
-	I - NW-SE /
-T - Tower of Kadesh base ( x4 )
 
-
-R - red (player color)
-S - silver (player color)
-
-ABCDEFGHIJKLMNOPQRSTUVWXYZ
-----   --      - --- ----
-
-set up and use the FEN notation for the board
-
-
-    A   B   C   D   E   F   G   H   I   J
-  +---+---+---+---+---+---+---+---+---+---+
-8 | R | S |   |   |   |   |   |   | R | S | 8
-  +---+---+---+---+---+---+---+---+---+---+
-7 | R |   |   |   |   |   |   |   |   | S | 7
-  +---+---+---+---+---+---+---+---+---+---+
-6 | R |   |   |   |   |   |   |   |   | S | 6
-  +---+---+---+---+---+---+---+---+---+---+
-5 | R |   |   |   |   |   |   |   |   | S | 5
-  +---+---+---+---+---o---+---+---+---+---+
-4 | R |   |   |   |   |   |   |   |   | S | 4
-  +---+---+---+---+---+---+---+---+---+---+
-3 | R |   |   |   |   |   |   |   |   | S | 3
-  +---+---+---+---+---+---+---+---+---+---+
-2 | R |   |   |   |   |   |   |   |   | S | 2
-  +---+---+---+---+---+---+---+---+---+---+
-1 | R | S |   |   |   |   |   |   | R | S | 1
-  +---+---+---+---+---+---+---+---+---+---+
-    A   B   C   D   E   F   G   H   I   J
-
-red laser comes down from above A8
-silver laser comes up from below J1
-
-A1 = 70 -> A8 = 00
-B1 = 71 -> B8 = 01
-...
-J1 = 79 -> J8 = 09
-
-origin reflect function:
-
-reflect = 79 - origin
