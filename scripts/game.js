@@ -87,8 +87,14 @@ $(document).ready( function( ) {
 			$.ajax({
 				type: 'POST',
 				url: 'ajax_helper.php',
-				data: $('#game_form').serialize( )+'&nudge=1',
+				data: $('form#game').serialize( )+'&nudge=1',
 				success: function(msg) {
+					// if something happened, just reload
+					if ('{' != msg[0]) {
+						alert('ERROR: AJAX failed');
+						if (reload) { window.location.reload( ); }
+					}
+
 					var reply = JSON.parse(msg);
 
 					if (reply.error) {
@@ -117,8 +123,14 @@ $(document).ready( function( ) {
 			$.ajax({
 				type: 'POST',
 				url: 'ajax_helper.php',
-				data: $('#game_form').serialize( )+'&resign=1',
+				data: $('form#game').serialize( )+'&resign=1',
 				success: function(msg) {
+					// if something happened, just reload
+					if ('{' != msg[0]) {
+						alert('ERROR: AJAX failed');
+						if (reload) { window.location.reload( ); }
+					}
+
 					var reply = JSON.parse(msg);
 
 					if (reply.error) {
