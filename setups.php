@@ -61,6 +61,7 @@ $meta['head_data'] = '
 	<link rel="stylesheet" type="text/css" media="screen" href="css/board.css" />
 
 	<script type="text/javascript">
+		var invert = false;
 		var setups = {
 			\'0\' : \''.str_repeat('0', 80).'\',
 			'.$setup_javascript.'
@@ -107,7 +108,16 @@ $contents = <<< EOF
 	<div id="pieces_display">
 		<img src="images/cancel.png" alt="Cancel" title="Cancel Selection" /><img src="images/delete.png" alt="Delete" title="Delete Piece" />
 	</div>
-	<div id="setup_display"></div>
+	<div id="setup_display">
+		<!-- the board will go here -->
+
+		<div class="buttons" style="text-align:center;">
+			<a href="javascript:;" id="red_laser" style="float:left;">Test Fire Red Laser</a>
+			<a href="javascript:;" id="invert">Invert Board</a> |
+			<a href="javascript:;" id="clear_laser">Clear Laser</a>
+			<a href="javascript:;" id="silver_laser" style="float:right;">Test Fire Silver Laser</a>
+		</div> <!-- .buttons -->
+	</div>
 
 EOF;
 

@@ -1,6 +1,4 @@
 
-- nudge is broken
-
 - add the option for "Laser Battle", possibly make it have options for
 	every hit equals broken, or immune for X turns after hit
 

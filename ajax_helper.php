@@ -113,6 +113,21 @@ if (isset($_POST['test_setup'])) {
 }
 
 
+// run setup laser test fire
+if (isset($_POST['test_fire'])) {
+	try {
+		// returns laser_path and hits arrays
+		$return = Pharaoh::fire_laser($_POST['color'], $_POST['board']);
+	}
+	catch (MyException $e) {
+		$return['error'] = 'ERROR: '.$e->outputMessage( );
+	}
+
+	echo json_encode($return);
+	exit;
+}
+
+
 // run the invites stuff
 if (isset($_POST['invite'])) {
 	if ('delete' == $_POST['invite']) {

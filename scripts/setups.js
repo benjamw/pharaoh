@@ -2,8 +2,37 @@
 var reload = true;
 var selected = false;
 var board = false;
+var board_changed = false;
 
 $(document).ready( function($) {
+	// invert board button
+	$('a#invert').click( function( ) {
+		do_clear_laser( );
+		invert = ! invert;
+		$('#setup_display').find('#the_board').remove( ).end( ).prepend(create_board(board));
+		return false;
+	});
+
+	// fire silver laser button
+	$('a#silver_laser').click( function( ) {
+		do_clear_laser( );
+		do_fire_laser('silver');
+		return false;
+	});
+
+	// fire red laser button
+	$('a#red_laser').click( function( ) {
+		do_clear_laser( );
+		do_fire_laser('red');
+		return false;
+	});
+
+	// clear laser button
+	$('a#clear_laser').click( function( ) {
+		do_clear_laser( );
+		return false;
+	});
+
 	// show the pieces
 	var piece;
 	var $pieces_div = $('#pieces_display');
@@ -16,6 +45,8 @@ $(document).ready( function($) {
 	$pieces_div.find('img').click( function( ) {
 		$('.selected').removeClass('selected');
 		selected = $(this).addClass('selected').attr('alt');
+
+		do_clear_laser( );
 
 		if ('Cancel' == selected) {
 			selected = false;
@@ -32,9 +63,12 @@ $(document).ready( function($) {
 			return;
 		}
 
+		do_clear_laser( );
+
 		if ((false === board) || confirm('This will delete all changes.\nAre you sure?')) {
 			board = setups[val];
-			$('#setup_display').empty( ).append(create_board(board));
+			board_changed = true;
+			$('#setup_display').find('#the_board').remove( ).end( ).prepend(create_board(board));
 			$('#name').val($this.find('option:selected').text( ) + ' Edit');
 		}
 
@@ -50,14 +84,19 @@ $(document).ready( function($) {
 		if ( ! selected) {
 			return;
 		}
+
+		do_clear_laser( );
+
 		if ('Delete' == selected) {
 			$this.empty( );
-			board = board.replaceAt(id, '0')
+			board = board.replaceAt(id, '0');
+			board_changed = true;
 
 			if (reflection) {
 				id = get_reflected_id(id, reflection);
 				$('#idx_'+id).empty( );
-				board = board.replaceAt(id, '0')
+				board = board.replaceAt(id, '0');
+				board_changed = true;
 			}
 
 			return;
@@ -72,6 +111,7 @@ $(document).ready( function($) {
 
 		$this.empty( ).append(create_piece(selected));
 		board = board.replaceAt(id, selected);
+		board_changed = true;
 
 		// place the reflected piece
 		if (reflection) {
@@ -81,12 +121,14 @@ $(document).ready( function($) {
 
 			$('#idx_'+id).empty( ).append(create_piece(new_selected));
 			board = board.replaceAt(id, new_selected);
+			board_changed = true;
 		}
 	});
 
 	// initialize a blank board
 	board = setups[0];
-	$('#setup_display').empty( ).append(create_board(board));
+	board_changed = true;
+	$('#setup_display').find('#the_board').remove( ).end( ).prepend(create_board(board));
 
 	// upon form submission, ajax validate the board first
 	// so we don't lose all the board data
@@ -98,6 +140,8 @@ $(document).ready( function($) {
 		// prevent default completely
 		// we will fake a submit if the ajax test passes
 		event.preventDefault( );
+
+		do_clear_laser( );
 
 		if (debug) {
 			window.location = 'ajax_helper.php'+debug_query+'&'+$('#send').serialize( )+'&test_setup=1';
@@ -151,6 +195,47 @@ function get_reflected_id(id, reflection) {
 	}
 
 	return id;
+}
+
+var laser_path = { };
+function do_fire_laser(color) {
+	color = color || 'silver';
+
+	// this stops the fire_laser function
+	// at the bottom from firing with
+	// incorrect path data
+	if (board_changed) {
+		laser_path = { };
+	}
+
+	if ( ! laser_path[color]) {
+		$.ajax({
+			type: 'POST',
+			url: 'ajax_helper.php',
+			data: 'color='+color+'&board='+board+'&test_fire=1',
+			success: function(msg) {
+				var reply = JSON.parse(msg);
+
+				if (reply.error) {
+					alert(reply.error);
+				}
+				else {
+					laser_path[color] = reply.laser_path;
+					fire_laser(laser_path[color]);
+					board_changed = false;
+				}
+			}
+		});
+	}
+
+	fire_laser(laser_path[color]);
+}
+
+
+function do_clear_laser( ) {
+	clearTimeout(timer);
+	timer = false;
+	$('img.laser').remove( );
 }
 
 
