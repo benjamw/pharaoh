@@ -395,7 +395,7 @@ class Pharaoh {
 		$used = array( );
 		$next = array( );
 		$hits = array( );
-		while ($i < 99) { // no ad infinitum here
+		while ($i < 999) { // no ad infinitum here
 			$split = 0;
 			$continue = false;
 
@@ -525,6 +525,7 @@ class Pharaoh {
 			if ( ! $continue) {
 				break;
 			}
+
 			// add to our laser path
 			// and pass along to the next round
 			$laser_path[] = $paths = $next;
