@@ -164,7 +164,7 @@ $table_format = array(
 	array('Invitee', '###ife(\'[[[invitee]]]\', \'-- OPEN --\')') ,
 	array('Setup', 'setup') ,
 	array('Date Sent', '###date(Settings::read(\'long_date\'), strtotime(\'[[[invite_date]]]\'))', null, ' class="date"') ,
-	array('Action', '<input type="button" id="withdraw-[[[invite_id]]]" value="Withdraw" />', false) ,
+	array('Action', '###\'<input type="button" id="withdraw-[[[invite_id]]]" value="Withdraw" />\'.((strtotime(\'[[[invite_date]]]\') >= strtotime(\'[[[resend_limit]]]\')) ? \'\' : \'<input type="button" id="resend-[[[invite_id]]]" value="Resend" />\')', false) ,
 );
 $contents .= get_table($table_format, $out_vites, $table_meta);
 

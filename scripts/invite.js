@@ -56,6 +56,24 @@ $(document).ready( function( ) {
 				}
 			});
 		}
+		else if ('resend' == id[0]) { // resends outvites
+			// resend the invite
+			if (debug) {
+				window.location = 'ajax_helper.php'+debug_query+'&'+'invite=resend&invite_id='+id[1];
+				return;
+			}
+
+			$.ajax({
+				type: 'POST',
+				url: 'ajax_helper.php',
+				data: 'invite=resend&invite_id='+id[1],
+				success: function(msg) {
+					alert(msg);
+					if (reload) { window.location.reload( ); }
+					return;
+				}
+			});
+		}
 		else { // invites decline and outvites withdraw
 			// delete the invite
 			if (debug) {

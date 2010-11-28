@@ -140,6 +140,20 @@ if (isset($_POST['invite'])) {
 			echo 'ERROR: Not your invite';
 		}
 	}
+	else if ('resend' == $_POST['invite']) {
+		// make sure we are one of the two people in the invite
+		if (Game::has_invite($_POST['invite_id'], $_SESSION['player_id'])) {
+			if (Game::resend_invite($_POST['invite_id'])) {
+				echo 'Invite Resent';
+			}
+			else {
+				echo 'Could not resend invite';
+			}
+		}
+		else {
+			echo 'ERROR: Not your invite';
+		}
+	}
 	else {
 		// make sure we are one of the two people in the invite
 		if (Game::has_invite($_POST['invite_id'], $_SESSION['player_id'], $accept = true)) {

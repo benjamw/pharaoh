@@ -430,6 +430,63 @@ class Game
 	}
 
 
+	/** static public function resend_invite
+	 *		Resends the invite email (if allowed)
+	 *
+	 * @param void
+	 * @action resends an invite email
+	 * @return bool invite email sent
+	 */
+	static public function resend_invite( )
+	{
+		call(__METHOD__);
+		call($_POST);
+
+		$Mysql = Mysql::get_instance( );
+
+		// translate (filter/sanitize) the data
+		$invitor_id = (int) $_SESSION['player_id'];
+		$invite_id = (int) $_POST['invite_id'];
+
+		// grab the invite from the database
+		$query = "
+			SELECT *
+				, DATE_ADD(NOW( ), INTERVAL -1 DAY) AS resend_limit
+			FROM ".self::INVITE_TABLE."
+			WHERE invite_id = '{$invite_id}'
+		";
+		$invite = $Mysql->fetch_assoc($query);
+
+		if ( ! $invite) {
+			throw new MyException(__METHOD__.': Player (#'.$invitor_id.') trying to resend a non-existant invite (#'.$invite_id.')');
+		}
+
+		if ((int) $invite['invitor_id'] !== (int) $invitor_id) {
+			throw new MyException(__METHOD__.': Player (#'.$invitor_id.') trying to resend an invite (#'.$invite_id.') that is not theirs');
+		}
+
+		if ( ! (int) $invite['invitee_id']) {
+			throw new MyException(__METHOD__.': Player (#'.$invitor_id.') trying to resend an invite (#'.$invite_id.') that is open');
+		}
+
+		if (strtotime($invite['invite_date']) >= strtotime($invite['resend_limit'])) {
+			throw new MyException(__METHOD__.': Player (#'.$invitor_id.') trying to resend an invite (#'.$invite_id.') that is too new');
+		}
+
+		// if we get here, all is good...
+
+		$sent = Email::send('invite', $invite['invitee_id'], array('name' => $GLOBALS['_PLAYERS'][$invite['invitor_id']]));
+		
+		if ($sent) {
+			// update the invite_date to prevent invite resend flooding
+			$_DATA['invite_date '] = 'NOW( )'; // note the trailing space in the field name, this is not a typo
+			$Mysql->insert(self::INVITE_TABLE, $_DATA, " WHERE invite_id = '{$invite_id}' ");
+		}
+
+		return $sent;
+	}
+
+
 	/** static public function accept_invite
 	 *		Creates the game from invite data
 	 *
@@ -1543,6 +1600,7 @@ class Game
 
 		$query = "
 			SELECT I.*
+				, DATE_ADD(NOW( ), INTERVAL -1 DAY) AS resend_limit
 				, R.username AS invitor
 				, E.username AS invitee
 				, S.name AS setup
