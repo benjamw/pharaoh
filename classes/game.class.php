@@ -1054,7 +1054,7 @@ class Game
 	 */
 	public function get_setup( )
 	{
-		return $this->_setup['board'];
+		return $this->_history[0]['board'];
 	}
 
 
