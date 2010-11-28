@@ -299,37 +299,6 @@ class Pharaoh {
 	}
 
 
-	/** public function fire_laser
-	 *
-	 *		Manually fires the laser of the given color
-	 *		and returns the laser path array
-	 *
-	 * @param string color (red or silver)
-	 * @param string board the board layout to use
-	 * @return array of laser path
-	 */
-	public function fire_laser($color, $board = false)
-	{
-		call(__METHOD__);
-
-		if ($board) {
-			$orig_board = $this->_board;
-			$orig_path = $this->_laser_path;
-			$this->_board = $board;
-		}
-
-		$this->_fire_laser($color);
-		$path = $this->_laser_path;
-
-		if ($board) {
-			$this->_board = $orig_board;
-			$this->_laser_path = $orig_path;
-		}
-
-		return $path;
-	}
-
-
 	/** protected function _fire_laser
 	 *		FIRE ZEE MISSILES !!!
 	 *		But I am le tired
@@ -342,7 +311,35 @@ class Pharaoh {
 	 */
 	protected function _fire_laser($color)
 	{
+		try {
+			$return = self::fire_laser($color, $this->_board);
+			$this->_laser_path = $return['laser_path'];
+			return $return['hits'];
+		}
+		catch (MyException $e) {
+			throw $e;
+		}
+	}
+
+
+	/** static public function fire_laser
+	 *		FIRE ZEE MISSILES !!!
+	 *		But I am le tired
+	 *
+	 *		Fires the laser of the given color
+	 *
+	 * @param string color (red or silver)
+	 * @param string board (expanded FEN)
+	 * @return array (laser path array, and squares hit (empty array if none) array)
+	 */
+	static public function fire_laser($color, $board)
+	{
+		call(__METHOD__);
+
 		$color = strtolower($color);
+		$board = expandFEN($board);
+		call($color);
+		call($board);
 
 		if ( ! in_array($color, array('silver', 'red'))) {
 			throw new MyException(__METHOD__.': Trying to fire laser for unknown color: '.$color);
@@ -387,18 +384,18 @@ class Pharaoh {
 		// fire the laser
 
 		if ('silver' == $color) {
-			$this->_laser_path = array(array(array(79, I_UP)));
+			$laser_path = array(array(array(79, I_UP)));
 		}
 		else { // red
-			$this->_laser_path = array(array(array(0, I_DOWN)));
+			$laser_path = array(array(array(0, I_DOWN)));
 		}
 
 		$i = 0; // infinite loop protection
-		$paths = $this->_laser_path[0];
+		$paths = $laser_path[0];
 		$used = array( );
 		$next = array( );
 		$hits = array( );
-		while ($i < 999) { // no ad infinitum here
+		while ($i < 99) { // no ad infinitum here
 			$split = 0;
 			$continue = false;
 
@@ -418,7 +415,7 @@ class Pharaoh {
 				list($current, $dir) = $node;
 
 				// check the current location for a piece
-				if ('0' != ($piece = $this->_board[$current])) {
+				if ('0' != ($piece = $board[$current])) {
 					// check for hit or reflection
 					if ( ! isset($reflections[strtoupper($piece)][$dir])) {
 						$hits[] = $current;
@@ -456,29 +453,29 @@ class Pharaoh {
 					if (in_array(array($split_current, $split_dir), $used, true)) {
 						// don't even create a new path
 						$do_split = false;
-						break;
 					}
+					else {
+						// check if we hit a wall
+						$long_wall = (0 > $split_current) || (80 <= $split_current);
+						$short_wall = (1 == abs($split_dir)) && (floor($split_current / 10) !== floor(($split_current - $split_dir) / 10));
+						if ($long_wall || $short_wall) {
+							// set split_current to false, so we know we hit a wall,
+							// but keep going, we need to store the dir so we can show any reflection properly
+							// and we need to add the new path index below
 
-					// check if we hit a wall
-					$long_wall = (0 > $split_current) || (80 <= $split_current);
-					$short_wall = (1 == abs($split_dir)) && (floor($split_current / 10) !== floor(($split_current - $split_dir) / 10));
-					if ($long_wall || $short_wall) {
-						// set split_current to false, so we know we hit a wall,
-						// but keep going, we need to store the dir so we can show any reflection properly
-						// and we need to add the new path index below
+							// we store dir here because we need to know which direction the laser left the node in
+							// for edge/corner piece hits that send the laser through the wall
+							$split_current = false;
+						}
 
-						// we store dir here because we need to know which direction the laser left the node in
-						// for edge/corner piece hits that send the laser through the wall
-						$split_current = false;
+						$next[count($paths) + $split] = array($split_current, $split_dir);
+
+						if (false !== $split_current) {
+							$used[] = array($split_current, $split_dir);
+						}
+
+						$split += 1;
 					}
-
-					$next[count($paths) + $split] = array($split_current, $split_dir);
-
-					if (false !== $split_current) {
-						$used[] = array($split_current, $split_dir);
-					}
-
-					$split += 1;
 
 					// now that the split is done, go back and keep processing the new path
 					$dir = $dir[1];
@@ -528,17 +525,16 @@ class Pharaoh {
 			if ( ! $continue) {
 				break;
 			}
-
 			// add to our laser path
 			// and pass along to the next round
-			$this->_laser_path[] = $paths = $next;
+			$laser_path[] = $paths = $next;
 
 			++$i; // keep those pesky infinite loops at bay
 		} // end while
-		call($this->_get_laser_ascii( ));
+		call(self::get_laser_ascii($board, $laser_path));
 		call($hits);
 
-		return $hits;
+		return compact('laser_path', 'hits');
 	}
 
 

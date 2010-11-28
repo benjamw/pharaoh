@@ -913,13 +913,13 @@ class Game
 		$pre_board = $PH->do_move($this->_history[$index]['move'], false);
 
 		// now fire the laser at that board
-		$laser = $this->_pharaoh->fire_laser($color, $pre_board);
+		$return = Pharaoh::fire_laser($color, $pre_board);
 
 		if ($json) {
-			return json_encode($laser);
+			return json_encode($return['laser_path']);
 		}
 
-		return $laser;
+		return $return['laser_path'];
 	}
 
 
