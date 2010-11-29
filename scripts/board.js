@@ -122,7 +122,7 @@ function create_board(xFEN, blank) {
 		return false;
 	}
 
-	var flip = !! (invert || false);
+	var flip = ('undefined' !== typeof invert) ? !! invert : false;
 
 	var i,j,n,idx,
 		row,piece,color,img,
@@ -258,7 +258,7 @@ function fire_laser(path, i) {
 
 	i = parseInt(i) || 0;
 
-	var flip = !! (invert || false);
+	var flip = ('undefined' !== typeof invert) ? !! invert : false;
 
 	var j,
 		dir,next_dir,add_dir,nodes,
