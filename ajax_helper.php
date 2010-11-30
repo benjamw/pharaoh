@@ -176,6 +176,13 @@ if (isset($_POST['invite'])) {
 $Game = new Game((int) $_SESSION['game_id']);
 
 
+// run the game refresh check
+if (isset($_POST['refresh'])) {
+	echo $Game->last_move;
+	exit;
+}
+
+
 // do some more validity checking for the rest of the functions
 
 if (empty($DEBUG) && empty($_POST['notoken'])) {

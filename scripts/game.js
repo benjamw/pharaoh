@@ -1,5 +1,7 @@
 
 var reload = true; // do not change this
+var refresh_timer = false;
+var refresh_timeout = 2001; // 2 seconds
 var old_board = false;
 
 $(document).ready( function( ) {
@@ -195,6 +197,23 @@ $(document).ready( function( ) {
 			$(this.href).hide( );
 		}
 	});
+
+
+	// run the ajax refresher
+	if ( ! my_turn && ('finished' != state)) {
+		ajax_refresh( );
+
+		// set some things that will halt the timer
+		$('#chatbox form input').focus( function( ) {
+			clearTimeout(refresh_timer);
+		});
+
+		$('#chatbox form input').blur( function( ) {
+			if ('' != $(this).val( )) {
+				refresh_timer = setTimeout('ajax_refresh( )', refresh_timeout);
+			}
+		});
+	}
 });
 
 
@@ -663,5 +682,32 @@ function get_adjacent(board_index) {
 	}
 
 	return adj;
+}
+
+
+function ajax_refresh( ) {
+	// no debug redirect, just do it
+
+	$.ajax({
+		type: 'POST',
+		url: 'ajax_helper.php',
+		data: 'refresh=1',
+		success: function(msg) {
+			if (msg != last_move) {
+				if (reload) { window.location.reload( ); }
+			}
+		}
+	});
+
+	// successively increase the timeout time in case someone
+	// leaves their window open, don't poll the server every
+	// two seconds for the rest of time
+	if (0 == (refresh_timeout % 5)) {
+		refresh_timeout += Math.floor(refresh_timeout * 0.001) * 1000;
+	}
+
+	++refresh_timeout;
+
+	refresh_timer = setTimeout('ajax_refresh( )', refresh_timeout);
 }
 

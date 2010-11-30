@@ -1,9 +1,9 @@
 
 // index javascript
 
-var reload = false; // do not change this
-var timer = false;
-var timeout = 30001; // 1 minute
+var reload = true; // do not change this
+var refresh_timer = false;
+var refresh_timeout = 30001; // 30 seconds
 
 $(document).ready( function( ) {
 	// make the table row clicks work
@@ -74,12 +74,12 @@ $(document).ready( function( ) {
 
 	// set some things that will halt the timer
 	$('#chatbox form input').focus( function( ) {
-		clearTimeout(timer);
+		clearTimeout(refresh_timer);
 	});
 
 	$('#chatbox form input').blur( function( ) {
 		if ('' != $(this).val( )) {
-			timer = setTimeout('ajax_refresh( )', timeout);
+			refresh_timer = setTimeout('ajax_refresh( )', refresh_timeout);
 		}
 	});
 
@@ -113,12 +113,12 @@ function ajax_refresh( ) {
 	// successively increase the timeout time in case someone
 	// leaves their window open, don't poll the server every
 	// 30 seconds for the rest of time
-	if (0 == (timeout % 5)) {
-		timeout += Math.floor(timeout * 0.001) * 1000;
+	if (0 == (refresh_timeout % 5)) {
+		refresh_timeout += Math.floor(refresh_timeout * 0.001) * 1000;
 	}
 
-	++timeout;
+	++refresh_timeout;
 
-	timer = setTimeout('ajax_refresh( )', timeout);
+	refresh_timer = setTimeout('ajax_refresh( )', refresh_timeout);
 }
 
