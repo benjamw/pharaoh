@@ -36,7 +36,6 @@ catch (MyException $e) {
 
 // MOST FORM SUBMISSIONS ARE AJAXED THROUGH /scripts/game.js
 // game buttons and moves are passed through the game controller
-debug($_POST);
 if ( ! empty($_POST)) {
 	include INCLUDE_DIR.'controller.game.php';
 }
@@ -235,7 +234,7 @@ echo get_header($meta);
 		<script type="text/javascript">
 			document.write('<'+'div id="setup">'+create_board('<?php echo expandFEN($Game->get_setup( )); ?>', true)+'<'+'/div>');
 
-			// run draw offer confirmation
+			// run draw offer alert
 			if (draw_offered) {
 				alert('Your opponent has offered you a draw.\n\nMake your decision with the draw\nbuttons below the game board.');
 			}
