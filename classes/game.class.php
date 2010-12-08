@@ -1486,31 +1486,16 @@ class Game
 	{
 		call(__METHOD__);
 
-		// make sure we don't have a MySQL error here, it may be causing the issues
-		$run_once = false;
-		do {
-			if ($run_once) {
-				// pause for 3 seconds, then try again
-				sleep(3);
-			}
-
-			// update the game data
-			$query = "
-				SELECT state
-					, modify_date
-				FROM ".self::GAME_TABLE."
-				WHERE game_id = '{$this->id}'
-			";
-			$game = $this->_mysql->fetch_assoc($query);
-			call($game);
-
-			// make sure we don't have a MySQL error here, it may be causing the issues
-			$error = $this->_mysql->error;
-			$errno = preg_replace('/(\\d+)/', '$1', $error);
-
-			$run_once = true;
-		}
-		while (2006 == $errno || 2013 == $errno);
+		// grab the base game data
+		$query = "
+			SELECT state
+				, extra_info
+				, modify_date
+			FROM ".self::GAME_TABLE."
+			WHERE game_id = '{$this->id}'
+		";
+		$game = $this->_mysql->fetch_assoc($query);
+		call($game);
 
 		$update_modified = false;
 
