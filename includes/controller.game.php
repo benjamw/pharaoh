@@ -114,5 +114,10 @@ if (isset($_POST['turn'])) {
 	catch (MyException $e) {
 		throw $e;
 	}
+
+	// for some reason, the game doesn't recognize the moves unless it's a fresh pull
+	// so kill the game and load again
+	unset($Game);
+	$Game = new Game((int) $_SESSION['game_id']);
 }
 
