@@ -1,13 +1,19 @@
 
+- don't refresh page if an email success message is sent
+	for things like resend invites, nudges, etc.  just make changes to html if needed
+
+- make sure invites don't count toward "active" users and do so in other games as well
+
 - add the option for "Laser Battle", possibly make it have options for
 	every hit equals broken, or immune for X turns after hit
+
+- add options for selecting which pieces are swappable with which other pieces
 
 - make sure the game is deleting finished games
 
 - add a different method for removing the click on the piece, because clicking the piece again
 	doesn't work for rotatable pieces
 
-- if same board configuration is seen in a game for the third time, the next player can declare a draw
 
 - don't show success messages if email is not sent
 	for things like nudge, that are only emails

@@ -77,71 +77,25 @@ $(document).ready( function( ) {
 	$('.review span:not(.disabled)').live('click', review);
 
 
-	// nudge button
-	$('#nudge').click( function( ) {
-		if (confirm('Are you sure you wish to nudge this person?')) {
-			if (debug) {
-				window.location = 'ajax_helper.php'+debug_query+'&'+$('form#game').serialize( )+'&nudge=1';
-				return false;
-			}
+	// submit form on input button clicks
+	$('form input[type=button]').click( function( ) {
+		var $this = $(this);
+		var confirmed = true;
 
-			$.ajax({
-				type: 'POST',
-				url: 'ajax_helper.php',
-				data: $('form#game').serialize( )+'&nudge=1',
-				success: function(msg) {
-					// if something happened, just reload
-					if ('{' != msg[0]) {
-						alert('ERROR: AJAX failed');
-						if (reload) { window.location.reload( ); }
-					}
+		switch ($this.attr('name')) {
+			case 'nudge' :
+				confirmed = confirm('Are you sure you wish to nudge this person?');
+				break;
 
-					var reply = JSON.parse(msg);
-
-					if (reply.error) {
-						alert(reply.error);
-					}
-					else {
-						alert('Nudge Sent');
-					}
-
-					if (reload) { window.location.reload( ); }
-					return;
-				}
-			});
+			case 'resign' :
+				confirmed = confirm('Are you sure you wish to resign?');
+				break;
 		}
-	});
 
-
-	// resign button
-	$('#resign').click( function( ) {
-		if (confirm('Are you sure you wish to resign?')) {
-			if (debug) {
-				window.location = 'ajax_helper.php'+debug_query+'&'+$('form#game').serialize( )+'&resign=1';
-				return false;
-			}
-
-			$.ajax({
-				type: 'POST',
-				url: 'ajax_helper.php',
-				data: $('form#game').serialize( )+'&resign=1',
-				success: function(msg) {
-					// if something happened, just reload
-					if ('{' != msg[0]) {
-						alert('ERROR: AJAX failed');
-						if (reload) { window.location.reload( ); }
-					}
-
-					var reply = JSON.parse(msg);
-
-					if (reply.error) {
-						alert(reply.error);
-					}
-
-					if (reload) { window.location.reload( ); }
-					return;
-				}
-			});
+		if (confirmed) {
+			$this.parents('form')
+				.append('<input type="hidden" name="'+$this.attr('name')+'" value="'+$this.attr('value')+'" />')
+				.submit( );
 		}
 	});
 
@@ -385,7 +339,7 @@ function update_history( ) {
 function enable_moves( ) {
 	move_index = parseInt(move_index) || (move_count - 1);
 
-	if ( ! my_turn || ('finished' == state) || ('draw' == state) || ((move_count - 1) != move_index)) {
+	if ( ! my_turn || draw_offered || ('finished' == state) || ('draw' == state) || ((move_count - 1) != move_index)) {
 		return;
 	}
 
@@ -620,35 +574,11 @@ function set_square(event) {
 			}
 		}
 
-		if (debug) {
-			window.location = 'ajax_helper.php'+debug_query+'&'+$('form#game').serialize( )+'&turn=1';
-			return false;
-		}
-
-		// ajax off the form
-		$.ajax({
-			type: 'POST',
-			url: 'ajax_helper.php',
-			data: $('form#game').serialize( )+'&turn=1',
-			success: function(msg) {
-				// if something happened, just reload
-				if ('{' != msg[0]) {
-					alert('ERROR: AJAX failed');
-					if (reload) { window.location.reload( ); }
-				}
-
-				var reply = JSON.parse(msg);
-
-				if (reply.error) {
-					alert(reply.error);
-				}
-
-				if (reload) { window.location.reload( ); }
-
-				running = false;
-				return;
-			}
-		});
+		// submit the form
+		// (no ajax needed)
+		$('form#game')
+			.append('<input type="hidden" name="turn" value="1" />')
+			.submit( );
 	}
 }
 

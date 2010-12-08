@@ -17,8 +17,6 @@ elseif ( ! isset($_SESSION['game_id'])) {
 	exit;
 }
 
-// ALL GAME FORM SUBMISSIONS ARE AJAXED THROUGH /scripts/game.js
-
 // load the game
 // always refresh the game data, there may be more than one person online
 try {
@@ -36,6 +34,12 @@ catch (MyException $e) {
 	exit;
 }
 
+// MOST FORM SUBMISSIONS ARE AJAXED THROUGH /scripts/game.js
+// game buttons and moves are passed through the game controller
+debug($_POST);
+if ( ! empty($_POST)) {
+	include INCLUDE_DIR.'controller.game.php';
+}
 
 if ( ! $Game->is_player($_SESSION['player_id'])) {
 	$Game->watch_mode = true;
@@ -104,7 +108,10 @@ foreach ($Game->get_move_history( ) as $i => $move) {
 }
 
 $turn = $Game->get_turn( );
-if ($GLOBALS['Player']->username == $turn) {
+if ($Game->draw_offered( )) {
+	$turn = '<span>Draw Offered</span>';
+}
+elseif ($GLOBALS['Player']->username == $turn) {
 	$turn = '<span class="'.$Game->get_color( ).'">Your turn</span>';
 }
 elseif ( ! $turn) {
@@ -126,6 +133,7 @@ $meta['head_data'] = '
 
 	<script type="text/javascript" src="scripts/board.js"></script>
 	<script type="text/javascript">/*<![CDATA[*/
+		var draw_offered = '.($Game->draw_offered($_SESSION['player_id']) ? 'true' : 'false').';
 		var color = "'.(isset($players[$_SESSION['player_id']]) ? (('white' == $players[$_SESSION['player_id']]['color']) ? 'silver' : 'red') : '').'";
 		var state = "'.(( ! $Game->watch_mode) ? (( ! $Game->paused) ? strtolower($Game->state) : 'paused') : 'watching').'";
 		var invert = '.(( ! empty($players[$_SESSION['player_id']]['color']) && ('black' == $players[$_SESSION['player_id']]['color'])) ? 'true' : 'false').';
@@ -196,18 +204,41 @@ echo get_header($meta);
 				<input type="hidden" name="player_id" value="<?php echo $_SESSION['player_id']; ?>" />
 				<input type="hidden" name="from" id="from" value="" />
 				<input type="hidden" name="to" id="to" value="" />
+
 				<?php if (('Playing' == $Game->state) && $Game->is_player($_SESSION['player_id'])) { ?>
+
+					<?php if ( ! $Game->draw_offered( )) { ?>
+
+						<input type="button" name="offer_draw" id="offer_draw" value="Offer Draw" />
+
+					<?php } elseif ($Game->draw_offered($_SESSION['player_id'])) { ?>
+
+						<input type="button" name="accept_draw" id="accept_draw" value="Accept Draw Offer" />
+						<input type="button" name="reject_draw" id="reject_draw" value="Reject Draw Offer" />
+
+					<?php } ?>
+
 					<input type="button" name="resign" id="resign" value="Resign" />
+
+					<?php if ($Game->test_nudge( )) { ?>
+
+						<input type="button" name="nudge" id="nudge" value="Nudge" />
+
+					<?php } ?>
+
 				<?php } ?>
-				<?php if ($Game->test_nudge( )) { ?>
-					<input type="button" name="nudge" id="nudge" value="Nudge" />
-				<?php } ?>
+
 			</div></form>
 
 		</div> <!-- #contents -->
 
 		<script type="text/javascript">
 			document.write('<'+'div id="setup">'+create_board('<?php echo expandFEN($Game->get_setup( )); ?>', true)+'<'+'/div>');
+
+			// run draw offer confirmation
+			if (draw_offered) {
+				alert('Your opponent has offered you a draw.\n\nMake your decision with the draw\nbuttons below the game board.');
+			}
 		</script>
 
 <?php

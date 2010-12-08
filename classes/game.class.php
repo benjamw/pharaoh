@@ -74,6 +74,7 @@ class Game
 	 * @var array
 	 */
 	static protected $_EXTRA_INFO_DEFAULTS = array(
+			'draw_offered' => false,
 			'custom_rules' => '',
 		);
 
@@ -476,7 +477,7 @@ class Game
 		// if we get here, all is good...
 
 		$sent = Email::send('invite', $invite['invitee_id'], array('name' => $GLOBALS['_PLAYERS'][$invite['invitor_id']]));
-		
+
 		if ($sent) {
 			// update the invite_date to prevent invite resend flooding
 			$_DATA['invite_date '] = 'NOW( )'; // note the trailing space in the field name, this is not a typo
@@ -701,6 +702,131 @@ class Game
 	}
 
 
+	/** public function offer_draw
+	 *		Offers a draw to the given player's apponent
+	 *
+	 * @param int player id
+	 * @return void
+	 */
+	public function offer_draw($player_id)
+	{
+		call(__METHOD__);
+
+		if ($this->paused) {
+			throw new MyException(__METHOD__.': Trying to perform an action on a paused game');
+		}
+
+		$player_id = (int) $player_id;
+
+		if (empty($player_id)) {
+			throw new MyException(__METHOD__.': Missing required argument');
+		}
+
+		if ( ! $this->is_player($player_id)) {
+			throw new MyException(__METHOD__.': Player (#'.$player_id.') trying to offer draw in a game (#'.$this->id.') they are not playing in');
+		}
+
+		if ($this->_players['player']['player_id'] != $player_id) {
+			throw new MyException(__METHOD__.': Player (#'.$player_id.') trying to offer draw for an opponent in game (#'.$this->id.')');
+		}
+
+		$this->_extra_info['draw_offered'] = $player_id;
+
+		Email::send('draw_offered', $this->_players['opponent']['player_id'], array('name' => $this->_players['player']['object']->username));
+	}
+
+
+	/** public function draw_offered
+	 *		Returns the state of the game draw for the given player
+	 *		or in general if no player given
+	 *
+	 * @param int [optional] player id
+	 * @return bool draw state
+	 */
+	public function draw_offered($player_id = false)
+	{
+		call(__METHOD__);
+
+		$player_id = (int) $player_id;
+
+		// if the draw was offered AND player is blank or player is not the one who offered the draw
+		if (($this->_extra_info['draw_offered']) && ( ! $player_id || ($player_id != $this->_extra_info['draw_offered']))) {
+			return true;
+		}
+
+		return false;
+	}
+
+
+	/** public function accept_draw
+	 *		Accepts a draw offered to the given player
+	 *
+	 * @param int player id
+	 * @return void
+	 */
+	public function accept_draw($player_id)
+	{
+		call(__METHOD__);
+
+		if ($this->paused) {
+			throw new MyException(__METHOD__.': Trying to perform an action on a paused game');
+		}
+
+		$player_id = (int) $player_id;
+
+		if (empty($player_id)) {
+			throw new MyException(__METHOD__.': Missing required argument');
+		}
+
+		if ( ! $this->is_player($player_id)) {
+			throw new MyException(__METHOD__.': Player (#'.$player_id.') trying to accept draw in a game (#'.$this->id.') they are not playing in');
+		}
+
+		if (($this->_players['player']['player_id'] != $player_id) || ($this->_extra_info['draw_offered'] == $player_id)) {
+			throw new MyException(__METHOD__.': Player (#'.$player_id.') trying to accept draw for an opponent in game (#'.$this->id.')');
+		}
+
+		$this->_players['opponent']['object']->add_draw( );
+		$this->_players['player']['object']->add_draw( );
+		$this->state = 'Draw';
+		$this->_extra_info['draw_offered'] = false;
+
+		Email::send('draw', $this->_players['opponent']['player_id'], array('name' => $this->_players['player']['object']->username));
+	}
+
+
+	/** public function reject_draw
+	 *		Rejects a draw offered to the given player
+	 *
+	 * @param int player id
+	 * @return void
+	 */
+	public function reject_draw($player_id)
+	{
+		call(__METHOD__);
+
+		if ($this->paused) {
+			throw new MyException(__METHOD__.': Trying to perform an action on a paused game');
+		}
+
+		$player_id = (int) $player_id;
+
+		if (empty($player_id)) {
+			throw new MyException(__METHOD__.': Missing required argument');
+		}
+
+		if ( ! $this->is_player($player_id)) {
+			throw new MyException(__METHOD__.': Player (#'.$player_id.') trying to reject draw in a game (#'.$this->id.') they are not playing in');
+		}
+
+		if (($this->_players['player']['player_id'] != $player_id) || ($this->_extra_info['draw_offered'] == $player_id)) {
+			throw new MyException(__METHOD__.': Player (#'.$player_id.') trying to reject draw for an opponent in game (#'.$this->id.')');
+		}
+
+		$this->_extra_info['draw_offered'] = false;
+	}
+
+
 	/** public function is_player
 	 *		Tests if the given ID is a player in the game
 	 *
@@ -738,6 +864,10 @@ class Game
 	public function is_turn($player = true)
 	{
 		if ('Playing' != $this->state) {
+			return false;
+		}
+
+		if ($this->_extra_info['draw_offered']) {
 			return false;
 		}
 
@@ -1263,6 +1393,8 @@ class Game
 		$this->create_date = strtotime($result['create_date']);
 		$this->modify_date = strtotime($result['modify_date']);
 
+		$this->_extra_info = array_merge_plus(self::$_EXTRA_INFO_DEFAULTS, unserialize($result['extra_info']));
+
 		// grab the initial setup
 		// TODO: convert to the setup object
 		// (need to build more in the setup object)
@@ -1405,6 +1537,20 @@ class Game
 			if ('Finished' == $this->state) {
 				$update_game['winner_id'] = $this->_players[$this->_pharaoh->winner]['player_id'];
 			}
+		}
+
+		$diff = array_compare($this->_extra_info, self::$_EXTRA_INFO_DEFAULTS);
+		$update_game['extra_info'] = $diff[0];
+		ksort($update_game['extra_info']);
+
+		$update_game['extra_info'] = serialize($update_game['extra_info']);
+
+		if ('a:0:{}' == $update_game['extra_info']) {
+			$update_game['extra_info'] = null;
+		}
+
+		if (0 === strcmp($game['extra_info'], $update_game['extra_info'])) {
+			unset($update_game['extra_info']);
 		}
 
 		if ($update_game) {

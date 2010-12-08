@@ -173,108 +173,14 @@ if (isset($_POST['invite'])) {
 
 
 // init our game
-$Game = new Game((int) $_SESSION['game_id']);
+if ( ! isset($Game)) {
+	$Game = new Game((int) $_SESSION['game_id']);
+}
 
 
 // run the game refresh check
 if (isset($_POST['refresh'])) {
 	echo $Game->last_move;
-	exit;
-}
-
-
-// do some more validity checking for the rest of the functions
-
-if (empty($DEBUG) && empty($_POST['notoken'])) {
-	test_token( ! empty($_POST['keep_token']));
-}
-
-if ($_POST['game_id'] != $_SESSION['game_id']) {
-	echo 'ERROR: Incorrect game id given';
-	exit;
-}
-
-
-// make sure we are the player we say we are
-// unless we're an admin, then it's ok
-$player_id = (int) $_POST['player_id'];
-if (($player_id != $_SESSION['player_id']) && ! $GLOBALS['Player']->is_admin) {
-	echo 'ERROR: Incorrect player id given';
-	exit;
-}
-
-
-// run the 'Nudge' button
-if (isset($_POST['nudge'])) {
-	$return = array( );
-	$return['token'] = $_SESSION['token'];
-
-	try {
-		$Game->nudge($player_id);
-	}
-	catch (MyException $e) {
-		$return['error'] = 'ERROR: '.$e->outputMessage( );
-	}
-
-	echo json_encode($return);
-	exit;
-}
-
-
-// run the 'Resign' button
-if (isset($_POST['resign'])) {
-	$return = array( );
-	$return['token'] = $_SESSION['token'];
-
-	try {
-		$Game->resign($_SESSION['player_id']);
-	}
-	catch (MyException $e) {
-		$return['error'] = 'ERROR: '.$e->outputMessage( );
-	}
-
-	echo json_encode($return);
-	exit;
-}
-
-
-// run the game actions
-if (isset($_POST['turn'])) {
-	$return = array( );
-	$return['token'] = $_SESSION['token'];
-
-	try {
-		if (false !== strpos($_POST['to'], 'split')) { // splitting obelisk
-			$to = substr($_POST['to'], 0, 2);
-			call($to);
-
-			$from = Pharaoh::index_to_target($_POST['from']);
-			$to = Pharaoh::index_to_target($to);
-			call($from.'.'.$to);
-
-			$return['hits'] = $Game->do_move($from.'.'.$to);
-		}
-		elseif ((string) $_POST['to'] === (string) (int) $_POST['to']) { // moving
-			$to = $_POST['to'];
-			call($to);
-
-			$from = Pharaoh::index_to_target($_POST['from']);
-			$to = Pharaoh::index_to_target($to);
-			call($from.':'.$to);
-
-			$return['hits'] = $Game->do_move($from.':'.$to);
-		}
-		else { // rotating
-			$target = Pharaoh::index_to_target($_POST['from']);
-			$dir = (int) ('r' == strtolower($_POST['to']));
-			$return['hits'] = $Game->do_move($target.'-'.$dir);
-		}
-	}
-	catch (MyException $e) {
-		$return['error'] = 'ERROR: '.$e->outputMessage( );
-	}
-
-	echo json_encode($return);
 	exit;
 }
 

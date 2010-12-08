@@ -46,6 +46,15 @@ Log on and invite someone to a new game if you still wish to play.'),
 
 
 
+	'draw_offered' => array(
+		'subject' => 'Draw Offered',
+		'message' => '
+[[[sender]]] has offered you a draw in the [[[GAME_NAME]]] game you are playing at [[[site_name]]].
+
+Log on and view the game to make your decision.'),
+
+
+
 	'draw' => array(
 		'subject' => 'Draw',
 		'message' => '
