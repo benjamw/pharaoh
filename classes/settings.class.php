@@ -315,7 +315,12 @@ class Settings
 	 */
 	static public function read($property)
 	{
-		return self::get_instance( )->$property;
+		if (self::get_instance( )) {
+			return self::get_instance( )->$property;
+		}
+		else {
+			return false;
+		}
 	}
 
 
@@ -327,8 +332,12 @@ class Settings
 	 */
 	static public function read_all( )
 	{
-		$_this = self::get_instance( );
-		return $_this->get_settings( );
+		if (self::get_instance( )) {
+			return self::get_instance( )->get_settings( );
+		}
+		else {
+			return false;
+		}
 	}
 
 
@@ -343,7 +352,9 @@ class Settings
 	 */
 	static public function write($property, $value)
 	{
-		self::get_instance( )->$property = $value;
+		if (self::get_instance( )) {
+			self::get_instance( )->$property = $value;
+		}
 	}
 
 
@@ -356,8 +367,12 @@ class Settings
 	 */
 	static public function write_all($settings)
 	{
-		$_this = self::get_instance( );
-		$_this->put_settings($settings);
+		if (self::get_instance( )) {
+			return self::get_instance( )->put_settings($settings);
+		}
+		else {
+			return false;
+		}
 	}
 
 
@@ -369,8 +384,12 @@ class Settings
 	 */
 	static public function read_setting_notes( )
 	{
-		$_this = self::get_instance( );
-		return $_this->_notes;
+		if ($_this = self::get_instance( )) { // single equals intended
+			return $_this->_notes;
+		}
+		else {
+			return false;
+		}
 	}
 
 
