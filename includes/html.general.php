@@ -150,11 +150,10 @@ function get_header($meta = null) {
 		#fancy_title { display: none !important; }
 	</style>
 
-	{$head_data}
-
 	<link rel="stylesheet" type="text/css" media="screen" href="css/layout.css" />
 	<link rel="stylesheet" type="text/css" media="screen" href="css/c_{$GLOBALS['_DEFAULT_COLOR']}.css" />
 
+	{$head_data}
 	{$flash}
 	{$admin_css}
 

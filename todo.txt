@@ -14,7 +14,6 @@
 - add a different method for removing the click on the piece, because clicking the piece again
 	doesn't work for rotatable pieces
 
-
 - don't show success messages if email is not sent
 	for things like nudge, that are only emails
 	possibly for other things like invite, etc.

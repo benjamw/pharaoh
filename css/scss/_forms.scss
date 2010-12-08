@@ -12,11 +12,14 @@
 }
 
 label {
-	margin-right: 1ex;
 	margin-top: 1px;
 	font-weight: bold;
 	float: left;
-	width: 120px;
+	width: 130px;
+}
+
+.block {
+	margin-left: 130px;
 }
 
 label.unlabel,
