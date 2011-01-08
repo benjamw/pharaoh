@@ -2027,7 +2027,9 @@ class Game
 		";
 		$game_ids = $Mysql->fetch_value_array($query);
 
-		self::delete($game_ids);
+		if ($game_ids) {
+			self::delete($game_ids);
+		}
 	}
 
 
