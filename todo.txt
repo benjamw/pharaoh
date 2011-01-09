@@ -1,4 +1,9 @@
 
+- allow the original creator to edit his setups...
+	maybe find a way to store all previous iterations
+	so people can go back through them and create ones based on those
+	so they're not lost forever
+
 - don't refresh page if an email success message is sent
 	for things like resend invites, nudges, etc.  just make changes to html if needed
 

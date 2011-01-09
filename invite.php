@@ -39,7 +39,8 @@ $players_maxed[] = $_SESSION['player_id'];
 // remove the maxed players from the invite list
 $players = array_diff($invite_players, $players_maxed);
 
-$opponent_selection = '<option value="">-- Open --</option>';
+$opponent_selection = '';
+$opponent_selection .= '<option value="">-- Open --</option>';
 foreach ($players_full as $player) {
 	if ($_SESSION['player_id'] == $player['player_id']) {
 		continue;
@@ -118,14 +119,19 @@ if ($GLOBALS['Player']->max_games && ($GLOBALS['Player']->max_games <= $GLOBALS[
 
 $contents = <<< EOF
 	<form method="post" action="{$_SERVER['REQUEST_URI']}" id="send"><div class="formdiv">
+
 		<input type="hidden" name="token" value="{$_SESSION['token']}" />
 		<input type="hidden" name="player_id" value="{$_SESSION['player_id']}" />
 
 		<div>
+
 			{$warning}
+
 			<div><label for="opponent">Opponent</label><select id="opponent" name="opponent">{$opponent_selection}</select></div>
 			<div><label for="setup">Setup</label><select id="setup" name="setup">{$setup_selection}</select> <a href="#setup_display" id="show_setup">Show Setup</a></div>
+
 			{$submit_button}
+
 		</div>
 
 	</div></form>

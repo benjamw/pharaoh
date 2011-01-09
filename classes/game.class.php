@@ -613,9 +613,9 @@ class Game
 					{$open}
 				)
 		";
-		$has_invites = (bool) $Mysql->fetch_value($query);
+		$has_invite = (bool) $Mysql->fetch_value($query);
 
-		return $has_invites;
+		return $has_invite;
 	}
 
 

@@ -1,6 +1,7 @@
 <?php
 
 // Game Controller
+// this is stuff that usually resides in ajax_refresh, but does not need ajax
 
 // init our game
 if ( ! isset($Game)) {
@@ -115,8 +116,9 @@ if (isset($_POST['turn'])) {
 		throw $e;
 	}
 
-	// for some reason, the game doesn't recognize the moves unless it's a fresh pull
+	// the game doesn't recognize the move unless it's a fresh pull
 	// so kill the game and load again
+	// (basically a round-about way of doing _save then _pull)
 	unset($Game);
 	$Game = new Game((int) $_SESSION['game_id']);
 }
