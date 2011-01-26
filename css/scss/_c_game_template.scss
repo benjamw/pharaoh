@@ -12,30 +12,31 @@ $review_disabled_text: #CCC !default;
 $review_disabled_border: #DDD !default;
 
 
-table.history td {
-	border-bottom-color: $history_table_border;
+table.history {
+	td {
+		border-bottom-color: $history_table_border;
+
+		&.active {
+			background-color: $history_active_back;
+		}
+	}
 }
 
 
-table.history td.active {
-	background-color: $history_active_back;
+#history {
+	.review {
+		span {
+			border-color: $review_border;
+
+			&:hover {
+				border-color: $review_hover_border;
+			}
+
+			&.disabled {
+				color: $review_disabled_text;
+				border-color: $review_disabled_border;
+			}
+		}
+	}
 }
-
-
-#history .review span {
-	border-color: $review_border;
-	@include border-radius(2px);
-}
-
-
-#history .review span:hover {
-	border-color: $review_hover_border;
-}
-
-
-#history .review span.disabled {
-	color: $review_disabled_text;
-	border-color: $review_disabled_border;
-}
-
 
