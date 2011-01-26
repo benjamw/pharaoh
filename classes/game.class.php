@@ -1320,12 +1320,17 @@ class Game
 			return array('Draw Game', 'lost');
 		}
 
-		$query = "
-			SELECT G.winner_id
-			FROM ".self::GAME_TABLE." AS G
-			WHERE G.game_id = '{$this->id}'
-		";
-		$winner = $this->_mysql->fetch_value($query);
+		if ( ! empty($this->_pharaoh->winner) && isset($this->_players[$this->_pharaoh->winner]['player_id'])) {
+			$winner = $this->_players[$this->_pharaoh->winner]['player_id'];
+		}
+		else {
+			$query = "
+				SELECT G.winner_id
+				FROM ".self::GAME_TABLE." AS G
+				WHERE G.game_id = '{$this->id}'
+			";
+			$winner = $this->_mysql->fetch_value($query);
+		}
 
 		if ( ! $winner) {
 			return false;
