@@ -72,7 +72,7 @@ class Settings
 	/** static private property _instance
 	 *		Holds the instance of this object
 	 *
-	 * @var Flash object
+	 * @var Settings object
 	 */
 	static private $_instance;
 

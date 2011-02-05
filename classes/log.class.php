@@ -53,7 +53,7 @@ class Log
 	/** static private property _instance
 	 *		Holds the instance of this object
 	 *
-	 * @var Flash object
+	 * @var Log object
 	 */
 	static private $_instance;
 

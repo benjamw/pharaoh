@@ -73,7 +73,7 @@ class Gravatar
 	/** static private property _instance
 	 *		Holds the instance of this object
 	 *
-	 * @var Flash object
+	 * @var Gravatar object
 	 */
 	static private $_instance;
 
