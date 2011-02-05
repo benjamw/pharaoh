@@ -99,8 +99,7 @@ if (isset($_POST['chat'])) {
 // run setup validation
 if (isset($_POST['test_setup'])) {
 	try {
-		$Setup = new Setup( );
-		$Setup->validate($_POST['setup']);
+		Setup::is_valid_reflection($_POST['setup'], $_POST['reflection']);
 
 		$return['valid'] = true;
 	}

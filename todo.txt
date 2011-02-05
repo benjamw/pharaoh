@@ -1,8 +1,10 @@
+- when a user performs an action, don't take them from the page
+	if they send an invite, or accept and invite, leave them
+	on the invite page, same with messages and whatnot
+	unless they are deleting a message, then go to next
 
-- allow the original creator to edit his setups...
-	maybe find a way to store all previous iterations
-	so people can go back through them and create ones based on those
-	so they're not lost forever
+- fill a board with eyes, and see how many the system can actually handle
+	make sure to remove the inifinite loop protoection first though
 
 - don't refresh page if an email success message is sent
 	for things like resend invites, nudges, etc.  just make changes to html if needed
@@ -14,7 +16,7 @@
 
 - add options for selecting which pieces are swappable with which other pieces
 
-- make sure the game is deleting finished games
+- make sure the game is deleting finished games... and draw games
 
 - add a different method for removing the click on the piece, because clicking the piece again
 	doesn't work for rotatable pieces
@@ -24,5 +26,5 @@
 	possibly for other things like invite, etc.
 	that are largely email dependent
 
-
+- store finished games in text files and create a game reader/player
 

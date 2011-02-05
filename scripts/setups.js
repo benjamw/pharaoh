@@ -1,8 +1,11 @@
 
 var reload = true;
 var selected = false;
-var board = false;
 var board_changed = false;
+
+if ('undefined' == typeof board) {
+	var board = false;
+}
 
 $(document).ready( function($) {
 	// invert board button
@@ -126,32 +129,31 @@ $(document).ready( function($) {
 	});
 
 	// initialize a blank board
-	board = setups[0];
-	board_changed = true;
+	if (false === board) {
+		board = setups[0];
+		board_changed = true;
+	}
 	$('#setup_display').find('#the_board').remove( ).end( ).prepend(create_board(board));
 
 	// upon form submission, ajax validate the board first
 	// so we don't lose all the board data
 	// people might get a little upset about that
-	$('#create').click( function(event) {
+	$('#setup_form').submit( function(event) {
 		// store the current board in the form
 		$('#setup').val(board);
-
-		// prevent default completely
-		// we will fake a submit if the ajax test passes
-		event.preventDefault( );
+return true;
 
 		do_clear_laser( );
 
 		if (debug) {
-			window.location = 'ajax_helper.php'+debug_query+'&'+$('#send').serialize( )+'&test_setup=1';
+			window.location = 'ajax_helper.php'+debug_query+'&'+$('#setup_form').serialize( )+'&test_setup=1';
 			return false;
 		}
 
 		$.ajax({
 			type: 'POST',
 			url: 'ajax_helper.php',
-			data: $('#send').serialize( )+'&test_setup=1',
+			data: $('#setup_form').serialize( )+'&test_setup=1',
 			success: function(msg) {
 				var reply = JSON.parse(msg);
 				response = reply;
@@ -163,7 +165,7 @@ $(document).ready( function($) {
 				else {
 					// run our actual form submit here
 					// because everything looks good
-					$('#send').submit( );
+					return true;
 				}
 			}
 		});

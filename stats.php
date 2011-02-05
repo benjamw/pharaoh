@@ -10,7 +10,7 @@ foreach ($setups as $setup) {
 		<option value="'.$setup['setup_id'].'">'.$setup['name'].'</option>';
 	$setup_javascript .= "'".$setup['setup_id']."' : '".expandFEN($setup['board'])."',\n";
 }
-$setup_javascript = substr(trim($setup_javascript), 0, -1);
+$setup_javascript = substr(trim($setup_javascript), 0, -1); // remove trailing comma
 
 $meta['title'] = 'Statistics';
 $meta['head_data'] = '
@@ -72,6 +72,7 @@ $table_format = array(
 	array('Reflection', 'reflection') ,
 	array('Created', '###date(Settings::read(\'long_date\'), strtotime(\'[[[created]]]\'))', null, ' class="date"') ,
 	array('Creator', '###((0 == [[[created_by]]]) ? \'Admin\' : $GLOBALS[\'_PLAYERS\'][[[[created_by]]]])') ,
+	array('Action', '###((('.$_SESSION['player_id'].' == [[[created_by]]]) || '.$GLOBALS['Player']->is_admin.') ? "<a href=\"edit_setup.php?id=[[[setup_id]]]\">Edit</a> | <a href=\"delete_setup.php?id=[[[setup_id]]]\">Delete</a>" : "")', null, ' class="action"') ,
 );
 $contents .= get_table($table_format, $setups, $table_meta);
 

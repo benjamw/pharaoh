@@ -1411,11 +1411,19 @@ class Game
 		$setup = $this->_mysql->fetch_assoc($query);
 		call($setup);
 
-		$this->_setup = array(
-			'id' => $result['setup_id'],
-			'name' => $setup['name'],
-			'board' => $setup['board'],
-		);
+		// the setup may have been deleted
+		if ( ! $setup) {
+			$this->_setup = array(
+				'id' => $result['setup_id'],
+				'name' => '[DELETED]',
+			);
+		}
+		else {
+			$this->_setup = array(
+				'id' => $result['setup_id'],
+				'name' => $setup['name'],
+			);
+		}
 
 		// set up the players
 		$this->_players['white']['player_id'] = $result['white_id'];
@@ -1705,6 +1713,7 @@ class Game
 		}
 
 		// run through the games, and set the current player to the winner if the game is finished
+		// and fix the setup name if it was deleted
 		foreach ($list as & $game) {
 			if ('Finished' == $game['state']) {
 				if ($game['winner_id']) {
@@ -1713,6 +1722,10 @@ class Game
 				else {
 					$game['turn'] = 'draw';
 				}
+			}
+
+			if ( ! $game['setup_name']) {
+				$game['setup_name'] = '[DELETED]';
 			}
 		}
 		unset($game); // kill the reference

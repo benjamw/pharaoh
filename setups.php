@@ -7,7 +7,7 @@ if (isset($_POST['setup'])) {
 
 	try {
 		$Setup = new Setup( );
-		$setup_id = $Setup->create( );
+		$setup_id = $Setup->save( );
 		Flash::store('Setup Created Successfully');
 	}
 	catch (MyException $e) {
@@ -86,9 +86,8 @@ $hints = array(
 
 $contents = <<< EOF
 
-	<form method="post" action="{$_SERVER['REQUEST_URI']}" id="send"><div class="formdiv">
+	<form method="post" action="{$_SERVER['REQUEST_URI']}" id="setup_form"><div class="formdiv">
 		<input type="hidden" name="token" value="{$_SESSION['token']}" />
-		<input type="hidden" name="player_id" value="{$_SESSION['player_id']}" />
 		<input type="hidden" name="setup" id="setup" value="" />
 
 		<div>

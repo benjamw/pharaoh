@@ -17,7 +17,7 @@ $(document).ready( function( ) {
 	});
 
 	// show the setup in a fancybox
-	$('tr.setup').fancybox({
+	$('tr.setup td:not(.action)').fancybox({
 		type : 'inline',
 		href : '#setup_display',
 		padding : 10,
@@ -25,7 +25,7 @@ $(document).ready( function( ) {
 		onStart : function(elem) {
 			$('div#setup_display')
 				.empty( )
-				.append(create_board(setups[$(elem).attr('id').slice(2)]))
+				.append(create_board(setups[$(elem).parent( ).attr('id').slice(2)]))
 				.show( );
 		},
 		onClosed :function( ) {
