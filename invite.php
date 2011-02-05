@@ -14,14 +14,14 @@ $Game = new Game( );
 if (isset($_POST['invite'])) {
 	// make sure this user is not full
 	if ($GLOBALS['Player']->max_games && ($GLOBALS['Player']->max_games <= $GLOBALS['Player']->current_games)) {
-		Flash::store('You have reached your maximum allowed games !');
+		Flash::store('You have reached your maximum allowed games !', false);
 	}
 
 	test_token( );
 
 	try {
 		$game_id = $Game->invite( );
-		Flash::store('Invitation Sent Successfully');
+		Flash::store('Invitation Sent Successfully', true);
 	}
 	catch (MyException $e) {
 		Flash::store('Invitation FAILED !', false);
