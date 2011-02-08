@@ -448,6 +448,10 @@ class Setup {
 
 		$update_setup = false;
 
+		// don't change the creator
+		// in case of admin edits
+		unset($_DATA['created_by']);
+
 		foreach ($setup as $key => $value) {
 			if (empty($_DATA[$key])) {
 				continue;
@@ -659,7 +663,7 @@ class Setup {
 			if (('0' !== $c) && (strtoupper($c) === $c) && in_array($c, $reflect_keys)) {
 				eval($_reflect); // creates $return
 				if ($reflect[$c] !== $xFEN[$return]) {
-					throw new MyException(__METHOD__.': Invalid reflected character found at index '.$i.' ('.Pharaoh::index_to_target($i).') = '.$c.'->'.$xFEN[_reflect($i)].' should be '.$reflect[$c]);
+					throw new MyException(__METHOD__.': Invalid reflected character found at index '.$i.' ('.Pharaoh::index_to_target($i).') = '.$c.'->'.$xFEN[$return].' should be '.$reflect[$c]);
 				}
 
 				// remove the tested chars
@@ -895,7 +899,7 @@ INSERT INTO `ph_setup` (`setup_id`, `name`, `board`, `reflection`, `has_horus`, 
 (NULL, 'Classic 2', '4wpwb2/2c7/3D6/a1C1xi1b1D/b1D1IX1a1C/6b3/7A2/2DWPW4', 'Origin', 1, 0, 0, NOW( ), 0),
 (NULL, 'Dynasty 2', '4cwb3/5p4/a3cwy3/b1h1D1B3/3d1b1H1D/3YWA3C/4P5/3DWA4', 'Origin', 1, 0, 0, NOW( ), 0),
 (NULL, 'Imhotep 2', '4wpwy2/10/3D2a3/aC2Bi2bD/bD2Id2aC/3C2b3/10/2YWPW4', 'Origin', 1, 0, 0, NOW( ), 0),
-(NULL, 'Khufu', '4wpwb2/5cb3/a5D3/4yX1a1D/b1C1Xy4/3b5C/3DA5/2DWPW4', 'Origin', 0, 0, 0, NOW( ), 0),
+(NULL, 'Khufu', '4wpwb2/5cb3/a5D3/4yX1a1D/b1C1Xy4/3b5C/3DA5/2DWPW4', 'None', 0, 0, 0, NOW( ), 0),
 (NULL, 'Imseti', '1B1wpb4/2Xbcw4/10/a3xc3D/b3AX3C/10/4WADx2/4DPW1d1', 'Origin', 0, 0, 0, NOW( ), 0),
 (NULL, 'Nefertiti', '4w1w3/3c1pb3/2C1cy1c2/a1Y6D/b6y1C/2A1YA1a2/3DP1A3/3W1W4', 'Origin', 0, 0, 0, NOW( ), 0),
 (NULL, 'Rameses', '3w1pwb2/4bc4/2Cb2x3/a4X3D/b3x4C/3X2Da2/4AD4/2DWP1W3', 'Origin', 0, 0, 0, NOW( ), 0),

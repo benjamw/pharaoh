@@ -72,7 +72,7 @@ $table_format = array(
 	array('Reflection', 'reflection') ,
 	array('Created', '###date(Settings::read(\'long_date\'), strtotime(\'[[[created]]]\'))', null, ' class="date"') ,
 	array('Creator', '###((0 == [[[created_by]]]) ? \'Admin\' : $GLOBALS[\'_PLAYERS\'][[[[created_by]]]])') ,
-	array('Action', '###((('.$_SESSION['player_id'].' == [[[created_by]]]) || '.$GLOBALS['Player']->is_admin.') ? "<a href=\"edit_setup.php?id=[[[setup_id]]]\">Edit</a> | <a href=\"delete_setup.php?id=[[[setup_id]]]\">Delete</a>" : "")', null, ' class="action"') ,
+	array('Action', '###((('.$_SESSION['player_id'].' == [[[created_by]]]) || '.(int) $GLOBALS['Player']->is_admin.') ? "<a href=\"edit_setup.php?id=[[[setup_id]]]\">Edit</a> | <a href=\"delete_setup.php?id=[[[setup_id]]]\">Delete</a>" : "")', null, ' class="action"') ,
 );
 $contents .= get_table($table_format, $setups, $table_meta);
 
