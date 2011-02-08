@@ -834,7 +834,7 @@ class Player
 		if ( ! $this->is_admin) {
 			unset($_SESSION['admin_id']);
 			unset($_SESSION['PID']);
-			throw new MyException(__METHOD__.': Non-admin trying to log in as another player');
+			throw new MyException(__METHOD__.': Non-admin (#'.$_SESSION['player_id'].') trying to log in as another player (#'.$_GET['PID'].')');
 		}
 
 		// store our admin id
