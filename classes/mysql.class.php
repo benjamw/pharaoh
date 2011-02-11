@@ -122,8 +122,6 @@ class Mysql
 	 */
 	public function __destruct( )
 	{
-		call(__METHOD__);
-
 		$this->_log(__METHOD__.': '.$this->link_id);
 		$this->_log('===============================');
 
@@ -341,7 +339,12 @@ class Mysql
 
 		if ($this->_query_debug && empty($GLOBALS['AJAX'])) {
 			$this->query = trim(preg_replace('/\\s+/', ' ', $this->query));
-			echo "<div style='background:#FFF;color:#009;'><br /><strong>".basename($backtrace_file['file']).' on '.$backtrace_file['line']."</strong>- {$this->query} - <strong>Aff(".$this->affected_rows( ).") (".number_format($this->query_time, 5)." s)</strong></div>";
+			if (('cli' == php_sapi_name( )) && empty($_SERVER['REMOTE_ADDR'])) {
+				echo "\n\nMYSQL - ".basename($backtrace_file['file']).' on '.$backtrace_file['line']."- {$this->query} - Aff(".$this->affected_rows( ).") (".number_format($this->query_time, 5)." s)\n\n";
+			}
+			else {
+				echo "<div style='background:#FFF;color:#009;'><br /><strong>".basename($backtrace_file['file']).' on '.$backtrace_file['line']."</strong>- {$this->query} - <strong>Aff(".$this->affected_rows( ).") (".number_format($this->query_time, 5)." s)</strong></div>";
+			}
 		}
 
 		if ( ! $this->result) {
@@ -364,7 +367,13 @@ class Mysql
 			$this->_error_report( );
 
 			if ($this->_error_debug) {
-				echo "<div style='background:#900;color:#FFF;'>There was an error in your query{$extra}:<br />ERROR: {$this->error}<br />QUERY: {$this->query}</div>";
+				if (('cli' == php_sapi_name( )) && empty($_SERVER['REMOTE_ADDR'])) {
+					$extra = strip_tags($extra);
+					echo "\n\nMYSQL ERROR - There was an error in your query{$extra}:\nERROR: {$this->error}\nQUERY: {$this->query}\n\n";
+				}
+				else {
+					echo "<div style='background:#900;color:#FFF;'>There was an error in your query{$extra}:<br />ERROR: {$this->error}<br />QUERY: {$this->query}</div>";
+				}
 			}
 			else {
 				$this->error = 'There was a database error.';
@@ -447,7 +456,7 @@ class Mysql
 			$query = ' UPDATE ';
 		}
 
-		$query .= $table;
+		$query .= '`'.$table.'`';
 
 		if ( ! is_array($data_array)) {
 			throw new MySQLException(__METHOD__.': Trying to insert non-array data');
@@ -474,7 +483,7 @@ class Mysql
 		$this->query = $query;
 		$return = $this->query( );
 
-		if ('' != $where) {
+		if ('' == $where) {
 			return $this->fetch_insert_id( );
 		}
 		else {
@@ -529,7 +538,7 @@ class Mysql
 	{
 		$query = "
 			DELETE
-			FROM {$table}
+			FROM `{$table}`
 			{$where}
 		";
 
