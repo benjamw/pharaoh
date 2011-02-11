@@ -235,7 +235,7 @@ echo get_header($meta);
 			document.write('<'+'div id="setup">'+create_board('<?php echo expandFEN($Game->get_setup( )); ?>', true)+'<'+'/div>');
 
 			// run draw offer alert
-			if (draw_offered) {
+			if (draw_offered && ('watching' != state)) {
 				alert('Your opponent has offered you a draw.\n\nMake your decision with the draw\nbuttons below the game board.');
 			}
 		</script>
