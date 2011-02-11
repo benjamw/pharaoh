@@ -141,7 +141,6 @@ $(document).ready( function($) {
 	$('#setup_form').submit( function(event) {
 		// store the current board in the form
 		$('#setup').val(board);
-return true;
 
 		do_clear_laser( );
 
