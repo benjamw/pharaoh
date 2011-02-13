@@ -74,8 +74,23 @@ class Game
 	 * @var array
 	 */
 	static protected $_EXTRA_INFO_DEFAULTS = array(
+			'battle_dead' => false,
+			'battle_immune' => false,
 			'draw_offered' => false,
 			'custom_rules' => '',
+		);
+
+
+	/** static protected property _HISTORY_EXTRA_INFO_DEFAULTS
+	 *		Holds the default extra info data for the move history
+	 *
+	 * @var array
+	 */
+	static protected $_HISTORY_EXTRA_INFO_DEFAULTS = array(
+			'laser_hit' => false,
+			'laser_fired' => true,
+			'dead_for' => 0,
+			'immune_for' => 0,
 		);
 
 
@@ -158,12 +173,28 @@ class Game
 	protected $_setup;
 
 
+	/** protected property _laser_fired
+	 *		Holds the laser fired flag
+	 *
+	 * @var bool did we fire the laser?
+	 */
+	protected $_laser_fired = false;
+
+
 	/** protected property _extra_info
 	 *		Holds the extra game info
 	 *
 	 * @var array
 	 */
 	protected $_extra_info;
+
+
+	/** protected property _current_move_extra_info
+	 *		Holds the extra current move info
+	 *
+	 * @var array
+	 */
+	protected $_current_move_extra_info;
 
 
 	/** protected property _players
@@ -359,14 +390,30 @@ class Game
 		$_P['invitor_id'] = (int) $_SESSION['player_id'];
 		$_P['invitee_id'] = (int) $_P['opponent'];
 		$_P['setup_id'] = (int) $_P['setup'];
+		$_P['laser_battle'] = (isset($_P['laser_battle']) && ('yes' == $_P['laser_battle']));
 
 		call($_P);
 
 		$extra_info = array( );
-#		$extra_info = array(
-#			'custom_rules' => htmlentities($_P['custom_rules'], ENT_QUOTES, 'ISO-8859-1', false),
-#		);
-#		call($extra_info);
+
+		// laser battle cleanup
+		// only run this if the laser battle box was open
+		if (isset($_P['laser_battle_box'])) {
+			if (empty($_P['battle_dead'])) {
+				$_P['battle_dead'] = 1;
+			}
+
+			if (empty($_P['battle_immune'])) {
+				$_P['battle_immune'] = 1;
+			}
+
+			$extra_info = array(
+				'battle_dead' => (int) max($_P['battle_dead'], 1),
+				'battle_immune' => (int) max($_P['battle_immune'], 0),
+			);
+		}
+
+		call($extra_info);
 
 		$diff = array_compare($extra_info, self::$_EXTRA_INFO_DEFAULTS);
 		$extra_info = $diff[0];
@@ -377,7 +424,6 @@ class Game
 			$_P['extra_info'] = serialize($extra_info);
 		}
 
-		// check for random setup
 		$query = "
 			SELECT setup_id
 			FROM ".Setup::SETUP_TABLE."
@@ -385,6 +431,7 @@ class Game
 		$setup_ids = $Mysql->fetch_value_array($query);
 		call($setup_ids);
 
+		// check for random setup
 		if (0 == $_P['setup_id']) {
 			shuffle($setup_ids);
 			shuffle($setup_ids);
@@ -405,6 +452,7 @@ class Game
 
 		$key_list = array_merge($required, array(
 			'invitee_id' ,
+			'extra_info' ,
 		));
 
 		try {
@@ -619,6 +667,25 @@ class Game
 	}
 
 
+	public function can_fire_laser( )
+	{
+		call(__METHOD__);
+
+		if ( ! $this->_extra_info['battle_dead']) {
+			return true;
+		}
+
+		return ! $this->_current_move_extra_info['dead_for'];
+	}
+
+
+	public function prev_laser_fired( )
+	{
+		$last = end($this->_history);
+		return (bool) $last['laser_fired'];
+	}
+
+
 	/** public function do_move
 	 *		Do the given move and send out emails
 	 *
@@ -631,7 +698,8 @@ class Game
 		call(__METHOD__);
 
 		try {
-			$hits = $this->_pharaoh->do_move($move);
+			$this->_laser_fired = $this->can_fire_laser( );
+			$hits = $this->_pharaoh->do_move($move, $this->_laser_fired);
 			$winner = $this->_pharaoh->winner;
 		}
 		catch (MyException $e) {
@@ -888,6 +956,25 @@ class Game
 	}
 
 
+	/** public function get_extra
+	 *		Returns details of the extra_info var
+	 *
+	 * @param void
+	 * @return string extra info details
+	 */
+	public function get_extra( )
+	{
+		call(__METHOD__);
+		$return = array( );
+
+		if ($this->_extra_info['battle_dead']) {
+			$return[] = '<span>Laser Battle (<abbr title="Dead for">'.$this->_extra_info['battle_dead'].'</abbr>, <abbr title="Immune for">'.$this->_extra_info['battle_immune'].'</abbr>)</span>';
+		}
+
+		return implode(' | ', $return);
+	}
+
+
 	/** public function get_board
 	 *		Returns the current board
 	 *
@@ -979,8 +1066,9 @@ class Game
 			$history[] = array(
 				expandFEN($node['board']),
 				$move,
-				$this->get_laser_path($i),
+				(($this->_history[$i]['laser_fired']) ? $this->get_laser_path($i) : array( )),
 				$this->get_hit_data($i),
+				$this->get_battle_data($i, true),
 			);
 		}
 
@@ -1159,6 +1247,95 @@ class Game
 		}
 
 		return $move_data;
+	}
+
+
+	/** public function get_battle_data
+	 *		Returns the battle data for the given move index
+	 *
+	 * @param int optional move history index
+	 * @param bool optional return as JSON string
+	 * @return array or string battle data
+	 */
+	public function get_battle_data($index = null, $simple = false, $json = false)
+	{
+		call(__METHOD__);
+		call($index);
+		call($simple);
+		call($json);
+
+		if (is_null($index)) {
+			$index = count($this->_history) - 1;
+		}
+
+		$index = (int) $index;
+		$simple = (bool) $simple;
+		$json = (bool) $json;
+
+		$battle_data = array(
+			'silver' => array(
+				'dead' => 0,
+				'immune' => 0,
+			),
+			'red' => array(
+				'dead' => 0,
+				'immune' => 0,
+			),
+		);
+
+		$color = ((0 != ($index % 2)) ? 'silver' : 'red');
+		$other = (('silver' == $color) ? 'red' : 'silver');
+		call($color);
+
+		if (isset($this->_history[$index])) {
+			// grab the current data
+			$battle_data[$color]['dead'] = $this->_history[$index]['dead_for'];
+			$battle_data[$color]['immune'] = $this->_history[$index]['immune_for'];
+
+			// for the game display, we want to decrease the value here
+			$dead = false;
+			if ($battle_data[$color]['dead']) {
+				$dead = true;
+				--$battle_data[$color]['dead'];
+			}
+
+			if ($battle_data[$color]['immune']) {
+				--$battle_data[$color]['immune'];
+			}
+
+			// if we recently came back to life, show that
+			if ($dead && ! $battle_data[$color]['dead']) {
+				$battle_data[$color]['immune'] = $this->_extra_info['battle_immune'];
+			}
+
+			// grab the future data for the other player
+			if (isset($this->_history[$index + 1])) {
+				$battle_data[$other]['dead'] = $this->_history[$index + 1]['dead_for'];
+				$battle_data[$other]['immune'] = $this->_history[$index + 1]['immune_for'];
+			}
+			else {
+				// there is no next move, we need to calculate it based on the previous one
+				// if there is no previous move data, the values will stay as defaults
+				if (isset($this->_history[$index - 1])) {
+					$m_extra_info = $this->_gen_move_extra_info($this->_history[$index], $this->_history[$index - 1]);
+					$battle_data[$other]['dead'] = $m_extra_info['dead_for'];
+					$battle_data[$other]['immune'] = $m_extra_info['immune_for'];
+				}
+			}
+		}
+
+		if ($simple) {
+			$battle_data = array(
+				array($battle_data['silver']['dead'], $battle_data['silver']['immune']),
+				array($battle_data['red']['dead'], $battle_data['red']['immune']),
+			);
+		}
+
+		if ($json) {
+			return json_encode($battle_data);
+		}
+
+		return $battle_data;
 	}
 
 
@@ -1359,6 +1536,51 @@ class Game
 	}
 
 
+	protected function _gen_move_extra_info($curr_move, $prev_move = null)
+	{
+		call(__METHOD__);
+
+		$m_extra_info = self::$_HISTORY_EXTRA_INFO_DEFAULTS;
+		if ( ! $this->_extra_info['battle_dead']) {
+			return $m_extra_info;
+		}
+
+		if ( ! $curr_move) {
+			throw new MyException(__METHOD__.': Move data not present for calculation');
+		}
+
+		// set our current move extra info
+		if ($prev_move) {
+			$m_extra_info['dead_for'] = $prev_move['dead_for'];
+			$m_extra_info['immune_for'] = $prev_move['immune_for'];
+		}
+
+		$dead = false;
+		if ($m_extra_info['dead_for']) {
+			$dead = true;
+		}
+
+		if (0 < $m_extra_info['dead_for']) {
+			--$m_extra_info['dead_for'];
+		}
+
+		// we are allowed to shoot now, set our immunity
+		if ($dead && ! $m_extra_info['dead_for']) {
+			$m_extra_info['immune_for'] = $this->_extra_info['battle_immune'];
+		}
+
+		if ( ! $dead && (0 < $m_extra_info['immune_for'])) {
+			--$m_extra_info['immune_for'];
+		}
+
+		if ( ! $m_extra_info['dead_for'] && ! $m_extra_info['immune_for'] && $curr_move['laser_hit']) {
+			$m_extra_info['dead_for'] = $this->_extra_info['battle_dead'];
+		}
+
+		return $m_extra_info;
+	}
+
+
 	/** protected function _pull
 	 *		Pulls the data from the database
 	 *		and sets up the objects
@@ -1468,6 +1690,14 @@ class Game
 
 		if ($result) {
 			$count = count($result);
+
+			// integrate the extra info into the history array
+			foreach ($result as & $move) {
+				$m_extra = array_merge_plus(self::$_HISTORY_EXTRA_INFO_DEFAULTS, unserialize($move['extra_info']));
+				$move = array_merge($move, $m_extra);
+			}
+			unset($move); // kill the reference
+
 			$this->_history = $result;
 			$this->turn = ((0 == ($count % 2)) ? 'black' : 'white');
 			$this->last_move = strtotime($result[$count - 1]['move_date']);
@@ -1475,10 +1705,14 @@ class Game
 			try {
 				$this->_pharaoh = new Pharaoh( );
 				$this->_pharaoh->set_board(expandFEN($this->_history[$count - 1]['board']));
+				$this->_pharaoh->set_extra_info($this->_extra_info);
 			}
 			catch (MyException $e) {
 				throw $e;
 			}
+
+			$m_extra_info = $this->_gen_move_extra_info($this->_history[$count - 1], $this->_history[$count - 2]);
+			$this->_current_move_extra_info = array_merge_plus(self::$_HISTORY_EXTRA_INFO_DEFAULTS, $m_extra_info);
 		}
 		else {
 			$this->last_move = $this->create_date;
@@ -1586,7 +1820,20 @@ class Game
 		if ($new_board != $board) {
 			call('UPDATED BOARD');
 			$update_modified = true;
-			$this->_mysql->insert(self::GAME_HISTORY_TABLE, array('board' => $new_board, 'move' => $new_move, 'hits' => $new_hits, 'game_id' => $this->id));
+
+			$this->_current_move_extra_info['laser_fired'] = (bool) $this->can_fire_laser( );
+			$this->_current_move_extra_info['laser_hit'] = (bool) $this->_pharaoh->laser_hit;
+			$diff = array_compare($this->_current_move_extra_info, self::$_HISTORY_EXTRA_INFO_DEFAULTS);
+			$m_extra_info = $diff[0];
+			ksort($m_extra_info);
+
+			$m_extra_info = serialize($m_extra_info);
+
+			if ('a:0:{}' == $m_extra_info) {
+				$m_extra_info = null;
+			}
+
+			$this->_mysql->insert(self::GAME_HISTORY_TABLE, array('board' => $new_board, 'move' => $new_move, 'hits' => $new_hits, 'extra_info' => $m_extra_info, 'game_id' => $this->id));
 		}
 
 		// update the game modified date
@@ -2111,6 +2358,7 @@ CREATE TABLE IF NOT EXISTS `ph_game_history` (
   `move` varchar(255) COLLATE latin1_general_ci DEFAULT NULL,
   `hits` varchar(255) COLLATE latin1_general_ci DEFAULT NULL,
   `board` varchar(87) COLLATE latin1_general_ci NOT NULL,
+  `extra_info` text COLLATE latin1_general_ci NULL DEFAULT NULL,
   `move_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
   KEY `game_id` (`game_id`),

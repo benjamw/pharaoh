@@ -37,6 +37,16 @@ class Pharaoh {
 	 *		PROPERTIES
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
+	/** static public property EXTRA_INFO_DEFAULTS
+	 *		Holds the default extra info data
+	 *		Values:
+	 *		- none_yet
+	 *
+	 * @var array
+	 */
+	static public $EXTRA_INFO_DEFAULTS = array( );
+
+
 	/** public property players
 	 *		Holds our player's data
 	 *		format: (indexed by player_id then associative)
@@ -114,6 +124,23 @@ class Pharaoh {
 	 * @var array of int board indexes
 	 */
 	protected $_hits;
+
+
+	/** protected property laser_hit
+	 *		Holds the laser hit flag
+	 *
+	 * @var bool did we hit the laser?
+	 */
+	protected $laser_hit = false;
+
+
+	/** protected property _extra_info
+	 *		Holds the extra info for the game
+	 *
+	 * @see $EXTRA_INFO_DEFAULTS
+	 * @var array
+	 */
+	protected $_extra_info;
 
 
 
@@ -207,6 +234,22 @@ class Pharaoh {
 	public function __toString( )
 	{
 		return $this->_get_board_ascii( );
+	}
+
+
+	/** public function set_extra_info
+	 *		Sets the extra info for the game
+	 *
+	 * @param array extra game info
+	 * @return void
+	 */
+	public function set_extra_info($extra_info)
+	{
+		call(__METHOD__);
+
+		$extra_info = array_clean($extra_info, array_keys(self::$EXTRA_INFO_DEFAULTS));
+
+		$this->_extra_info = array_merge_plus(self::$EXTRA_INFO_DEFAULTS, $extra_info);
 	}
 
 
@@ -314,6 +357,7 @@ class Pharaoh {
 		try {
 			$return = self::fire_laser($color, $this->_board);
 			$this->_laser_path = $return['laser_path'];
+			$this->laser_hit = $return['laser_hit'];
 			return $return['hits'];
 		}
 		catch (MyException $e) {
@@ -395,6 +439,7 @@ class Pharaoh {
 		$used = array( );
 		$next = array( );
 		$hits = array( );
+		$laser_hit = false;
 		while ($i < 999) { // no ad infinitum here
 			$split = 0;
 			$continue = false;
@@ -413,7 +458,6 @@ class Pharaoh {
 				// dir is the direction that the laser was heading
 				// when it entered the current index
 				list($current, $dir) = $node;
-
 				// check the current location for a piece
 				if ('0' != ($piece = $board[$current])) {
 					// check for hit or reflection
@@ -455,6 +499,11 @@ class Pharaoh {
 						$do_split = false;
 					}
 					else {
+						// check if we hit the laser
+						if ((-10 == $split_current) || (89 == $split_current)) {
+							$laser_hit = true;
+						}
+
 						// check if we hit a wall
 						$long_wall = (0 > $split_current) || (80 <= $split_current);
 						$short_wall = (1 == abs($split_dir)) && (floor($split_current / 10) !== floor(($split_current - $split_dir) / 10));
@@ -463,7 +512,7 @@ class Pharaoh {
 							// but keep going, we need to store the dir so we can show any reflection properly
 							// and we need to add the new path index below
 
-							// we store dir here because we need to know which direction the laser left the node in
+							// we store dir here because we need to know in which direction the laser left the node
 							// for edge/corner piece hits that send the laser through the wall
 							$split_current = false;
 						}
@@ -493,6 +542,11 @@ class Pharaoh {
 					// and know what's going to happen
 					$next[$key] = array(false, $dir); // stop this path
 					continue;
+				}
+
+				// check if we hit the laser
+				if ((-10 == $current) || (89 == $current)) {
+					$laser_hit = true;
 				}
 
 				// check if we hit a wall
@@ -535,7 +589,10 @@ class Pharaoh {
 		call(self::get_laser_ascii($board, $laser_path));
 		call($hits);
 
-		return compact('laser_path', 'hits');
+		// straighten up the laser path
+		array_walk($laser_path, create_function('& $val', 'ksort($val);'));
+
+		return compact('laser_path', 'hits', 'laser_hit');
 	}
 
 

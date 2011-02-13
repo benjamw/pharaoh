@@ -187,6 +187,8 @@ function show_old_board(cont) {
 
 	$('div#board').empty( ).append(create_board(game_history[move_index - 1][0]));
 
+	show_battle_data(true);
+
 	if (cont) {
 		blink_move(true);
 	}
@@ -233,6 +235,8 @@ function show_new_board(cont) {
 
 	$('div#board').empty( ).append(create_board(game_history[move_index][0]));
 	old_board = false;
+
+	show_battle_data( );
 
 	// add the hit piece (if any)
 	if ('undefined' != typeof game_history[move_index][3]['hits']) {
@@ -612,6 +616,46 @@ function get_adjacent(board_index) {
 	}
 
 	return adj;
+}
+
+
+function show_battle_data(show_old_data) {
+	var idx = move_index;
+	if ( !! show_old_data) {
+		--idx;
+	}
+
+	var data = game_history[idx][4];
+	var clss, value;
+
+	if (data[0][0]) {
+		clss = 'dead';
+		value = data[0][0];
+	}
+	else if (data[0][1]) {
+		clss = 'immune';
+		value = data[0][1];
+	}
+	else {
+		clss = 'alive';
+		value = '';
+	}
+	$("div#the_board div.silver_laser").empty( ).append('<div class="'+clss+'">'+value+'</div>');
+
+
+	if (data[1][0]) {
+		clss = 'dead';
+		value = data[1][0];
+	}
+	else if (data[1][1]) {
+		clss = 'immune';
+		value = data[1][1];
+	}
+	else {
+		clss = 'alive';
+		value = '';
+	}
+	$("div#the_board div.red_laser").empty( ).append('<div class="'+clss+'">'+value+'</div>');
 }
 
 

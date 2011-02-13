@@ -157,6 +157,7 @@ echo get_header($meta);
 			<h2>Game #<?php echo $_SESSION['game_id'].': '.htmlentities($Game->name, ENT_QUOTES, 'ISO-8859-1', false); ?>
 				<span class="turn"><?php echo $turn; ?></span>
 				<span class="setup"><a href="#setup" class="fancybox"><?php echo $Game->get_setup_name( ); ?></a> <a href="help/pieces.help" class="help">?</a></span>
+				<span class="extra"><?php echo $Game->get_extra( ); ?></span>
 			</h2>
 
 			<div id="history">

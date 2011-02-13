@@ -155,7 +155,7 @@ function create_board(xFEN, blank) {
 	}
 
 	html += '<div'+id+' class="a_board">'
-			+'<div class="header corner">&nbsp;</div>';
+			+'<div class="header corner '+red+'_laser">&nbsp;</div>';
 
 	for (i = 0; i < 10; ++i) {
 		html += '<div class="header horz">'+letters.charAt(i).toLowerCase( )+'</div>';
@@ -231,7 +231,7 @@ function create_board(xFEN, blank) {
 		html += '<div class="header horz">'+letters.charAt(i).toLowerCase( )+'</div>';
 	}
 
-	html += '<div class="header corner">&nbsp;</div>'
+	html += '<div class="header corner '+silver+'_laser">&nbsp;</div>'
 		+ '</div> <!-- .a_board -->';
 
 	if ( ! blank) {

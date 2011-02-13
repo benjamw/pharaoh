@@ -1,6 +1,20 @@
 
 var reload = true; // do not change this
 
+function check_fieldset_box( ) {
+	$('input.fieldset_box').each( function(i, elem) {
+		var $this = $(this);
+		var id = $this.attr('id').slice(0,-4);
+
+		if ($this.attr('checked')) {
+			$('div#'+id).show( );
+		}
+		else {
+			$('div#'+id).hide( );
+		}
+	});
+}
+
 $(document).ready( function( ) {
 	// hide the setup div
 	$('div#setup_display').hide( );
@@ -34,6 +48,12 @@ $(document).ready( function( ) {
 
 		return true;
 	});
+
+	// hide the collapsable fieldsets
+	$('input.fieldset_box').change( function( ) {
+		check_fieldset_box( );
+	});
+	check_fieldset_box( );
 
 	// this runs all the ...vites
 	$('div#invites input').click( function( ) {

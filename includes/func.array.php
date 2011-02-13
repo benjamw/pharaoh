@@ -66,12 +66,13 @@ function array_clean($array, $keys, $reqd = array( ))
 	}
 
 	array_trim($keys);
-
-	if (0 == count($keys)) {
-		throw new MyException(__FUNCTION__.': No keys given');
-	}
-
 	array_trim($reqd);
+
+	$keys = array_unique(array_merge($keys, $reqd));
+
+	if (empty($keys)) {
+		return array( );
+	}
 
 	$return = array( );
 	foreach ($keys as $key) {
