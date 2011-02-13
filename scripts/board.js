@@ -247,6 +247,7 @@ function create_piece(piece, hit) {
 
 	var color = (piece == piece.toUpperCase( )) ? 'silver' : 'red';
 	var hit = (hit) ? ' hit' : '';
+
 	return '<img src="'+image_dir+color+'_'+pieces[piece.toUpperCase( )].toLowerCase( )+'.png" alt="'+piece+'" class="piece'+hit+'" />';
 }
 

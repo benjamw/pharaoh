@@ -78,6 +78,12 @@ class Flash
 	}
 
 
+	public function __toString( )
+	{
+		return 'FLASH- '.implode('; ', $this->_messages( )).' @ '.$this->_location;
+	}
+
+
 	/** public function reset_debug
 	 *		Resets the debug value
 	 *

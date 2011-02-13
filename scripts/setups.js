@@ -210,6 +210,11 @@ function do_fire_laser(color) {
 	}
 
 	if ( ! laser_path[color]) {
+		if (debug) {
+			window.location = 'ajax_helper.php'+debug_query+'&'+'color='+color+'&board='+board+'&test_fire=1';
+			return false;
+		}
+
 		$.ajax({
 			type: 'POST',
 			url: 'ajax_helper.php',

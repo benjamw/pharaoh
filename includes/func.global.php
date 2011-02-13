@@ -137,7 +137,7 @@ function test_token($keep = false) {
 	call($_SESSION['token']);
 	call($_POST['token']);
 
-	if (DEBUG) {
+	if (DEBUG || ('games' == $_SERVER['HTTP_HOST'])) {
 		return;
 	}
 

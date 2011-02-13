@@ -1,3 +1,22 @@
+- add the option for "Laser Battle", possibly make it have options for
+	every hit equals broken, or immune for X turns after hit
+	- also... maybe find a way to change from alive to dead during
+		laser firing like the piece hits
+
+- find a way to make the dead and immune values decrement after that players
+	turn, instead of after opponents turn.  the only value that should
+	change after opponents turn, is setting initial dead value for hits
+
+- add fields in database for setups for number of silver wins,
+	red wins, number of draws, longest game, shortest game, and
+	deleted or active flag and use those for game stats
+
+- for revisions for setups, allow the same name for the setup and
+	when a user creates a revision or edits their setup, it creates a new setup
+	and inactivates the previous setup, and then either sort by
+	create date, or add a field in the table called revision and increment that
+	and when we pull the setup, order by created or revision number, and use the most recent.
+
 - when a user performs an action, don't take them from the page
 	if they send an invite, or accept and invite, leave them
 	on the invite page, same with messages and whatnot
@@ -5,18 +24,14 @@
 
 - fill a board with eyes, and see how many the system can actually handle
 	make sure to remove the inifinite loop protoection first though
+	- it can handle a full board of eyes
 
 - don't refresh page if an email success message is sent
 	for things like resend invites, nudges, etc.  just make changes to html if needed
 
 - make sure invites don't count toward "active" users and do so in other games as well
 
-- add the option for "Laser Battle", possibly make it have options for
-	every hit equals broken, or immune for X turns after hit
-
 - add options for selecting which pieces are swappable with which other pieces
-
-- make sure the game is deleting finished games... and draw games
 
 - add a different method for removing the click on the piece, because clicking the piece again
 	doesn't work for rotatable pieces
@@ -27,4 +42,7 @@
 	that are largely email dependent
 
 - store finished games in text files and create a game reader/player
+
+
+
 

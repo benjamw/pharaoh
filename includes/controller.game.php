@@ -109,6 +109,8 @@ if (isset($_POST['turn'])) {
 		else { // rotating
 			$target = Pharaoh::index_to_target($_POST['from']);
 			$dir = (int) ('r' == strtolower($_POST['to']));
+			call($target.'-'.$dir);
+
 			$Game->do_move($target.'-'.$dir);
 		}
 	}

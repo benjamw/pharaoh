@@ -298,8 +298,8 @@ class Mysql
 	 */
 	public function set_error($val)
 	{
-		$this->_error_debug = (0 != (1 & $val)) ? true : false;
-		$this->_query_debug = (0 != (2 & $val)) ? true : false;
+		$this->_error_debug = (0 != (1 & $val));
+		$this->_query_debug = (0 != (2 & $val));
 	}
 
 
