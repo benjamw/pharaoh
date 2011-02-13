@@ -233,7 +233,7 @@ echo get_header($meta);
 		</div> <!-- #contents -->
 
 		<script type="text/javascript">
-			document.write('<'+'div id="setup">'+create_board('<?php echo expandFEN($Game->get_setup( )); ?>', true)+'<'+'/div>');
+			document.write('<'+'div id="setup"'+'>'+create_board('<?php echo expandFEN($Game->get_setup( )); ?>', true)+'<'+'/'+'div'+'>');
 
 			// run draw offer alert
 			if (draw_offered && ('watching' != state)) {

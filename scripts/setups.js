@@ -146,6 +146,7 @@ $(document).ready( function($) {
 
 		if (debug) {
 			window.location = 'ajax_helper.php'+debug_query+'&'+$('#setup_form').serialize( )+'&test_setup=1';
+			event.preventDefault( );
 			return false;
 		}
 
@@ -159,6 +160,7 @@ $(document).ready( function($) {
 
 				if (reply.error) {
 					alert(reply.error);
+					event.preventDefault( );
 					return false;
 				}
 				else {
@@ -168,6 +170,9 @@ $(document).ready( function($) {
 				}
 			}
 		});
+
+		event.preventDefault( );
+		return false;
 	});
 });
 
