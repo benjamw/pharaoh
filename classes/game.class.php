@@ -1713,7 +1713,7 @@ class Game
 				throw $e;
 			}
 
-			$m_extra_info = $this->_gen_move_extra_info($this->_history[$count - 1], $this->_history[$count - 2]);
+			$m_extra_info = $this->_gen_move_extra_info($this->_history[$count - 1], (isset($this->_history[$count - 2]) ? $this->_history[$count - 2] : null));
 			$this->_current_move_extra_info = array_merge_plus(self::$_HISTORY_EXTRA_INFO_DEFAULTS, $m_extra_info);
 		}
 		else {
