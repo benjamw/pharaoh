@@ -132,7 +132,7 @@ $meta['head_data'] = '
 
 	<script type="text/javascript" src="scripts/board.js"></script>
 	<script type="text/javascript">/*<![CDATA[*/
-		var draw_offered = '.($Game->draw_offered($_SESSION['player_id']) ? 'true' : 'false').';
+		var draw_offered = '.json_encode($Game->draw_offered($_SESSION['player_id'])).';
 		var color = "'.(isset($players[$_SESSION['player_id']]) ? (('white' == $players[$_SESSION['player_id']]['color']) ? 'silver' : 'red') : '').'";
 		var state = "'.(( ! $Game->watch_mode) ? (( ! $Game->paused) ? strtolower($Game->state) : 'paused') : 'watching').'";
 		var invert = '.(( ! empty($players[$_SESSION['player_id']]['color']) && ('black' == $players[$_SESSION['player_id']]['color'])) ? 'true' : 'false').';
