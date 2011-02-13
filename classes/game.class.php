@@ -2186,11 +2186,13 @@ class Game
 			return;
 		}
 
+		// don't auto delete paused games
 		$query = "
 			SELECT game_id
 			FROM ".self::GAME_TABLE."
 			WHERE modify_date < DATE_SUB(NOW( ), INTERVAL {$age} DAY)
 				AND create_date < DATE_SUB(NOW( ), INTERVAL {$age} DAY)
+				AND paused = 0
 		";
 		$game_ids = $Mysql->fetch_value_array($query);
 
@@ -2222,7 +2224,7 @@ class Game
 		$query = "
 			SELECT game_id
 			FROM ".self::GAME_TABLE."
-			WHERE state = 'Finished'
+			WHERE state IN ('Finished', 'Draw')
 				AND modify_date < DATE_SUB(NOW( ), INTERVAL {$age} DAY)
 		";
 		$game_ids = $Mysql->fetch_value_array($query);
