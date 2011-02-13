@@ -1220,7 +1220,9 @@ class Game
 
 		$move_data = array( );
 
-		if ($this->_history[$index]['hits']) {
+		// because we may have only hit the piece at A8 (idx: 0), this will
+		// return false unless we test for that location specifically
+		if ($this->_history[$index]['hits'] || ('0' === $this->_history[$index]['hits'])) {
 			// we need to grab the previous board here, and perform the move
 			// without firing the laser so we get the proper orientation
 			// of the pieces as they were hit in case any pieces were rotated

@@ -25,7 +25,10 @@ function array_trim( & $array, $type = null)
 		'object' ,
 	);
 
-	if ( ! $array) {
+	// if a non-empty string value comes through, don't erase it
+	// this is specifically for '0', but may work for others
+	$is_non_empty_string = (is_string($array) && strlen(trim($array)));
+	if ( ! $array && ! $is_non_empty_string) {
 		$array = array( );
 	}
 
