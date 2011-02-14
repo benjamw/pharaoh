@@ -475,7 +475,6 @@ function set_square(event) {
 	clear_laser( );
 
 	var $elem = $(event.currentTarget);
-	var piece_code = $elem.attr('class').match(/i_[^\s]+/ig)[0].slice(2).toLowerCase( );
 	var board_index = $elem.attr('id').slice(4).toLowerCase( );
 
 	if ( ! stage_1) {
@@ -486,6 +485,7 @@ function set_square(event) {
 
 		// create our two images
 		// if the piece is not an obelisk or pharaoh
+		var piece_code = $elem.attr('class').match(/i_[^\s]+/ig)[0].slice(2).toLowerCase( );
 		if (('v' != piece_code) && ('w' != piece_code) && ('p' != piece_code)) {
 			$('div#idx_'+board_index)
 				.append($('<img/>', {
@@ -549,23 +549,28 @@ function set_square(event) {
 			// or eye of horus, or obelisk
 			// moving onto another single stack obelisk...
 			var moveable_piece = (fr_color && to_color && (fr_color[0] == to_color[0]));
-			var swap = 'Swap';
-			if ('v' == piece_code.toLowerCase( )) {
-				swap = 'Stack';
-			}
 
 			// set this piece as the TO index
 			// as long as it's okay with the player
-			if (moveable_piece && confirm('Do you want to move this piece instead?\n\nOK- Move this new piece | Cancel- '+swap+' these two pieces')) {
-				// reset
-				stage_1 = false;
-				from_index = -1;
-				clear_highlights( );
-				$('img.rotate').remove( );
+			if (moveable_piece) {
+				var piece_code = $elem.attr('class').match(/i_[^\s]+/ig)[0].slice(2).toLowerCase( );
+				var swap = 'Swap';
 
-				// perform the click again
-				$to_elem.click( );
-				return;
+				if ('v' == piece_code.toLowerCase( )) {
+					swap = 'Stack';
+				}
+
+			 	if (confirm('Do you want to move this piece instead?\n\nOK- Move this new piece | Cancel- '+swap+' these two pieces')) {
+					// reset
+					stage_1 = false;
+					from_index = -1;
+					clear_highlights( );
+					$('img.rotate').remove( );
+
+					// perform the click again
+					$to_elem.click( );
+					return;
+				}
 			}
 		}
 
