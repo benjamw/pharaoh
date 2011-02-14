@@ -228,8 +228,6 @@ class Player
 		{
 			$_SESSION['login_referrer'] = $_SERVER['REQUEST_URI'];
 		}
-		call( );
-		call(@$_SESSION['login_referrer']);
 
 		try {
 			$redirect = false;
@@ -254,14 +252,13 @@ class Player
 			}
 
 			if ($this->is_logged) {
-				call(@$_SESSION['login_referrer']);
-
 				$GLOBALS['Player'] = $this;
 				$this->_admin_log_in( );
 				$_SESSION['player_id'] = (int) $this->id;
 
 				if ($redirect) {
 					if ( ! empty($_SESSION['login_referrer'])) {
+						call($_SESSION['login_referrer']);
 						$login_referrer = $_SESSION['login_referrer'];
 						session_write_close( );
 						header('Location: '.$login_referrer);

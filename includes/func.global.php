@@ -24,11 +24,11 @@ function call($var = 'Th&F=xUFucreSp2*ezAhe=ApuPR*$axe', $bypass = false, $show_
 		// and print_r is better at catching recursion than var_export
 		ob_start( );
 
-		if ((is_string($var) && ! preg_match('/^\\s*$/', $var))) { // non-whitespace strings
-			print_r($var);
-		}
-		else {
-			if ( ! function_exists('xdebug_disable')) {
+		if ( ! function_exists('xdebug_disable')) {
+			if ((is_string($var) && ! preg_match('/^\\s*$/', $var))) { // non-whitespace strings
+				print_r($var);
+			}
+			else {
 				if (is_array($var) || is_object($var)) {
 					print_r($var);
 				}
@@ -36,9 +36,9 @@ function call($var = 'Th&F=xUFucreSp2*ezAhe=ApuPR*$axe', $bypass = false, $show_
 					var_dump($var);
 				}
 			}
-			else {
-				var_dump($var);
-			}
+		}
+		else {
+			var_dump($var);
 		}
 
 		// end output buffering and output the result
