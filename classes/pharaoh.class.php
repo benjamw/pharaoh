@@ -736,7 +736,7 @@ class Pharaoh {
 			}
 				// both the Djed and Eye of Horus can swap places with other pieces
 				// as well as swapping a single and double obelisk tower if the from is double
-			elseif ( ! in_array(strtoupper($piece), array('H','I','X','Y','W'))) {
+			elseif ( ! in_array(strtoupper($piece), array('H','I','X','Y','W','V'))) {
 				throw new MyException(__METHOD__.': Target square not empty - '.$piece);
 			}
 				// but only with pyramids or obelisks
