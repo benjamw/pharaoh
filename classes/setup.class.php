@@ -879,12 +879,20 @@ CREATE TABLE IF NOT EXISTS `ph_setup` (
   `has_horus` tinyint(1) NOT NULL DEFAULT '0',
   `has_tower` tinyint(1) NOT NULL DEFAULT '0',
   `used` int(11) NOT NULL DEFAULT '0',
+  `silver_wins` int(10) unsigned NOT NULL DEFAULT '0',
+  `draws` int(10) unsigned NOT NULL DEFAULT '0',
+  `red_wins` int(10) unsigned NOT NULL DEFAULT '0',
+  `shortest_game` int(10) unsigned DEFAULT NULL,
+  `longest_game` int(10) unsigned DEFAULT NULL,
+  `active` tinyint(1) NOT NULL DEFAULT '1',
   `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `created_by` int(10) unsigned NOT NULL DEFAULT '0' COMMENT 'the player id of the player that created the setup',
   PRIMARY KEY (`setup_id`),
   KEY `has_horus` (`has_horus`),
-  KEY `has_tower` (`has_tower`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci AUTO_INCREMENT=27 ;
+  KEY `has_tower` (`has_tower`),
+  KEY `active` (`active`)
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci ;
+
 
 --
 -- Dumping data for table `ph_setup`

@@ -1,6 +1,6 @@
-- add fields in database for setups for number of silver wins,
-	red wins, number of draws, longest game, shortest game, and
-	deleted or active flag and use those for game stats
+- separate out the setups page and the stats page, have game/setup stats on stats page
+	and a list of setups with modals on setups page, and have a link to create new setup
+	as well as the action links for the setups
 
 - for revisions for setups, allow the same name for the setup and
 	when a user creates a revision or edits their setup, it creates a new setup
