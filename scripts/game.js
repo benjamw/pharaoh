@@ -672,7 +672,8 @@ function ajax_refresh( ) {
 		data: 'refresh=1',
 		success: function(msg) {
 			if (msg != last_move) {
-				if (reload) { window.location.reload( ); }
+				// don't just reload( ), it tries to submit the POST again
+				if (reload) { window.location = window.location.href; }
 			}
 		}
 	});
