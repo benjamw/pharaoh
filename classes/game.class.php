@@ -975,6 +975,18 @@ class Game
 	}
 
 
+	/** public function get_extra_info
+	 *		Returns the extra_info var
+	 *
+	 * @param void
+	 * @return array extra info
+	 */
+	public function get_extra_info( )
+	{
+		return $this->_extra_info;
+	}
+
+
 	/** public function get_board
 	 *		Returns the current board
 	 *

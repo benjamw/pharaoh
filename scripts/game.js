@@ -629,6 +629,10 @@ function get_adjacent(board_index) {
 
 
 function show_battle_data(show_old_data) {
+	if ( ! laser_battle) {
+		return false;
+	}
+
 	var idx = move_index;
 	if ( !! show_old_data) {
 		--idx;

@@ -125,6 +125,8 @@ if (in_array($Game->state, array('Finished', 'Draw'))) {
 	$turn = '<span class="'.$win_class.'">Game Over: '.$win_text.'</span>';
 }
 
+$extra_info = $Game->get_extra_info( );
+
 $meta['title'] = htmlentities($Game->name, ENT_QUOTES, 'ISO-8859-1', false).' - #'.$_SESSION['game_id'];
 $meta['show_menu'] = false;
 $meta['head_data'] = '
@@ -141,6 +143,7 @@ $meta['head_data'] = '
 		var game_history = '.$Game->get_history(true).';
 		var move_count = game_history.length;
 		var move_index = (move_count - 1);
+		var laser_battle = '.json_encode( !! $extra_info['battle_dead']).';
 	/*]]>*/</script>
 	<script type="text/javascript" src="scripts/game.js"></script>
 ';
