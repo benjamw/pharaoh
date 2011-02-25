@@ -228,6 +228,10 @@ fieldset {
 
 	dd {
 		border-color: $border_dark;
+
+		&.private {
+			color: $color;
+		}
 	}
 }
 
