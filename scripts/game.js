@@ -554,13 +554,13 @@ function set_square(event) {
 			// as long as it's okay with the player
 			if (moveable_piece) {
 				var piece_code = $elem.attr('class').match(/i_[^\s]+/ig)[0].slice(2).toLowerCase( );
-				var swap = 'Swap';
+				var swap = 'swap';
 
-				if ('v' == piece_code.toLowerCase( )) {
-					swap = 'Stack';
+				if (('v' == piece_code.toLowerCase( )) && ('v' == fr_class.match(/i_[^\s]+/ig)[0].slice(2).toLowerCase( ))) {
+					swap = 'stack';
 				}
 
-			 	if (confirm('Do you want to move this piece instead?\n\nOK- Move this new piece | Cancel- '+swap+' these two pieces')) {
+			 	if ( ! confirm('Do you want to '+swap+' this piece?\n\nOK- '+swap.capitalize( )+' these two pieces | Cancel- Move this new piece')) {
 					// reset
 					stage_1 = false;
 					from_index = -1;
@@ -697,5 +697,9 @@ function ajax_refresh( ) {
 	++refresh_timeout;
 
 	refresh_timer = setTimeout('ajax_refresh( )', refresh_timeout);
+}
+
+String.prototype.capitalize = function( ) {
+    return this.charAt(0).toUpperCase( ) + this.slice(1);
 }
 

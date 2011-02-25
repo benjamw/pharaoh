@@ -1,3 +1,7 @@
+
+
+- switch to new jQuery UI dialog for confirmation boxes in game for better button text
+
 - separate out the setups page and the stats page, have game/setup stats on stats page
 	and a list of setups with modals on setups page, and have a link to create new setup
 	as well as the action links for the setups
