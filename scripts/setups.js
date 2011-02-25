@@ -144,32 +144,44 @@ $(document).ready( function($) {
 
 		do_clear_laser( );
 
+		if ('' == $('#name').val( )) {
+			alert('You must enter a Setup Name');
+			event.preventDefault( );
+			return false;
+		}
+
 		if (debug) {
 			window.location = 'ajax_helper.php'+debug_query+'&'+$('#setup_form').serialize( )+'&test_setup=1';
 			event.preventDefault( );
 			return false;
 		}
 
+		var valid = false;
+
 		$.ajax({
 			type: 'POST',
 			url: 'ajax_helper.php',
+			async: false, // wait to continue script until this completes
 			data: $('#setup_form').serialize( )+'&test_setup=1',
 			success: function(msg) {
 				var reply = JSON.parse(msg);
-				response = reply;
 
 				if (reply.error) {
 					alert(reply.error);
 					event.preventDefault( );
-					return false;
+					valid = false;
 				}
 				else {
 					// run our actual form submit here
 					// because everything looks good
-					return true;
+					valid = true;
 				}
 			}
 		});
+
+		if (valid) {
+			return true;
+		}
 
 		event.preventDefault( );
 		return false;
