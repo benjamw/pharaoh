@@ -500,7 +500,9 @@ class Pharaoh {
 					}
 					else {
 						// check if we hit the laser
-						if ((-10 == $split_current) || (89 == $split_current)) {
+						$hit_red = (-10 == $split_current) && ('silver' == $color);
+						$hit_silver = (89 == $split_current) && ('red' == $color);
+						if ($hit_red || $hit_silver) {
 							$laser_hit = true;
 						}
 
@@ -545,7 +547,9 @@ class Pharaoh {
 				}
 
 				// check if we hit the laser
-				if ((-10 == $current) || (89 == $current)) {
+				$hit_red = (-10 == $current) && ('silver' == $color);
+				$hit_silver = (89 == $current) && ('red' == $color);
+				if ($hit_red || $hit_silver) {
 					$laser_hit = true;
 				}
 

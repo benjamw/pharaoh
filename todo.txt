@@ -1,5 +1,3 @@
-
-
 - switch to new jQuery UI dialog for confirmation boxes in game for better button text
 
 - separate out the setups page and the stats page, have game/setup stats on stats page
@@ -19,6 +17,8 @@
 
 - add a different method for removing the click on the piece, because clicking the piece again
 	doesn't work for rotatable pieces
+	- maybe run check and if two clicks happen really fast together (< 250ms) pop-up
+		a dialogue box asking if they meant to do that
 
 - don't show success messages if email is not sent
 	for things like nudge, that are only emails
