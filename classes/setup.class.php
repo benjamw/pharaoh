@@ -317,10 +317,10 @@ class Setup {
 	/** public function validate
 	 *		Validates the current setup
 	 *
-	 * @param void
+	 * @param string [optional] reflection type (Origin, Long, Short)
 	 * @return bool if the setup is valid
 	 */
-	public function validate( )
+	public function validate($reflection = 'Origin')
 	{
 		call(__METHOD__);
 		call($this->board);
@@ -329,7 +329,7 @@ class Setup {
 
 		try {
 			// will run is_valid_setup as well
-			self::is_valid_reflection($this->board);
+			self::is_valid_reflection($this->board, $reflection);
 		}
 		catch (MyExecption $e) {
 			throw $e;
@@ -370,18 +370,18 @@ class Setup {
 	/** protected function _save
 	 *		Saves the setup data to the database
 	 *
-	 * @param void
+	 * @param string [optional] reflection type (Origin, Long, Short)
 	 * @action saves the setup data
 	 * @return void
 	 */
-	protected function _save( )
+	protected function _save($reflection = 'Origin')
 	{
 		call(__METHOD__);
 
 		$Mysql = Mysql::get_instance( );
 
 		try {
-			$this->validate( );
+			$this->validate($reflection);
 		}
 		catch (MyException $e) {
 			throw $e;
@@ -486,7 +486,7 @@ class Setup {
 			throw $e;
 		}
 
-		return $this->_save( );
+		return $this->_save($_POST['reflection']);
 	}
 
 
