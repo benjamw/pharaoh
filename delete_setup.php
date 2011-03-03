@@ -8,7 +8,7 @@ if (isset($_POST['id'])) {
 	// make sure this user can edit / delete this setup
 	$Setup = new Setup((int) $_POST['id']);
 
-	if ( ! $Setup->creator || (($_SESSION['player_id'] !== $Setup->creator) && ! $GLOBALS['Player']->is_admin)) {
+	if ( ! $Setup->creator || (((string) $_SESSION['player_id'] !== (string) $Setup->creator) && ! $GLOBALS['Player']->is_admin)) {
 		Flash::store('You are not allowed to perform this action', 'stats.php');
 	}
 
@@ -19,7 +19,7 @@ elseif (isset($_GET['id'])) {
 	// make sure this user can edit / delete this setup
 	$Setup = new Setup((int) $_GET['id']);
 
-	if ( ! $Setup->creator || (($_SESSION['player_id'] !== $Setup->creator) && ! $GLOBALS['Player']->is_admin)) {
+	if ( ! $Setup->creator || (((string) $_SESSION['player_id'] !== (string) $Setup->creator) && ! $GLOBALS['Player']->is_admin)) {
 		Flash::store('You are not allowed to perform this action', 'stats.php');
 	}
 
