@@ -96,7 +96,7 @@ function ajax_refresh( ) {
 			if (('' != msg) && (msg != turn_msg_count)) {
 				// we don't want to play sounds when they hit the page manually
 				// so set a hash on the URL that we can test when we embed the sounds
-				// we don't care what the hash is, just refresh is there is a hash
+				// we don't care what the hash is, just refresh if there is a hash
 				// (the user may have silenced the sounds with #silent)
 				if ('' != window.location.hash) {
 					if (reload) { window.location.reload( ); }
