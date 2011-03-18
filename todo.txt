@@ -1,4 +1,4 @@
-- switch to new jQuery UI dialog for confirmation boxes in game for better button text
+- revert back to ajaxing the form to prevent double posting, and page refresh after moving issues
 
 - separate out the setups page and the stats page, have game/setup stats on stats page
 	and a list of setups with modals on setups page, and have a link to create new setup
