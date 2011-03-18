@@ -78,8 +78,8 @@ $(document).ready( function($) {
 		$this.val('');
 	});
 
-	// make the board clicks work
-	$('#the_board div').live('click', function( ) {
+	// make the setup create/edit clicks work
+	$('#the_board div:not(.header)').live('click', function( ) {
 		var $this = $(this);
 		var id = $this.attr('id').slice(4);
 		var reflection = $('#reflection').val( );
