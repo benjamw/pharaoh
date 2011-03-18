@@ -131,7 +131,6 @@ $(document).ready( function($) {
 	// initialize a blank board
 	if (false === board) {
 		board = setups[0];
-		board_changed = true;
 	}
 	$('#setup_display').find('#the_board').remove( ).end( ).prepend(create_board(board));
 
