@@ -1,3 +1,5 @@
+- add ability to request undo
+
 - revert back to ajaxing the form to prevent double posting, and page refresh after moving issues
 
 - separate out the setups page and the stats page, have game/setup stats on stats page

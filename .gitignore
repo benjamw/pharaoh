@@ -1,7 +1,13 @@
+/config
 /testpages
-/includes/config.php
-/logs/*
-!/logs/.htaccess
-/games/*
+
+*.err
 .sass-cache
 
+/games/*
+/logs/*
+
+/includes/config.php
+/scripts/ba-debug.js
+
+!/logs/.htaccess
