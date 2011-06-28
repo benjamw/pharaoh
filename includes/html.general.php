@@ -128,12 +128,12 @@ function get_header($meta = null) {
 	</script>
 
 	<script type="text/javascript" src="scripts/json.js"></script>
-	<script type="text/javascript" src="scripts/jquery-1.5.0.min.js"></script>
+	<script type="text/javascript" src="scripts/jquery-1.6.1.min.js"></script>
 	<script type="text/javascript" src="scripts/jquery.tablesorter.js"></script>
 
 	<!-- fancybox -->
-	<link rel="stylesheet" type="text/css" media="screen" href="scripts/jquery.fancybox/jquery.fancybox-1.3.3.css" />
-	<script type="text/javascript" src="scripts/jquery.fancybox/jquery.fancybox-1.3.3.pack.js"></script>
+	<link rel="stylesheet" type="text/css" media="screen" href="scripts/jquery.fancybox/jquery.fancybox-1.3.4.css" />
+	<script type="text/javascript" src="scripts/jquery.fancybox/jquery.fancybox-1.3.4.pack.js"></script>
 	<script type="text/javascript">
 		$(document).ready( function( ) {
 			$('a.help').fancybox({
