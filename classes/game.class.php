@@ -70,6 +70,7 @@ class Game
 			'battle_dead' => false,
 			'battle_immune' => false,
 			'draw_offered' => false,
+			'undo_requested' => false,
 			'custom_rules' => '',
 		);
 
@@ -891,6 +892,138 @@ class Game
 		}
 
 		$this->_extra_info['draw_offered'] = false;
+	}
+
+
+	/** public function request_undo
+	 *		Requests an undo from the given player's apponent
+	 *
+	 * @param int player id
+	 * @return void
+	 */
+	public function request_undo($player_id)
+	{
+		call(__METHOD__);
+
+		if ($this->paused) {
+			throw new MyException(__METHOD__.': Trying to perform an action on a paused game');
+		}
+
+		$player_id = (int) $player_id;
+
+		if (empty($player_id)) {
+			throw new MyException(__METHOD__.': Missing required argument');
+		}
+
+		if ( ! $this->is_player($player_id)) {
+			throw new MyException(__METHOD__.': Player (#'.$player_id.') trying to request undo in a game (#'.$this->id.') they are not playing in');
+		}
+
+		if ($this->_players['player']['player_id'] != $player_id) {
+			throw new MyException(__METHOD__.': Player (#'.$player_id.') trying to request undo from an opponent in game (#'.$this->id.')');
+		}
+
+		$this->_extra_info['undo_requested'] = $player_id;
+
+		Email::send('undo_requested', $this->_players['opponent']['player_id'], array('player' => $this->_players['player']['object']->username));
+	}
+
+
+	/** public function undo_requested
+	 *		Returns the state of the game undo for the given player
+	 *		or in general if no player given
+	 *
+	 * @param int [optional] player id
+	 * @return bool draw state
+	 */
+	public function undo_requested($player_id = false)
+	{
+		call(__METHOD__);
+
+		$player_id = (int) $player_id;
+
+		// if the undo was requested AND player is blank or player is not the one who offered the draw
+		if (($this->_extra_info['undo_requested']) && ( ! $player_id || ($player_id != $this->_extra_info['undo_requested']))) {
+			return true;
+		}
+
+		return false;
+	}
+
+
+	/** public function accept_undo
+	 *		Accepts an undo requested to the given player
+	 *
+	 * @param int player id
+	 * @return void
+	 */
+	public function accept_undo($player_id)
+	{
+		call(__METHOD__);
+
+		if ($this->paused) {
+			throw new MyException(__METHOD__.': Trying to perform an action on a paused game');
+		}
+
+		$player_id = (int) $player_id;
+
+		if (empty($player_id)) {
+			throw new MyException(__METHOD__.': Missing required argument');
+		}
+
+		if ( ! $this->is_player($player_id)) {
+			throw new MyException(__METHOD__.': Player (#'.$player_id.') trying to accept undo in a game (#'.$this->id.') they are not playing in');
+		}
+
+		if (($this->_players['player']['player_id'] != $player_id) || ($this->_extra_info['draw_offered'] == $player_id)) {
+			throw new MyException(__METHOD__.': Player (#'.$player_id.') trying to accept undo for an opponent in game (#'.$this->id.')');
+		}
+
+		// we need to adjust the database here
+		// it's not really possible via the _save function
+		$this->_mysql->delete(self::GAME_HISTORY_TABLE, "
+			WHERE `game_id` = '{$this->id}'
+			ORDER BY `move_date` DESC
+			LIMIT 1
+		");
+
+		// and fix up the game data
+		$this->_pull( );
+		$this->_extra_info['undo_requested'] = false;
+
+		Email::send('undo_accepted', $this->_players['opponent']['player_id'], array('name' => $this->_players['player']['object']->username));
+	}
+
+
+	/** public function reject_undo
+	 *		Rejects an undo requested to the given player
+	 *
+	 * @param int player id
+	 * @return void
+	 */
+	public function reject_undo($player_id)
+	{
+		call(__METHOD__);
+
+		if ($this->paused) {
+			throw new MyException(__METHOD__.': Trying to perform an action on a paused game');
+		}
+
+		$player_id = (int) $player_id;
+
+		if (empty($player_id)) {
+			throw new MyException(__METHOD__.': Missing required argument');
+		}
+
+		if ( ! $this->is_player($player_id)) {
+			throw new MyException(__METHOD__.': Player (#'.$player_id.') trying to reject undo in a game (#'.$this->id.') they are not playing in');
+		}
+
+		if (($this->_players['player']['player_id'] != $player_id) || ($this->_extra_info['draw_offered'] == $player_id)) {
+			throw new MyException(__METHOD__.': Player (#'.$player_id.') trying to reject undo for an opponent in game (#'.$this->id.')');
+		}
+
+		$this->_extra_info['undo_requested'] = false;
 	}
 
 

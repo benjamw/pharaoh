@@ -55,6 +55,25 @@ Log on and view the game to make your decision.'),
 
 
 
+	'undo_requested' => array(
+		'subject' => 'Undo Requested',
+		'message' => '
+[[[sender]]] has requested an undo in the [[[GAME_NAME]]] game you are playing at [[[site_name]]].
+
+Log on and view the game to make your decision.'),
+
+
+
+	'undo_accepted' => array(
+		'subject' => 'Undo Accepted',
+		'message' => '
+[[[sender]]] has accepted your undo request in the [[[GAME_NAME]]] game you are playing at [[[site_name]]].
+It is now your turn again.
+
+Please log in and take your turn. Good Luck!'),
+
+
+
 	'draw' => array(
 		'subject' => 'Draw',
 		'message' => '

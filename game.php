@@ -110,6 +110,9 @@ $turn = $Game->get_turn( );
 if ($Game->draw_offered( )) {
 	$turn = '<span>Draw Offered</span>';
 }
+elseif ($Game->undo_requested( )) {
+	$turn = '<span>Undo Requested</span>';
+}
 elseif ($GLOBALS['Player']->username == $turn) {
 	$turn = '<span class="'.$Game->get_color( ).'">Your turn</span>';
 }
@@ -135,6 +138,7 @@ $meta['head_data'] = '
 	<script type="text/javascript" src="scripts/board.js"></script>
 	<script type="text/javascript">/*<![CDATA[*/
 		var draw_offered = '.json_encode($Game->draw_offered($_SESSION['player_id'])).';
+		var undo_requested = '.json_encode($Game->undo_requested($_SESSION['player_id'])).';
 		var color = "'.(isset($players[$_SESSION['player_id']]) ? (('white' == $players[$_SESSION['player_id']]['color']) ? 'silver' : 'red') : '').'";
 		var state = "'.(( ! $Game->watch_mode) ? (( ! $Game->paused) ? strtolower($Game->state) : 'paused') : 'watching').'";
 		var invert = '.(( ! empty($players[$_SESSION['player_id']]['color']) && ('black' == $players[$_SESSION['player_id']]['color'])) ? 'true' : 'false').';
@@ -218,6 +222,17 @@ echo get_header($meta);
 
 						<input type="button" name="accept_draw" id="accept_draw" value="Accept Draw Offer" />
 						<input type="button" name="reject_draw" id="reject_draw" value="Reject Draw Offer" />
+
+					<?php } ?>
+
+					<?php if ( ! $Game->undo_requested( ) && ! $Game->is_turn( )) { ?>
+
+						<input type="button" name="request_undo" id="request_undo" value="Request Undo" />
+
+					<?php } elseif ($Game->undo_requested($_SESSION['player_id'])) { ?>
+
+						<input type="button" name="accept_undo" id="accept_undo" value="Accept Undo Request" />
+						<input type="button" name="reject_undo" id="reject_undo" value="Reject Undo Request" />
 
 					<?php } ?>
 

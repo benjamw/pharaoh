@@ -83,6 +83,39 @@ if (isset($_POST['reject_draw'])) {
 }
 
 
+// run the 'Request Undo' button
+if (isset($_POST['request_undo'])) {
+	try {
+		$Game->request_undo($_SESSION['player_id']);
+	}
+	catch (MyException $e) {
+		throw $e;
+	}
+}
+
+
+// run the 'Accept Undo' button
+if (isset($_POST['accept_undo'])) {
+	try {
+		$Game->accept_undo($_SESSION['player_id']);
+	}
+	catch (MyException $e) {
+		throw $e;
+	}
+}
+
+
+// run the 'Reject Undo' button
+if (isset($_POST['reject_undo'])) {
+	try {
+		$Game->reject_undo($_SESSION['player_id']);
+	}
+	catch (MyException $e) {
+		throw $e;
+	}
+}
+
+
 // run the game actions
 if (isset($_POST['turn'])) {
 	try {

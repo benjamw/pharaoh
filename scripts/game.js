@@ -343,7 +343,7 @@ function update_history( ) {
 function enable_moves( ) {
 	move_index = parseInt(move_index) || (move_count - 1);
 
-	if ( ! my_turn || draw_offered || ('finished' == state) || ('draw' == state) || ((move_count - 1) != move_index)) {
+	if ( ! my_turn || draw_offered || undo_requested || ('finished' == state) || ('draw' == state) || ((move_count - 1) != move_index)) {
 		return;
 	}
 
@@ -700,6 +700,6 @@ function ajax_refresh( ) {
 }
 
 String.prototype.capitalize = function( ) {
-    return this.charAt(0).toUpperCase( ) + this.slice(1);
+	return this.charAt(0).toUpperCase( ) + this.slice(1);
 }
 
