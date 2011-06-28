@@ -1075,6 +1075,37 @@ class MySQLException
 		return $message;
 	}
 
+
+	/** protected function _write_error
+	 *		writes the exception to the log file
+	 *
+	 * @param void
+	 * @action writes the exception to the log
+	 * @return void
+	 */
+	protected function _write_error( )
+	{
+		// first, lets make sure we can actually open and write to directory
+		// specified by the global variable... and lets also do daily logs for now
+		$log_name = 'mysql_exception_'.date('Ymd', time( )).'.log';
+
+		// okay, write our log message
+		$str = date('Y/m/d H:i:s')." == ({$this->code}) {$this->message} : {$this->file} @ {$this->line}\n";
+
+		if ($this->_backtrace) {
+			$str .= "---------- [ BACKTRACE ] ----------\n";
+			$str .= $this->getTraceAsString( )."\n";
+			$str .= "-------- [ END BACKTRACE ] --------\n\n";
+		}
+
+		if ($fp = @fopen(LOG_DIR.$log_name, 'a')) {
+			fwrite($fp, $str);
+			fclose($fp);
+		}
+
+		call($str, $bypass = false, $show_from = true, $new_window = false, $error = true);
+	}
+
 } // end of MySQLException class
 
 
