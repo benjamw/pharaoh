@@ -2,6 +2,7 @@
 /testpages
 
 *.err
+*.epp
 .sass-cache
 
 /games/*

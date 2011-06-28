@@ -131,8 +131,8 @@ if (isset($_POST['test_fire'])) {
 if (isset($_POST['invite'])) {
 	if ('delete' == $_POST['invite']) {
 		// make sure we are one of the two people in the invite
-		if (Game::has_invite($_POST['invite_id'], $_SESSION['player_id'])) {
-			Game::delete_invite($_POST['invite_id']);
+		if (Game::has_invite($_POST['game_id'], $_SESSION['player_id'])) {
+			Game::delete_invite($_POST['game_id']);
 			echo 'Invite Deleted';
 		}
 		else {
@@ -141,8 +141,8 @@ if (isset($_POST['invite'])) {
 	}
 	else if ('resend' == $_POST['invite']) {
 		// make sure we are one of the two people in the invite
-		if (Game::has_invite($_POST['invite_id'], $_SESSION['player_id'])) {
-			if (Game::resend_invite($_POST['invite_id'])) {
+		if (Game::has_invite($_POST['game_id'], $_SESSION['player_id'])) {
+			if (Game::resend_invite($_POST['game_id'])) {
 				echo 'Invite Resent';
 			}
 			else {
@@ -155,8 +155,8 @@ if (isset($_POST['invite'])) {
 	}
 	else {
 		// make sure we are one of the two people in the invite
-		if (Game::has_invite($_POST['invite_id'], $_SESSION['player_id'], $accept = true)) {
-			if ($game_id = Game::accept_invite($_POST['invite_id'])) { // single equals intended
+		if (Game::has_invite($_POST['game_id'], $_SESSION['player_id'], $accept = true)) {
+			if ($game_id = Game::accept_invite($_POST['game_id'])) { // single equals intended
 				echo $game_id;
 			}
 			else {

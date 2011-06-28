@@ -459,7 +459,7 @@ return false;
 			WHERE ((G.white_id = '{$this->id}'
 						OR G.black_id = '{$this->id}')
 					AND GH.board IS NOT NULL)
-				AND G.state NOT IN ('Finished', 'Draw')
+				AND G.state = 'Playing'
 		";
 		$this->current_games = $this->_mysql->fetch_value($query);
 	}
@@ -544,13 +544,14 @@ return false;
 		// TODO: set a setting for this
 		if (true || $invites_count_toward_max_games) {
 			$query = "
-				SELECT COUNT(I.invite_id) AS invite_count
+				SELECT COUNT(G.game_id) AS invite_count
 					, PE.player_id
-				FROM ".Game::INVITE_TABLE." AS I
+				FROM ".Game::GAME_TABLE." AS G
 					LEFT JOIN ".self::EXTEND_TABLE." AS PE
-						ON (PE.player_id = I.invitor_id
-							OR PE.player_id = I.invitee_id)
-				WHERE PE.max_games > 0
+						ON (PE.player_id = G.white_id
+							OR PE.player_id = G.black_id)
+				WHERE G.state = 'Waiting'
+					AND PE.max_games > 0
 				GROUP BY PE.player_id
 			";
 			$maxed_invites = $Mysql->fetch_array($query);
@@ -568,7 +569,7 @@ return false;
 				LEFT JOIN ".self::EXTEND_TABLE." AS PE
 					ON (PE.player_id = G.white_id
 						OR PE.player_id = G.black_id)
-			WHERE G.state NOT IN ('Finished', 'Draw')
+			WHERE G.state = 'Playing'
 				AND PE.max_games > 0
 			GROUP BY PE.player_id
 		";
@@ -625,6 +626,7 @@ return false;
 		$query = "
 			SELECT DISTINCT white_id
 			FROM ".Game::GAME_TABLE."
+			WHERE state = 'Playing'
 		";
 		$results = $Mysql->fetch_value_array($query);
 		$exception_ids = array_merge($exception_ids, $results);
@@ -632,6 +634,7 @@ return false;
 		$query = "
 			SELECT DISTINCT black_id
 			FROM ".Game::GAME_TABLE."
+			WHERE state = 'Playing'
 		";
 		$results = $Mysql->fetch_value_array($query);
 		$exception_ids = array_merge($exception_ids, $results);

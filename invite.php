@@ -4,7 +4,7 @@ require_once 'includes/inc.global.php';
 
 // this has nothing to do with creating a game
 // but I'm running it here to prevent long load
-// times on other pages where it would be ran more often
+// times on other pages where it would be run more often
 GamePlayer::delete_inactive(Settings::read('expire_users'));
 Game::delete_inactive(Settings::read('expire_games'));
 Game::delete_finished(Settings::read('expire_finished_games'));
@@ -129,6 +129,7 @@ $contents = <<< EOF
 
 			<div><label for="opponent">Opponent</label><select id="opponent" name="opponent">{$opponent_selection}</select></div>
 			<div><label for="setup">Setup</label><select id="setup" name="setup">{$setup_selection}</select> <a href="#setup_display" id="show_setup">Show Setup</a></div>
+			<div><label for="color">Your Color</label><select id="color" name="color"><option value="random">Random</option><option value="white">Silver</option><option value="black">Red</option></select></div>
 
 			<fieldset>
 				<legend><label class="inline"><input type="checkbox" name="laser_battle_box" id="laser_battle_box" class="fieldset_box" /> Laser Battle</label></legend>
@@ -172,8 +173,9 @@ $table_meta = array(
 $table_format = array(
 	array('Invitor', 'invitor') ,
 	array('Setup', 'setup') ,
-	array('Date Sent', '###date(Settings::read(\'long_date\'), strtotime(\'[[[invite_date]]]\'))', null, ' class="date"') ,
-	array('Action', '<input type="button" id="accept-[[[invite_id]]]" value="Accept" /><input type="button" id="decline-[[[invite_id]]]" value="Decline" />', false) ,
+	array('Color', 'color') ,
+	array('Date Sent', '###date(Settings::read(\'long_date\'), strtotime(\'[[[create_date]]]\'))', null, ' class="date"') ,
+	array('Action', '<input type="button" id="accept-[[[game_id]]]" value="Accept" /><input type="button" id="decline-[[[game_id]]]" value="Decline" />', false) ,
 );
 $contents .= get_table($table_format, $in_vites, $table_meta);
 
@@ -185,8 +187,9 @@ $table_meta = array(
 $table_format = array(
 	array('Invitee', '###ife(\'[[[invitee]]]\', \'-- OPEN --\')') ,
 	array('Setup', 'setup') ,
-	array('Date Sent', '###date(Settings::read(\'long_date\'), strtotime(\'[[[invite_date]]]\'))', null, ' class="date"') ,
-	array('Action', '###\'<input type="button" id="withdraw-[[[invite_id]]]" value="Withdraw" />\'.((strtotime(\'[[[invite_date]]]\') >= strtotime(\'[[[resend_limit]]]\')) ? \'\' : \'<input type="button" id="resend-[[[invite_id]]]" value="Resend" />\')', false) ,
+	array('Color', 'color') ,
+	array('Date Sent', '###date(Settings::read(\'long_date\'), strtotime(\'[[[create_date]]]\'))', null, ' class="date"') ,
+	array('Action', '###\'<input type="button" id="withdraw-[[[game_id]]]" value="Withdraw" />\'.((strtotime(\'[[[create_date]]]\') >= strtotime(\'[[[resend_limit]]]\')) ? \'\' : \'<input type="button" id="resend-[[[game_id]]]" value="Resend" />\')', false) ,
 );
 $contents .= get_table($table_format, $out_vites, $table_meta);
 
@@ -198,8 +201,9 @@ $table_meta = array(
 $table_format = array(
 	array('Invitor', 'invitor') ,
 	array('Setup', 'setup') ,
-	array('Date Sent', '###date(Settings::read(\'long_date\'), strtotime(\'[[[invite_date]]]\'))', null, ' class="date"') ,
-	array('Action', '<input type="button" id="accept-[[[invite_id]]]" value="Accept" />', false) ,
+	array('Color', 'color') ,
+	array('Date Sent', '###date(Settings::read(\'long_date\'), strtotime(\'[[[create_date]]]\'))', null, ' class="date"') ,
+	array('Action', '<input type="button" id="accept-[[[game_id]]]" value="Accept" />', false) ,
 );
 $contents .= get_table($table_format, $open_vites, $table_meta);
 

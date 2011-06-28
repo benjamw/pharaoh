@@ -32,7 +32,6 @@
 	define('T_GAME'         , $master_prefix . $game_prefix . 'game'); // the game data table
 	define('T_GAME_HISTORY' , $master_prefix . $game_prefix . 'game_history'); // the game move history table
 	define('T_GAME_NUDGE'   , $master_prefix . $game_prefix . 'game_nudge'); // the game nudge table
-	define('T_INVITE'       , $master_prefix . $game_prefix . 'invite'); // the invite table
 	define('T_MESSAGE'      , $master_prefix . $game_prefix . 'message'); // the message table
 	define('T_MSG_GLUE'     , $master_prefix . $game_prefix . 'message_glue'); // the player messaging glue table
 	define('T_SETTINGS'     , $master_prefix . $game_prefix . 'settings'); // the settings table

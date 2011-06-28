@@ -62,14 +62,14 @@ $(document).ready( function( ) {
 		if ('accept' == id[0]) { // invites and openvites
 			// accept the invite
 			if (debug) {
-				window.location = 'ajax_helper.php'+debug_query+'&'+'invite=accept&invite_id='+id[1];
+				window.location = 'ajax_helper.php'+debug_query+'&'+'invite=accept&game_id='+id[1];
 				return;
 			}
 
 			$.ajax({
 				type: 'POST',
 				url: 'ajax_helper.php',
-				data: 'invite=accept&invite_id='+id[1],
+				data: 'invite=accept&game_id='+id[1],
 				success: function(msg) {
 					window.location = 'game.php?id='+msg+debug_query_;
 					return;
@@ -79,14 +79,14 @@ $(document).ready( function( ) {
 		else if ('resend' == id[0]) { // resends outvites
 			// resend the invite
 			if (debug) {
-				window.location = 'ajax_helper.php'+debug_query+'&'+'invite=resend&invite_id='+id[1];
+				window.location = 'ajax_helper.php'+debug_query+'&'+'invite=resend&game_id='+id[1];
 				return;
 			}
 
 			$.ajax({
 				type: 'POST',
 				url: 'ajax_helper.php',
-				data: 'invite=resend&invite_id='+id[1],
+				data: 'invite=resend&game_id='+id[1],
 				success: function(msg) {
 					alert(msg);
 					if (reload) { window.location.reload( ); }
@@ -97,14 +97,14 @@ $(document).ready( function( ) {
 		else { // invites decline and outvites withdraw
 			// delete the invite
 			if (debug) {
-				window.location = 'ajax_helper.php'+debug_query+'&'+'invite=delete&invite_id='+id[1];
+				window.location = 'ajax_helper.php'+debug_query+'&'+'invite=delete&game_id='+id[1];
 				return;
 			}
 
 			$.ajax({
 				type: 'POST',
 				url: 'ajax_helper.php',
-				data: 'invite=delete&invite_id='+id[1],
+				data: 'invite=delete&game_id='+id[1],
 				success: function(msg) {
 					alert(msg);
 					if (reload) { window.location.reload( ); }

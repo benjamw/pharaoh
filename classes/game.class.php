@@ -60,20 +60,13 @@ class Game
 	const GAME_NUDGE_TABLE = T_GAME_NUDGE;
 
 
-	/** const property INVITE_TABLE
-	 *		Holds the invite table name
-	 *
-	 * @var string
-	 */
-	const INVITE_TABLE = T_INVITE;
-
-
 	/** static protected property _EXTRA_INFO_DEFAULTS
 	 *		Holds the default extra info data
 	 *
 	 * @var array
 	 */
 	static protected $_EXTRA_INFO_DEFAULTS = array(
+			'white_color' => 'random',
 			'battle_dead' => false,
 			'battle_immune' => false,
 			'draw_offered' => false,
@@ -104,7 +97,7 @@ class Game
 
 	/** public property state
 	 *		Holds the game's current state
-	 *		can be one of 'Playing', 'Finished', 'Draw'
+	 *		can be one of 'Waiting', 'Playing', 'Finished', 'Draw'
 	 *
 	 * @var string (enum)
 	 */
@@ -373,7 +366,7 @@ class Game
 	 *
 	 * @param void
 	 * @action creates an invite
-	 * @return int invite id
+	 * @return int game id
 	 */
 	static public function invite( )
 	{
@@ -387,14 +380,15 @@ class Game
 		$_P = $_POST;
 
 		// translate (filter/sanitize) the data
-		$_P['invitor_id'] = (int) $_SESSION['player_id'];
-		$_P['invitee_id'] = (int) $_P['opponent'];
+		$_P['white_id'] = (int) $_SESSION['player_id'];
+		$_P['black_id'] = (int) $_P['opponent'];
 		$_P['setup_id'] = (int) $_P['setup'];
 		$_P['laser_battle'] = (isset($_P['laser_battle']) && ('yes' == $_P['laser_battle']));
 
 		call($_P);
 
 		$extra_info = array( );
+		$extra_info['white_color'] = $_P['color'];
 
 		// laser battle cleanup
 		// only run this if the laser battle box was open
@@ -446,12 +440,12 @@ class Game
 
 		// create the game
 		$required = array(
-			'invitor_id' ,
+			'white_id' ,
 			'setup_id' ,
 		);
 
 		$key_list = array_merge($required, array(
-			'invitee_id' ,
+			'black_id' ,
 			'extra_info' ,
 		));
 
@@ -462,17 +456,19 @@ class Game
 			throw $e;
 		}
 
-		$_DATA['invite_date '] = 'NOW( )'; // note the trailing space in the field name, this is not a typo
+		$_DATA['state'] = 'Waiting';
+		$_DATA['create_date '] = 'NOW( )'; // note the trailing space in the field name, this is not a typo
+		$_DATA['modify_date '] = 'NOW( )'; // note the trailing space in the field name, this is not a typo
 
-		$insert_id = $Mysql->insert(self::INVITE_TABLE, $_DATA);
+		$insert_id = $Mysql->insert(self::GAME_TABLE, $_DATA);
 
 		if (empty($insert_id)) {
 			throw new MyException(__METHOD__.': Invite could not be created');
 		}
 
 		// send the email
-		if ($_DATA['invitee_id']) {
-			Email::send('invite', $_DATA['invitee_id'], array('name' => $GLOBALS['_PLAYERS'][$_DATA['invitor_id']]));
+		if ($_DATA['black_id']) {
+			Email::send('invite', $_DATA['black_id'], array('name' => $GLOBALS['_PLAYERS'][$_DATA['white_id']]));
 		}
 
 		return $insert_id;
@@ -482,54 +478,53 @@ class Game
 	/** static public function resend_invite
 	 *		Resends the invite email (if allowed)
 	 *
-	 * @param void
+	 * @param int game id
 	 * @action resends an invite email
 	 * @return bool invite email sent
 	 */
-	static public function resend_invite( )
+	static public function resend_invite($game_id)
 	{
 		call(__METHOD__);
-		call($_POST);
+
+		$game_id = (int) $game_id;
+		$white_id = (int) $_SESSION['player_id'];
 
 		$Mysql = Mysql::get_instance( );
-
-		// translate (filter/sanitize) the data
-		$invitor_id = (int) $_SESSION['player_id'];
-		$invite_id = (int) $_POST['invite_id'];
 
 		// grab the invite from the database
 		$query = "
 			SELECT *
 				, DATE_ADD(NOW( ), INTERVAL -1 DAY) AS resend_limit
-			FROM ".self::INVITE_TABLE."
-			WHERE invite_id = '{$invite_id}'
+			FROM ".self::GAME_TABLE."
+			WHERE game_id = '{$game_id}'
+				AND state = 'Waiting'
 		";
 		$invite = $Mysql->fetch_assoc($query);
 
 		if ( ! $invite) {
-			throw new MyException(__METHOD__.': Player (#'.$invitor_id.') trying to resend a non-existant invite (#'.$invite_id.')');
+			throw new MyException(__METHOD__.': Player (#'.$white_id.') trying to resend a non-existant invite (#'.$game_id.')');
 		}
 
-		if ((int) $invite['invitor_id'] !== (int) $invitor_id) {
-			throw new MyException(__METHOD__.': Player (#'.$invitor_id.') trying to resend an invite (#'.$invite_id.') that is not theirs');
+		if ((int) $invite['white_id'] !== (int) $white_id) {
+			throw new MyException(__METHOD__.': Player (#'.$white_id.') trying to resend an invite (#'.$game_id.') that is not theirs');
 		}
 
-		if ( ! (int) $invite['invitee_id']) {
-			throw new MyException(__METHOD__.': Player (#'.$invitor_id.') trying to resend an invite (#'.$invite_id.') that is open');
+		if ( ! (int) $invite['black_id']) {
+			throw new MyException(__METHOD__.': Player (#'.$white_id.') trying to resend an invite (#'.$game_id.') that is open');
 		}
 
-		if (strtotime($invite['invite_date']) >= strtotime($invite['resend_limit'])) {
-			throw new MyException(__METHOD__.': Player (#'.$invitor_id.') trying to resend an invite (#'.$invite_id.') that is too new');
+		if (strtotime($invite['modify_date']) >= strtotime($invite['resend_limit'])) {
+			throw new MyException(__METHOD__.': Player (#'.$white_id.') trying to resend an invite (#'.$game_id.') that is too new');
 		}
 
 		// if we get here, all is good...
 
-		$sent = Email::send('invite', $invite['invitee_id'], array('name' => $GLOBALS['_PLAYERS'][$invite['invitor_id']]));
+		$sent = Email::send('invite', $invite['black_id'], array('name' => $GLOBALS['_PLAYERS'][$invite['white_id']]));
 
 		if ($sent) {
-			// update the invite_date to prevent invite resend flooding
-			$_DATA['invite_date '] = 'NOW( )'; // note the trailing space in the field name, this is not a typo
-			$Mysql->insert(self::INVITE_TABLE, $_DATA, " WHERE invite_id = '{$invite_id}' ");
+			// update the modify_date to prevent invite resend flooding
+			$_DATA['modify_date '] = 'NOW( )'; // note the trailing space in the field name, this is not a typo
+			$Mysql->insert(self::GAME_TABLE, $_DATA, " WHERE game_id = '{$game_id}' AND state = 'Waiting' ");
 		}
 
 		return $sent;
@@ -539,55 +534,62 @@ class Game
 	/** static public function accept_invite
 	 *		Creates the game from invite data
 	 *
-	 * @param int invite id
+	 * @param int game id
 	 * @action creates a game
 	 * @return int game id
 	 */
-	static public function accept_invite($invite_id)
+	static public function accept_invite($game_id)
 	{
 		call(__METHOD__);
 
-		$invite_id = (int) $invite_id;
+		$game_id = (int) $game_id;
 
 		$Mysql = Mysql::get_instance( );
 
-		// basically all we do, is copy the invite to the game table
-		// and randomly set the player order
+		// basically all we do, is set the state to Playing
+		// and set the player order based on the invite data
 		$query = "
 			SELECT *
-			FROM ".self::INVITE_TABLE."
-			WHERE invite_id = '{$invite_id}'
+			FROM ".self::GAME_TABLE."
+			WHERE game_id = '{$game_id}'
+				AND state = 'Waiting'
 		";
-		$invite = $Mysql->fetch_assoc($query);
+		$game = $Mysql->fetch_assoc($query);
 
-		$game = array(
-			'extra_info' => $invite['extra_info'],
-			'setup_id' => $invite['setup_id'],
-			'create_date ' => 'NOW( )',  // note the trailing space in the field name, this is not a typo
-			'modify_date ' => 'NOW( )',  // note the trailing space in the field name, this is not a typo
-		);
+		$invitor_id = $game['white_id']; // for use later
+		$extra_info = array_merge_plus(self::$_EXTRA_INFO_DEFAULTS, unserialize($game['extra_info']));
 
-		if (mt_rand(0, 1)) {
-			$game['white_id'] = $_SESSION['player_id'];
-			$game['black_id'] = $invite['invitor_id'];
+		if ((('random' == $extra_info['white_color']) && mt_rand(0, 1)) || ('white' == $extra_info['white_color'])) {
+			$game['white_id'] = $game['white_id'];
+			$game['black_id'] = $_SESSION['player_id'];
 		}
 		else {
-			$game['black_id'] = $_SESSION['player_id'];
-			$game['white_id'] = $invite['invitor_id'];
+			$game['black_id'] = $game['white_id'];
+			$game['white_id'] = $_SESSION['player_id'];
 		}
 
-		$insert_id = $Mysql->insert(self::GAME_TABLE, $game);
+		call($extra_info);
+		unset($extra_info['white_color']);
 
-		if (empty($insert_id)) {
-			throw new MyException(__METHOD__.': Game could not be created');
+		$diff = array_compare($extra_info, self::$_EXTRA_INFO_DEFAULTS);
+		$extra_info = $diff[0];
+		ksort($extra_info);
+
+		call($extra_info);
+		if ( ! empty($extra_info)) {
+			$game['extra_info'] = serialize($extra_info);
 		}
+
+		$game['state'] = 'Playing';
+
+		$Mysql->insert(self::GAME_TABLE, $game, " WHERE game_id = '{$game_id}' ");
 
 		// add the first entry in the history table
 		$query = "
 			INSERT INTO ".self::GAME_HISTORY_TABLE."
 				(game_id, board)
 			VALUES
-				('{$insert_id}', (
+				('{$game_id}', (
 					SELECT board
 					FROM ".Setup::SETUP_TABLE."
 					WHERE setup_id = '{$game['setup_id']}'
@@ -598,49 +600,45 @@ class Game
 		// add a used count to the setup table
 		Setup::add_used($game['setup_id']);
 
-		// delete the invite
-		$Mysql->delete(self::INVITE_TABLE, " WHERE invite_id = '{$invite_id}' ");
-
 		// send the email
-		Email::send('start', $invite['invitor_id'], array('name' => $GLOBALS['_PLAYERS'][$_SESSION['player_id']]));
+		Email::send('start', $invitor_id, array('name' => $GLOBALS['_PLAYERS'][$_SESSION['player_id']]));
 
-		return $insert_id;
+		return $game_id;
 	}
 
 
 	/** static public function delete_invite
 	 *		Deletes the given invite
 	 *
-	 * @param int invite id
+	 * @param int game id
 	 * @action deletes the invite
 	 * @return void
 	 */
-	static public function delete_invite($invite_id)
+	static public function delete_invite($game_id)
 	{
 		call(__METHOD__);
 
-		$invite_id = (int) $invite_id;
+		$game_id = (int) $game_id;
 
 		$Mysql = Mysql::get_instance( );
 
-		$Mysql->delete(self::INVITE_TABLE, " WHERE invite_id = '{$invite_id}' ");
+		$Mysql->delete(self::GAME_TABLE, " WHERE game_id = '{$game_id}' AND state = 'Waiting' ");
 	}
 
 
 	/** static public function has_invite
 	 *		Tests if the given player has the given invite
 	 *
-	 * @param int invite id
+	 * @param int game id
 	 * @param int player id
 	 * @param bool optional player can accept invite
-	 * @action deletes the invite
-	 * @return void
+	 * @return bool player has invite
 	 */
-	static public function has_invite($invite_id, $player_id, $accept = false)
+	static public function has_invite($game_id, $player_id, $accept = false)
 	{
 		call(__METHOD__);
 
-		$invite_id = (int) $invite_id;
+		$game_id = (int) $game_id;
 		$player_id = (int) $player_id;
 		$accept = (bool) $accept;
 
@@ -648,16 +646,17 @@ class Game
 
 		$open = "";
 		if ($accept) {
-			$open = " OR invitee_id IS NULL
-				OR invitee_id = FALSE ";
+			$open = " OR black_id IS NULL
+				OR black_id = FALSE ";
 		}
 
 		$query = "
 			SELECT COUNT(*)
-			FROM ".self::INVITE_TABLE."
-			WHERE invite_id = '{$invite_id}'
-				AND (invitor_id = '{$player_id}'
-					OR invitee_id = '{$player_id}'
+			FROM ".self::GAME_TABLE."
+			WHERE game_id = '{$game_id}'
+				AND state = 'Waiting'
+				AND (white_id = '{$player_id}'
+					OR black_id = '{$player_id}'
 					{$open}
 				)
 		";
@@ -1448,6 +1447,7 @@ class Game
 					ON (GN.game_id = G.game_id
 						AND GN.player_id = '{$player_id}')
 			WHERE G.game_id = '{$this->id}'
+				AND G.state = 'Playing'
 		";
 		$dates = $this->_mysql->fetch_assoc($query);
 
@@ -1628,6 +1628,10 @@ class Game
 			throw new MyException(__METHOD__.': Game data not found for game #'.$this->id);
 		}
 
+		if ('Waiting' == $result['state']) {
+			throw new MyException(__METHOD__.': Game (#'.$this->id.') is still only an invite');
+		}
+
 		// set the properties
 		$this->state = $result['state'];
 		$this->paused = (bool) $result['paused'];
@@ -1754,6 +1758,7 @@ class Game
 				, modify_date
 			FROM ".self::GAME_TABLE."
 			WHERE game_id = '{$this->id}'
+				AND state <> 'Waiting'
 		";
 		$game = $this->_mysql->fetch_assoc($query);
 		call($game);
@@ -1920,7 +1925,7 @@ class Game
 			throw new MyException(__METHOD__.': Player ID required when not pulling all games');
 		}
 
-		$WHERE = " WHERE 1 = 1 ";
+		$WHERE = " WHERE state <> 'Waiting' ";
 		if ( ! $all) {
 			$WHERE .= "
 					AND (G.white_id = {$player_id}
@@ -2004,40 +2009,52 @@ class Game
 	 */
 	static public function get_invites($player_id)
 	{
+		call(__METHOD__);
+
 		$Mysql = Mysql::get_instance( );
 
 		$player_id = (int) $player_id;
 
 		$query = "
-			SELECT I.*
+			SELECT G.*
 				, DATE_ADD(NOW( ), INTERVAL -1 DAY) AS resend_limit
 				, R.username AS invitor
 				, E.username AS invitee
 				, S.name AS setup
-			FROM ".self::INVITE_TABLE." AS I
+			FROM ".self::GAME_TABLE." AS G
 				LEFT JOIN ".Setup::SETUP_TABLE." AS S
-					ON S.setup_id = I.setup_id
+					ON S.setup_id = G.setup_id
 				LEFT JOIN ".Player::PLAYER_TABLE." AS R
-					ON R.player_id = I.invitor_id
+					ON R.player_id = G.white_id
 				LEFT JOIN ".Player::PLAYER_TABLE." AS E
-					ON E.player_id = I.invitee_id
-			WHERE I.invitor_id = {$player_id}
-				OR I.invitee_id = {$player_id}
-				OR I.invitee_id IS NULL
-				OR I.invitee_id = FALSE
-			ORDER BY invite_date DESC
+					ON E.player_id = G.black_id
+			WHERE G.state = 'Waiting'
+				AND (G.white_id = {$player_id}
+					OR G.black_id = {$player_id}
+					OR G.black_id IS NULL
+					OR G.black_id = FALSE
+				)
+			ORDER BY G.create_date DESC
 		";
 		$list = $Mysql->fetch_array($query);
+		call($list);
 
 		$in_vites = $out_vites = $open_vites = array( );
 		foreach ($list as $item) {
-			if ($player_id == $item['invitor_id']) {
+			$extra_info = array_merge_plus(self::$_EXTRA_INFO_DEFAULTS, unserialize($item['extra_info']));
+			$white_color = (('random' == $extra_info['white_color']) ? 'Random' : (('white' == $extra_info['white_color']) ? 'Silver' : 'Red'));
+			$black_color = (('random' == $extra_info['white_color']) ? 'Random' : (('white' == $extra_info['white_color']) ? 'Red' : 'Silver'));
+
+			if ($player_id == $item['white_id']) {
+				$item['color'] = $white_color;
 				$out_vites[] = $item;
 			}
-			elseif ($player_id == $item['invitee_id']) {
+			elseif ($player_id == $item['black_id']) {
+				$item['color'] = $black_color;
 				$in_vites[] = $item;
 			}
 			else {
+				$item['color'] = $black_color;
 				$open_vites[] = $item;
 			}
 		}
@@ -2061,24 +2078,27 @@ class Game
 
 		$query = "
 			SELECT COUNT(*)
-			FROM ".self::INVITE_TABLE."
-			WHERE invitee_id = {$player_id}
+			FROM ".self::GAME_TABLE."
+			WHERE black_id = {$player_id}
+				AND state = 'Waiting'
 		";
 		$in_vites = (int) $Mysql->fetch_value($query);
 
 		$query = "
 			SELECT COUNT(*)
-			FROM ".self::INVITE_TABLE."
-			WHERE invitor_id = {$player_id}
+			FROM ".self::GAME_TABLE."
+			WHERE white_id = {$player_id}
+				AND state = 'Waiting'
 		";
 		$out_vites = (int) $Mysql->fetch_value($query);
 
 		$query = "
 			SELECT COUNT(*)
-			FROM ".self::INVITE_TABLE."
-			WHERE invitor_id <> '{$player_id}'
-				AND (invitee_id IS NULL
-					OR invitee_id = FALSE
+			FROM ".self::GAME_TABLE."
+			WHERE white_id <> '{$player_id}'
+				AND state = 'Waiting'
+				AND (black_id IS NULL
+					OR black_id = FALSE
 				)
 		";
 		$open_vites = (int) $Mysql->fetch_value($query);
@@ -2102,7 +2122,7 @@ class Game
 		$query = "
 			SELECT COUNT(*)
 			FROM ".self::GAME_TABLE."
-			WHERE state NOT IN ('Finished', 'Draw')
+			WHERE state = 'Playing'
 		";
 		$count = (int) $Mysql->fetch_value($query);
 
@@ -2198,11 +2218,12 @@ class Game
 			return;
 		}
 
-		// don't auto delete paused games
+		// don't auto delete paused games or invites
 		$query = "
 			SELECT game_id
 			FROM ".self::GAME_TABLE."
-			WHERE modify_date < DATE_SUB(NOW( ), INTERVAL {$age} DAY)
+			WHERE state <> 'Waiting'
+				AND modify_date < DATE_SUB(NOW( ), INTERVAL {$age} DAY)
 				AND create_date < DATE_SUB(NOW( ), INTERVAL {$age} DAY)
 				AND paused = 0
 		";
@@ -2270,6 +2291,7 @@ class Game
 
 		$tables = array(
 			self::GAME_HISTORY_TABLE ,
+			self::GAME_NUDGE_TABLE ,
 			self::GAME_TABLE ,
 		);
 
@@ -2277,6 +2299,7 @@ class Game
 
 		$query = "
 			OPTIMIZE TABLE ".self::GAME_TABLE."
+				, ".self::GAME_NUDGE_TABLE."
 				, ".self::GAME_HISTORY_TABLE."
 		";
 		$Mysql->query($query);
@@ -2380,25 +2403,6 @@ CREATE TABLE IF NOT EXISTS `ph_game_history` (
   KEY `game_id` (`game_id`),
   KEY `move_date` (`move_date`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci;
-
-
-Invite Table
-----------------------
-DROP TABLE IF EXISTS `ph_invite`;
-CREATE TABLE IF NOT EXISTS `ph_invite` (
-  `invite_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `invitor_id` int(10) unsigned NOT NULL,
-  `invitee_id` int(10) unsigned NOT NULL DEFAULT '0',
-  `setup_id` int(10) unsigned NOT NULL,
-  `extra_info` text COLLATE latin1_general_ci,
-  `invite_date` datetime NOT NULL,
-
-  PRIMARY KEY (`invite_id`),
-  KEY `invitor_id` (`invitor_id`),
-  KEY `invitee_id` (`invitee_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci ;
-
--- --------------------------------------------------------
 
 --
 -- Table structure for table `ph_game_nudge`
