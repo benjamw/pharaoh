@@ -858,7 +858,7 @@ class Game
 		$this->state = 'Draw';
 		$this->_extra_info['draw_offered'] = false;
 
-		Email::send('draw', $this->_players['opponent']['player_id'], array('name' => $this->_players['player']['object']->username));
+		Email::send('draw', $this->_players['opponent']['player_id'], array('player' => $this->_players['player']['object']->username));
 	}
 
 
