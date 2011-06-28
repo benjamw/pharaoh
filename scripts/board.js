@@ -339,14 +339,14 @@ function fade_laser(end) {
 				$img = $(this);
 
 			// make a list of all the directions shown (excluding hits)
-			if (match = $img.attr('src').match(/\/(?:new_)?([nwse]{2,4})\.png/i)) {
+			if (match = $img.prop('src').match(/\/(?:new_)?([nwse]{2,4})\.png/i)) {
 				dirs += match[1];
 				$img.remove( );
 			}
 
 			// loop through all faded hits, and convert them all to faded laser
 			// (they'll get filtered out and removed if this is the only dir)
-			if (match = $img.attr('src').match(/\/([nwse])\.png/i)) {
+			if (match = $img.prop('src').match(/\/([nwse])\.png/i)) {
 				hits += match[1];
 				$img.remove( );
 			}
@@ -354,8 +354,8 @@ function fade_laser(end) {
 			// now loop through any new hits, and convert them to faded hits, but still hits
 			// but only if there isn't already a hit image here already
 			// (can happen when firing laser over and over again)
-			if (match = $img.attr('src').match(/\/new_([nwse])\.png/i)) {
-				$img.removeClass('new').attr('src', $img.attr('src').replace(/new_/i, ''));
+			if (match = $img.prop('src').match(/\/new_([nwse])\.png/i)) {
+				$img.removeClass('new').attr('src', $img.prop('src').replace(/new_/i, ''));
 			}
 		});
 

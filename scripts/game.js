@@ -82,7 +82,7 @@ $(document).ready( function( ) {
 		var $this = $(this);
 		var confirmed = true;
 
-		switch ($this.attr('name')) {
+		switch ($this.prop('name')) {
 			case 'nudge' :
 				confirmed = confirm('Are you sure you wish to nudge this person?');
 				break;
@@ -94,7 +94,7 @@ $(document).ready( function( ) {
 
 		if (confirmed) {
 			$this.parents('form')
-				.append('<input type="hidden" name="'+$this.attr('name')+'" value="'+$this.attr('value')+'" />')
+				.append('<input type="hidden" name="'+$this.prop('name')+'" value="'+$this.prop('value')+'" />')
 				.submit( );
 		}
 	});
@@ -368,9 +368,9 @@ function highlight_valid_moves(elem) {
 
 	$.each(adj, function(i, val) {
 		var $idx = $('#idx_'+val);
-		var to_class = $idx.attr('class');
+		var to_class = $idx.prop('class');
 		var to_color = to_class.match(/p_[^\s]+/ig);
-		var fr_class = $elem.attr('class');
+		var fr_class = $elem.prop('class');
 		var fr_color = fr_class.match(/p_[^\s]+/ig);
 
 		// if the class is an empty string, just set the class and exit here
@@ -485,7 +485,7 @@ function set_square(event) {
 
 		// create our two images
 		// if the piece is not an obelisk or pharaoh
-		var piece_code = $elem.attr('class').match(/i_[^\s]+/ig)[0].slice(2).toLowerCase( );
+		var piece_code = $elem.prop('class').match(/i_[^\s]+/ig)[0].slice(2).toLowerCase( );
 		if (('v' != piece_code) && ('w' != piece_code) && ('p' != piece_code)) {
 			$('div#idx_'+board_index)
 				.append($('<img/>', {
@@ -509,7 +509,7 @@ function set_square(event) {
 	else {
 		// grab some info about the piece
 		var $fr_elem = $('div#idx_'+from_index);
-		var fr_class = $fr_elem.attr('class');
+		var fr_class = $fr_elem.prop('class');
 		var fr_color = fr_class.match(/p_[^\s]+/ig);
 
 		// if we are not rotating the piece, we need
@@ -517,7 +517,7 @@ function set_square(event) {
 		// is going
 		if ( ! isNaN(parseInt(board_index))) {
 			var $to_elem = $('div#idx_'+board_index);
-			var to_class = $to_elem.attr('class');
+			var to_class = $to_elem.prop('class');
 			var to_color = to_class.match(/p_[^\s]+/ig);
 		}
 
@@ -533,7 +533,7 @@ function set_square(event) {
 			$('img.rotate').remove( );
 			return;
 		}
-		else if (-1 == $elem.attr('class').indexOf('highlight')) {
+		else if (-1 == $elem.prop('class').indexOf('highlight')) {
 			// reset
 			stage_1 = false;
 			from_index = -1;
@@ -553,7 +553,7 @@ function set_square(event) {
 			// set this piece as the TO index
 			// as long as it's okay with the player
 			if (moveable_piece) {
-				var piece_code = $elem.attr('class').match(/i_[^\s]+/ig)[0].slice(2).toLowerCase( );
+				var piece_code = $elem.prop('class').match(/i_[^\s]+/ig)[0].slice(2).toLowerCase( );
 				var swap = 'swap';
 
 				if (('v' == piece_code.toLowerCase( )) && ('v' == fr_class.match(/i_[^\s]+/ig)[0].slice(2).toLowerCase( ))) {

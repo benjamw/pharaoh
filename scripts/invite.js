@@ -6,7 +6,7 @@ function check_fieldset_box( ) {
 		var $this = $(this);
 		var id = $this.attr('id').slice(0,-4);
 
-		if ($this.attr('checked')) {
+		if ($this.prop('checked')) {
 			$('div#'+id).show( );
 		}
 		else {
