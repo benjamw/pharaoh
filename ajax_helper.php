@@ -183,3 +183,92 @@ if (isset($_POST['refresh'])) {
 	exit;
 }
 
+// do some validity checking
+
+if (empty($DEBUG) && empty($_POST['notoken'])) {
+	test_token( ! empty($_POST['keep_token']));
+}
+
+if ($_POST['game_id'] != $_SESSION['game_id']) {
+	throw new MyException('ERROR: Incorrect game id given');
+}
+
+
+// make sure we are the player we say we are
+// unless we're an admin, then it's ok
+$player_id = (int) $_POST['player_id'];
+if (($player_id != $_SESSION['player_id']) && ! $GLOBALS['Player']->is_admin) {
+	throw new MyException('ERROR: Incorrect player id given');
+}
+
+
+// run the simple button actions
+$actions = array(
+	'nudge',
+	'resign',
+	'offer_draw',
+	'accept_draw',
+	'reject_draw',
+	'request_undo',
+	'accept_undo',
+	'reject_undo',
+);
+
+foreach ($actions as $action) {
+	if (isset($_POST[$action])) {
+		try {
+			$Game->{$action}($player_id);
+			echo 'OK';
+		}
+		catch (MyException $e) {
+			echo $e;
+		}
+
+		exit;
+	}
+}
+
+
+// run the game actions
+if (isset($_POST['turn'])) {
+	$return = array( );
+
+	try {
+		if (false !== strpos($_POST['to'], 'split')) { // splitting obelisk
+			$to = substr($_POST['to'], 0, 2);
+			call($to);
+
+			$from = Pharaoh::index_to_target($_POST['from']);
+			$to = Pharaoh::index_to_target($to);
+			call($from.'.'.$to);
+
+			$Game->do_move($from.'.'.$to);
+		}
+		elseif ((string) $_POST['to'] === (string) (int) $_POST['to']) { // moving
+			$to = $_POST['to'];
+			call($to);
+
+			$from = Pharaoh::index_to_target($_POST['from']);
+			$to = Pharaoh::index_to_target($to);
+			call($from.':'.$to);
+
+			$Game->do_move($from.':'.$to);
+		}
+		else { // rotating
+			$target = Pharaoh::index_to_target($_POST['from']);
+			$dir = (int) ('r' == strtolower($_POST['to']));
+			call($target.'-'.$dir);
+
+			$Game->do_move($target.'-'.$dir);
+		}
+
+		$return['action'] = 'RELOAD';
+	}
+	catch (MyException $e) {
+		$return['error'] = 'ERROR: '.$e->outputMessage( );
+	}
+
+	echo json_encode($return);
+	exit;
+}
+

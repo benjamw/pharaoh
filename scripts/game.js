@@ -77,7 +77,7 @@ $(document).ready( function( ) {
 	$('#history div span:not(.disabled)').live('click', review);
 
 
-	// submit form on input button clicks
+	// ajax form on input button clicks
 	$('form input[type=button]').click( function( ) {
 		var $this = $(this);
 		var confirmed = true;
@@ -93,9 +93,18 @@ $(document).ready( function( ) {
 		}
 
 		if (confirmed) {
-			$this.parents('form')
-				.append('<input type="hidden" name="'+$this.prop('name')+'" value="'+$this.prop('value')+'" />')
-				.submit( );
+			$.ajax({
+				type: 'POST',
+				url: 'ajax_helper.php',
+				data: $this.parents('form').serialize( )+'&'+$this.prop('name')+'='+$this.prop('value'),
+				success: function(msg) {
+					if ('OK' != msg) {
+						alert('ERROR: AJAX failed');
+					}
+
+					if (reload) { window.location.reload( ); }
+				}
+			});
 		}
 	});
 
@@ -587,11 +596,31 @@ function set_square(event) {
 			}
 		}
 
-		// submit the form
-		// (no ajax needed)
-		$('form#game')
-			.append('<input type="hidden" name="turn" value="1" />')
-			.submit( );
+		// ajax the form
+		$.ajax({
+			type: 'POST',
+			url: 'ajax_helper.php',
+			data: $('form#game').serialize( )+'&turn=1',
+			success: function(msg) {
+				// if something happened, just reload
+				if ('{' != msg[0]) {
+					alert('ERROR: AJAX Failed');
+					if (reload) { window.location.reload( ); }
+					return;
+				}
+
+				var reply = JSON.parse(msg);
+
+				if (reply.error) {
+					alert(reply.error);
+					if (reload) { window.location.reload( ); }
+					return;
+				}
+
+				if (reload) { window.location.reload( ); }
+			}
+		});
+
 	}
 }
 

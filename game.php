@@ -36,9 +36,6 @@ catch (MyException $e) {
 
 // MOST FORM SUBMISSIONS ARE AJAXED THROUGH /scripts/game.js
 // game buttons and moves are passed through the game controller
-if ( ! empty($_POST)) {
-	include INCLUDE_DIR.'controller.game.php';
-}
 
 if ( ! $Game->is_player($_SESSION['player_id'])) {
 	$Game->watch_mode = true;
