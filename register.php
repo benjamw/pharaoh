@@ -81,28 +81,24 @@ if (Settings::read('expire_users')) {
 }
 
 $contents = <<< EOF
+
 	<form method="post" action="{$_SERVER['REQUEST_URI']}"><div class="formdiv">
 		<input type="hidden" name="token" id="token" value="{$_SESSION['token']}" />
 		<input type="hidden" name="errors" id="errors" />
-		<ul>
-			<li><label for="first_name">First Name</label><input type="text" id="first_name" name="first_name" maxlength="20" tabindex="1" /></li>
-			<li><label for="last_name">Last Name</label><input type="text" id="last_name" name="last_name" maxlength="20" tabindex="2" /></li>
 
-			<li><label for="username" class="req">Username</label><input type="text" id="username" name="username" maxlength="20" tabindex="3" /><span id="username_check" class="test"></span></li>
-			<li><label for="email" class="req">Email</label><input type="text" id="email" name="email" tabindex="4" /><span id="email_check" class="test"></span></li>
+		<div><label for="first_name">First Name</label><input type="text" id="first_name" name="first_name" maxlength="20" tabindex="1" /></div>
+		<div><label for="last_name">Last Name</label><input type="text" id="last_name" name="last_name" maxlength="20" tabindex="2" /></div>
 
-			<li style="text-indent:-9999em;">Leave the next field blank (anti-spam).</li>
-			<li style="text-indent:-9999em;"><label for="website">Leave Blank</label><input type="text" id="website" name="website" /></li>
+		<div><label for="username" class="req">Username</label><input type="text" id="username" name="username" maxlength="20" tabindex="3" /><span id="username_check" class="test"></span></div>
+		<div><label for="email" class="req">Email</label><input type="text" id="email" name="email" tabindex="4" /><span id="email_check" class="test"></span></div>
 
-			<li><label for="password" class="req">Password</label><input type="password" id="password" name="password" tabindex="5" /></li>
-			<li><label for="passworda" class="req">Confirmation</label><input type="password" id="passworda" name="passworda" tabindex="6" /></li>
+		<div style="visibility:hidden;"><label for="website">Leave Blank</label><input type="text" id="website" name="website" /></div>
 
-			<li><input type="submit" name="register" value="Submit" tabindex="7" /></li>
-		</ul>
+		<div><label for="password" class="req">Password</label><input type="password" id="password" name="password" tabindex="5" /></div>
+		<div><label for="passworda" class="req">Confirmation</label><input type="password" id="passworda" name="passworda" tabindex="6" /></div>
 
+		<div><input type="submit" name="register" value="Submit" tabindex="7" /> <a href="login.php{$GLOBALS['_?_DEBUG_QUERY']}">Return to login</a></div>
 	</div></form>
-
-	<a href="login.php{$GLOBALS['_?_DEBUG_QUERY']}">Return to login</a>
 
 EOF;
 

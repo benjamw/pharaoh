@@ -93,26 +93,25 @@ echo get_header($meta);
 
 ?>
 
-	<div id="content">
+	<div id="content" class="msg">
 		<div class="link_date">
 			<a href="messages.php<?php echo $GLOBALS['_?_DEBUG_QUERY']; ?>">Return to Inbox</a>
 			<?php echo date(Settings::read('long_date')); ?>
 		</div>
-		<form method="post" action="<?php echo $_SERVER['REQUEST_URI']; ?>"><div id="formdiv">
+		<form method="post" action="<?php echo $_SERVER['REQUEST_URI']; ?>"><div class="formdiv">
 			<input type="hidden" name="token" value="<?php echo $_SESSION['token']; ?>" />
-			<ol>
-				<li>
-					<div class="info">Press and hold CTRL while selecting to select multiple recipients</div>
-					<label for="user_ids">Recipients</label><select name="user_ids[]" id="user_ids" multiple="multiple" size="5">
-					<?php echo $recipient_options; ?>
-					</select>
-				</li>
-				<li><label for="send_date">Send Date</label><input type="text" name="send_date" id="send_date" /> <span class="info">Leave blank to send now</span></li>
-				<li><label for="expire_date">Expiration Date</label><input type="text" name="expire_date" id="expire_date" /> <span class="info">Leave blank to never expire</span></li>
-				<li><label for="subject">Subject</label><input type="text" name="subject" id="subject" value="<?php echo htmlentities($message['subject'], ENT_QUOTES, 'ISO-8859-1', false); ?>" size="50" maxlength="255" /></li>
-				<li><label for="message">Message</label><textarea name="message" id="message" rows="15" cols="50"><?php echo htmlentities($message['message'], ENT_QUOTES, 'ISO-8859-1', false); ?></textarea></li>
-				<li><label>&nbsp;</label><input type="submit" name="submit" value="Send Message" /></li>
-			</ol>
+
+			<div>
+				<div class="info">Press and hold CTRL while selecting to select multiple recipients</div>
+				<label for="user_ids">Recipients</label><select name="user_ids[]" id="user_ids" multiple="multiple" size="5">
+				<?php echo $recipient_options; ?>
+				</select>
+			</div>
+			<div><label for="send_date">Send Date</label><input type="text" name="send_date" id="send_date" /> <span class="info">Leave blank to send now</span></div>
+			<div><label for="expire_date">Expiration Date</label><input type="text" name="expire_date" id="expire_date" /> <span class="info">Leave blank to never expire</span></div>
+			<div><label for="subject">Subject</label><input type="text" name="subject" id="subject" value="<?php echo htmlentities($message['subject'], ENT_QUOTES, 'ISO-8859-1', false); ?>" size="50" maxlength="255" /></div>
+			<div><label for="message">Message</label><textarea name="message" id="message" rows="15" cols="50"><?php echo htmlentities($message['message'], ENT_QUOTES, 'ISO-8859-1', false); ?></textarea></div>
+			<div><label>&nbsp;</label><input type="submit" name="submit" value="Send Message" /></div>
 		</div></form>
 	</div>
 

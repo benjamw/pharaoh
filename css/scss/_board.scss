@@ -1,12 +1,12 @@
 /* the board styles ------------
 
 	 do not edit these, if things need to be moved
-	 edit #board in game.css, things will break horribly
+	 edit #board in game.scss, things will break horribly
 	 if these sizes are changed
 */
 
 .a_board {
-	background: #222;
+	background-color: #1F2023;
 	color: #CCC;
 	width: 550px;
 	height: 450px;
@@ -20,6 +20,7 @@
 	div {
 		border: 1px solid #000;
 		float: left;
+		clear: none;
 		width: 44px;
 		height: 44px;
 		margin: 1px;

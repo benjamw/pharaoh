@@ -17,8 +17,11 @@ h2 span {
 
 
 #pieces_display {
-	width: 100px;
+	height: 100px;
+	width: 600px;
 	float: left;
+	clear: left;
+	margin-top: 20px;
 
 	img {
 		border: 2px solid transparent;
@@ -31,6 +34,9 @@ h2 span {
 
 #setup_display {
 	float: left;
+	clear: left;
+	margin: 20px 10px;
+	width: auto;
 }
 
 

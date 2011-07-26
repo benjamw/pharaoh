@@ -123,34 +123,31 @@ $contents = <<< EOF
 		<input type="hidden" name="token" value="{$_SESSION['token']}" />
 		<input type="hidden" name="player_id" value="{$_SESSION['player_id']}" />
 
-		<div>
+		{$warning}
 
-			{$warning}
+		<div><label for="opponent">Opponent</label><select id="opponent" name="opponent">{$opponent_selection}</select></div>
+		<div><label for="setup">Setup</label><select id="setup" name="setup">{$setup_selection}</select> <a href="#setup_display" id="show_setup">Show Setup</a></div>
+		<div><label for="color">Your Color</label><select id="color" name="color"><option value="random">Random</option><option value="white">Silver</option><option value="black">Red</option></select></div>
 
-			<div><label for="opponent">Opponent</label><select id="opponent" name="opponent">{$opponent_selection}</select></div>
-			<div><label for="setup">Setup</label><select id="setup" name="setup">{$setup_selection}</select> <a href="#setup_display" id="show_setup">Show Setup</a></div>
-			<div><label for="color">Your Color</label><select id="color" name="color"><option value="random">Random</option><option value="white">Silver</option><option value="black">Red</option></select></div>
+		<fieldset>
+			<legend><label class="inline"><input type="checkbox" name="laser_battle_box" id="laser_battle_box" class="fieldset_box" /> Laser Battle</label></legend>
+			<div id="laser_battle">
+				<p>
+					When a laser gets shot by the opponents laser, it will be disabled for a set number of turns, making that laser unable to shoot until those turns have passed.<br />
+					After those turns have passed, and the laser has recovered, it will be immune from further shots for a set number of turns.<br />
+					After the immunity turns have passed, whether or not the laser was shot again, it will now be susceptible to being shot again.
+				</p>
 
-			<fieldset>
-				<legend><label class="inline"><input type="checkbox" name="laser_battle_box" id="laser_battle_box" class="fieldset_box" /> Laser Battle</label></legend>
-				<div id="laser_battle">
-					<p>
-						When a laser gets shot by the opponents laser, it will be disabled for a set number of turns, making that laser unable to shoot until those turns have passed.<br />
-						After those turns have passed, and the laser has recovered, it will be immune from further shots for a set number of turns.<br />
-						After the immunity turns have passed, whether or not the laser was shot again, it will now be susceptible to being shot again.
-					</p>
+				<div><label for="battle_dead">Dead for:</label><input type="text" id="battle_dead" name="battle_dead" size="4" /> <span class="info">(Default: 1; Minimum: 1)</span></div>
+				<div><label for="battle_immune">Immune for:</label><input type="text" id="battle_immune" name="battle_immune" size="4" /> <span class="info">(Default: 1; Minimum: 0)</span></div>
 
-					<div><label for="battle_dead">Dead for:</label><input type="text" id="battle_dead" name="battle_dead" size="4" /> (Default: 1; Minimum: 1)</div>
-					<div><label for="battle_immune">Immune for:</label><input type="text" id="battle_immune" name="battle_immune" size="4" /> (Default: 1; Minimum: 0)</div>
+				<p>You can set the "Immune for" value to 0 to allow a laser to be shot continuously, but the minimum value for the "Dead for" value is 1, as it makes no sense otherwise.</p>
+			</div> <!-- #laser_battle -->
+		</fieldset>
 
-					<p>You can set the "Immune for" value to 0 to allow a laser to be shot continuously, but the minimum value for the "Dead for" value is 1, as it makes no sense otherwise.</p>
-				</div> <!-- #laser_battle -->
-			</fieldset>
+		{$submit_button}
 
-			{$submit_button}
-
-		</div>
-
+		<div class="clr"></div>
 	</div></form>
 
 	<div id="setup_display"></div>
@@ -161,7 +158,6 @@ EOF;
 list($in_vites, $out_vites, $open_vites) = Game::get_invites($_SESSION['player_id']);
 
 $contents .= <<< EOT
-	<hr class="clear" />
 	<form method="post" action="{$_SERVER['REQUEST_URI']}"><div class="formdiv" id="invites">
 EOT;
 
@@ -172,7 +168,7 @@ $table_meta = array(
 );
 $table_format = array(
 	array('Invitor', 'invitor') ,
-	array('Setup', 'setup') ,
+	array('Setup', '<a href="#setup_display" class="setup" id="s_[[[setup_id]]]">[[[setup]]]</a>') ,
 	array('Color', 'color') ,
 	array('Date Sent', '###date(Settings::read(\'long_date\'), strtotime(\'[[[create_date]]]\'))', null, ' class="date"') ,
 	array('Action', '<input type="button" id="accept-[[[game_id]]]" value="Accept" /><input type="button" id="decline-[[[game_id]]]" value="Decline" />', false) ,

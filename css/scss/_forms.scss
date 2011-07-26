@@ -1,5 +1,5 @@
 
-#formdiv hr {
+.formdiv hr {
 	border: 0;
 	border-bottom: 2px solid #AAA;
 	width: 90%;
@@ -41,30 +41,6 @@ label.error {
 
 .error {
 	border: 1px solid #C00;
-}
-
-.info {
-	color: #999;
-}
-
-li.info {
-	margin-top: 1em;
-	color: inherit;
-}
-
-li.color {
-	margin-top: 1em;
-}
-
-div.info {
-	margin: 0 0 0 130px;
-	width: 400px;
-}
-
-.forminfo {
-	width: 400px;
-	color: #444;
-	margin-bottom: 1em;
 }
 
 .input,
@@ -111,13 +87,13 @@ textarea.error:focus {
 	vertical-align: middle;
 }
 
-#formdiv .submit {
+.formdiv .submit {
 	border-top: 1px solid #AAA;
 	text-align: center;
 	padding: 10px;
 }
 
-#formdiv .errors {
+.formdiv .errors {
 	border-top: 1px solid #AAA;
 	border-bottom: 1px dashed #AAA;
 	display: none;
@@ -128,12 +104,43 @@ textarea.error:focus {
 	text-align: center;
 }
 
+.formdiv > div {
+	float: left;
+	clear: left;
+	width: 100%;
+}
+
+.formdiv > fieldset {
+	clear: both;
+}
+
 .test img {
 	vertical-align: middle;
 }
 
 table.form {
 	width: auto;
+}
+
+.info {
+	color: #999;
+}
+
+div.color {
+	margin-top: 1em;
+}
+
+div.info {
+	margin: 1em 0 0 130px;
+	width: 400px;
+	float: none;
+	clear: both;
+}
+
+.forminfo {
+	width: 400px;
+	color: #444;
+	margin-bottom: 1em;
 }
 
 /* overlabels */

@@ -48,11 +48,8 @@ elseif (isset($_GET['id'])) {
 		<input type="hidden" name="token" value="{$_SESSION['token']}" />
 		<input type="hidden" name="id" value="{$Setup->id}" />
 
-		<div>
-			<div>Are you sure you wish to delete your setup, {$Setup->name}?  This cannot be undone.</div>
-			<div><input type="submit" value="Delete Setup" /></div>
-		</div>
-
+		<div>Are you sure you wish to delete your setup, {$Setup->name}?  This cannot be undone.</div>
+		<div><input type="submit" value="Delete Setup" /></div>
 	</div></form>
 
 	<div id="setup_display">

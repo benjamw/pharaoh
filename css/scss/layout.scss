@@ -11,38 +11,23 @@
 
 @import "reset";
 
-/* basic styles */
-body {
+
+html, body {
+	background-color: #27282B;
+	color: #FFF;
 	margin: 0;
 	padding: 0;
-	font-size: 12px;
+	font-size: 14px;
 	line-height: 1.5;
 	font-weight: normal;
-	font-family: sans-serif;
-}
-
-
-h1 {
-	height: 45px;
-	margin: 0 0 3px;
-	padding: 0;
-	font-size: 16px;
-	font-weight: bold;
-	text-indent: -9999em;
-	border-bottom: 2px solid #000;
-
-	a {
-		background: transparent url(../images/Pharaoh.png) no-repeat scroll 15px center;
-		display: block;
-		text-decoration: none;
-		height: 100%;
-	}
+	font-family: Calibri, sans-serif;
 }
 
 
 a {
 	font-weight: bold;
 	text-decoration: underline;
+	color: #FFF;
 
 	&:hover {
 		text-decoration: none;
@@ -51,7 +36,7 @@ a {
 	&.help {
 		border: 1px solid #777;
 		font-weight: bold;
-		padding: 0 2px;
+		padding: 0 4px;
 		text-decoration: none;
 
 		&:hover {
@@ -68,11 +53,16 @@ acronym {
 }
 
 
-hr.fancy {
-	height: 5px;
-	margin: 1em;
-	background-color: #999;
-	border: 1px solid #777;
+hr {
+	width: 90%;
+	margin: 1em auto;
+
+	&.fancy {
+		height: 5px;
+		margin: 1em;
+		background-color: #999;
+		border: 1px solid #777;
+	}
 }
 
 
@@ -91,24 +81,25 @@ fieldset {
 
 legend {
 	font-weight: bold;
-	font-size: larger;
+	line-height: 1;
+	padding-right: 5px;
 }
 
 
 .warning, .warning * {
-	color: #C00;
+	color: #B00;
 	font-weight: bold;
 }
 
 
 .notice, .notice * {
-	color: #CC0;
+	color: #DD0;
 	font-weight: bold;
 }
 
 
 .highlight, .highlight * {
-	color: #00C;
+	color: #B00;
 	font-weight: bold;
 }
 
@@ -123,95 +114,200 @@ legend {
 }
 
 
+.clr {
+	clear: both !important;
+	float: none !important;
+}
+
+
 #date {
-	font-size: 10px;
+	font-size: 0.85em;
 	font-weight: bold;
 	white-space: nowrap;
 	text-align: right;
 }
 
 
-/* links */
-#links {
-	float: right;
-	margin: 1em;
+header {
+	min-height: 60px;
+	width: 100%;
+	margin: 0 0 10px;
+	padding: 5px;
+	position: relative;
+
+	border-bottom: 1px solid #CE3E47;
+
+	background-color: #670B0C;
+	background: -o-radial-gradient(50% 100%, ellipse cover, #A72819 30%, #670B0C 80%) #670B0C;
+	background: -ms-radial-gradient(50% 100%, ellipse cover, #A72819 30%, #670B0C 80%) #670B0C;
+	background: -moz-radial-gradient(50% 100%, ellipse cover, #A72819 30%, #670B0C 80%) #670B0C;
+	background: -webkit-radial-gradient(50% 100%, ellipse cover, #A72819 30%, #670B0C 80%) #670B0C;
+	background: radial-gradient(50% 100%, ellipse cover, #A72819 30%, #670B0C 80%) #670B0C;
+
+	-o-box-shadow: 0px 3px 16px #000000, 0px -3px 0px rgba(0, 0, 0, 0.4) inset;
+	-ms-box-shadow: 0px 3px 16px #000000, 0px -3px 0px rgba(0, 0, 0, 0.4) inset;
+	-moz-box-shadow: 0px 3px 16px #000000, 0px -3px 0px rgba(0, 0, 0, 0.4) inset;
+	-webkit-box-shadow: 0px 3px 16px #000000, 0px -3px 0px rgba(0, 0, 0, 0.4) inset;
+	box-shadow: 0px 3px 16px #000000, 0px -3px 0px rgba(0, 0, 0, 0.4) inset;
+
+	-o-box-sizing: border-box;
+	-ms-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	-webkit-box-sizing: border-box;
+	box-sizing: border-box;
+}
+
+
+h1 {
+	height: 45px;
+	margin: 0 0 3px;
+	padding: 0;
+	font-size: 1.1em;
 	font-weight: bold;
-	color: #EEE;
+	text-indent: -9999em;
+
+	a {
+		background: transparent url(../images/Pharaoh.png) no-repeat scroll 15px center;
+		display: block;
+		text-decoration: none;
+		height: 100%;
+	}
+}
+
+
+nav.site {
+	float: right;
+	position: absolute;
+	top: 15px;
+	right: 10px;
+	margin: 10px;
 
 	a {
 		text-decoration: none;
-		padding: 0.3ex 0.75ex;
-		border: 1px solid transparent;
-		background-color: transparent;
-		color: #333;
+		padding: 3px 10px;
+
+		color: #DDD;
+
+		font-weight: bold;
+		text-shadow: #000 0 1px 1px;
 
 		&:hover {
-			border-color: #000;
-			background-color: #555;
-			color: #EEE;
+			color: #FFF;
+
+			background: -o-radial-gradient(50% 90%, ellipse closest-corner, rgba(255, 255, 255, 0.35) 30%, rgba(255, 255, 255, 0.01) 70%) transparent;
+			background: -ms-radial-gradient(50% 90%, ellipse closest-corner, rgba(255, 255, 255, 0.35) 30%, rgba(255, 255, 255, 0.01) 70%) transparent;
+			background: -moz-radial-gradient(50% 90%, ellipse closest-corner, rgba(255, 255, 255, 0.35) 30%, rgba(255, 255, 255, 0.01) 70%) transparent;
+			background: -webkit-radial-gradient(50% 100%, 80% 20%, rgba(255, 255, 255, 0.35) 30%, rgba(255, 255, 255, 0.01) 70%) transparent;
+			background: radial-gradient(50% 100%, 80% 20%, rgba(255, 255, 255, 0.35) 30%, rgba(255, 255, 255, 0.01) 70%) transparent;
 		}
 	}
 }
-/* fix some stupid IE7 float bug */
-*:first-child+html #links {
-	position: absolute;
-	top: 0;
-	right: 0;
-	z-index: 5;
-}
 
 
-/* wrapper */
-#wrapper {
+*.box {
+	display: block;
 	margin: 0;
-	padding: 0;
+	padding: 1px;
+
+	-o-border-radius: 4px;
+	-ms-border-radius: 4px;
+	-moz-border-radius: 4px;
+	-webkit-border-radius: 4px;
+	border-radius: 4px;
+
+	background-color: #000000;
+	background: -o-linear-gradient(#232323, #000000) #000000;
+	background: -ms-linear-gradient(#232323, #000000) #000000;
+	background: -moz-linear-gradient(#232323, #000000) #000000;
+	background: -webkit-linear-gradient(#232323, #000000) #000000;
+	background: linear-gradient(#232323, #000000) #000000;
+
+	-o-box-sizing: border-box;
+	-ms-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	-webkit-box-sizing: border-box;
+	box-sizing: border-box;
+
+	& > * {
+		padding: 5px;
+		display: block;
+		margin: 0;
+		height: 100%;
+		overflow: auto;
+
+		-o-border-radius: 2px;
+		-ms-border-radius: 2px;
+		-moz-border-radius: 2px;
+		-webkit-border-radius: 2px;
+		border-radius: 2px;
+
+		background-color: #2E2F34;
+		background: -o-linear-gradient(#2E2F34, #212225) #2E2F34;
+		background: -ms-linear-gradient(#2E2F34, #212225) #2E2F34;
+		background: -moz-linear-gradient(#2E2F34, #212225) #2E2F34;
+		background: -webkit-linear-gradient(#2E2F34, #212225) #2E2F34;
+		background: linear-gradient(#2E2F34, #212225) #2E2F34;
+
+		-o-box-shadow: 0px 1px 0px rgba(255, 255, 255, 0.1) inset, 0px -2px 1px rgba(0, 0, 0, 0.2) inset;
+		-ms-box-shadow: 0px 1px 0px rgba(255, 255, 255, 0.1) inset, 0px -2px 1px rgba(0, 0, 0, 0.2) inset;
+		-moz-box-shadow: 0px 1px 0px rgba(255, 255, 255, 0.1) inset, 0px -2px 1px rgba(0, 0, 0, 0.2) inset;
+		-webkit-box-shadow: 0px 1px 0px rgba(255, 255, 255, 0.1) inset, 0px -2px 1px rgba(0, 0, 0, 0.2) inset;
+		box-shadow: 0px 1px 0px rgba(255, 255, 255, 0.1) inset, 0px -2px 1px rgba(0, 0, 0, 0.2) inset;
+
+		-o-box-sizing: border-box;
+		-ms-box-sizing: border-box;
+		-moz-box-sizing: border-box;
+		-webkit-box-sizing: border-box;
+		box-sizing: border-box;
+	}
 }
 
 
-/* menu */
-#menuholder {
-	width: 1px;
-	overflow: visible;
+aside#nav {
 	float: left;
 
-	div {
+	nav {
+		margin: 10px;
+		width: 160px;
 		float: left;
-		margin: 3px;
+		clear: left;
 		margin-bottom: 2em;
 	}
 
 	#mygames_title {
-		margin: 0;
+		clear: left;
+		margin: 0 10px 0;
 		white-space: nowrap;
+		font-weight: bold;
 	}
 }
 
 
-#menu ,
-#mygames {
-	border: 1px solid #777;
-
+nav#menu ,
+nav#mygames {
 	a {
 		text-align: right;
-		font-size: 10px;
+		font-size: 0.85em;
 		padding: 6px 5px;
-		width: 160px;
+		width: 100%;
 		white-space: nowrap;
 		margin: 0;
 		font-weight: bold;
 		text-decoration: none;
 		display: block;
-		color: #333;
-		background-color: #EEE;
-		border-bottom: 1px solid #555;
+		color: #DDD;
+		background-color: transparent;
+		border-bottom: 1px solid #333;
+
+		-o-box-sizing: border-box;
+		-ms-box-sizing: border-box;
+		-moz-box-sizing: border-box;
+		-webkit-box-sizing: border-box;
+		box-sizing: border-box;
 
 		&:hover {
-			color: #DDD;
-			background-color: #555;
-		}
-
-		.notice {
-			color: #99F;
+			color: #FFF;
+			background-color: rgba(40, 14, 12, 0.5);
 		}
 	}
 
@@ -228,39 +324,50 @@ legend {
 
 		&.active {
 			a {
-				color: #DDD;
-				background-color: #333;
-				border-color: #333;
+				color: inherit;
+				background-color: rgba(255, 255, 255, 0.1);
 			}
+		}
+
+		&:first-child a {
+			-o-border-radius: 2px 2px 0 0;
+			-ms-border-radius: 2px 2px 0 0;
+			-moz-border-radius: 2px 2px 0 0;
+			-webkit-border-radius: 2px 2px 0 0;
+			border-radius: 2px 2px 0 0;
 		}
 
 		&:last-child a {
 			border-bottom: 0;
+			-o-border-radius: 0 0 2px 2px;
+			-ms-border-radius: 0 0 2px 2px;
+			-moz-border-radius: 0 0 2px 2px;
+			-webkit-border-radius: 0 0 2px 2px;
+			border-radius: 0 0 2px 2px;
+		}
+
+		span.sep {
+			color: #666;
 		}
 	}
 }
-*:first-child+html #menu li {
-	margin-left: -1.25em;
-}
 
 
-#mygames {
+nav#mygames {
 	a {
 		white-space: normal;
 	}
 
 	.finished a { color: #999; }
-	.playing a { color: #F00; }
+	.playing a { color: #B00; }
 	.my_turn a { color: #FF0; }
 	.none a { color: #FFF; }
 }
 
 
-/* notes */
-#sidebar {
+aside#info {
 	float: right;
 	width: 160px;
-	overflow: visible;
 
 	#chatbox {
 		float: right;
@@ -288,58 +395,28 @@ legend {
 }
 
 
-#notes {
+div#notes {
 	float: right;
-	width: 160px;
-	min-height: 300px;
-	padding: 5px;
-	margin: 3px;
-	background-color: #EEE;
-	border: 1px solid #777;
+	width: 200px;
+	margin: 10px;
+
+	&.box > * {
+		min-height: 300px;
+	}
 }
 
 
-/* chats */
 #chatbox input[type=text] {
 	width: 90%;
-}
 
-
-#game_page #chatbox input[type=text] {
-	width: auto;
-}
-
-
-#chats {
-	height: 200px;
-	overflow: auto;
-
-	dt {
-		background: transparent;
-		color: #000;
-		font-weight: bold;
-		padding: 0 3px;
-
-		span {
-			float: right;
-			font-size: 80%;
-		}
-	}
-
-	dd {
-		padding: 0 3px;
-		border-bottom: 1px solid #000;
-	}
-
-	img {
-		float: left;
+	#game_page & {
+		width: auto;
 	}
 }
 
 
-/* main */
 h2 {
-	font-size: 14px;
+	font-size: 100%;
 	font-weight: bold;
 	margin-bottom: 1ex;
 	border-bottom: 1px solid #777;
@@ -362,7 +439,12 @@ h2 {
 
 
 #content {
-	margin: 3px 185px;
+	margin: 20px 220px 20px 180px;
+	position: relative;
+
+	&.box > * {
+		min-height: 300px;
+	}
 
 	&.full {
 		margin: 5px;
@@ -393,6 +475,11 @@ h2 {
 	#recipient_list {
 		margin-top: 20px;
 	}
+
+	&.msg {
+		width: 850px;
+		margin: auto;
+	}
 }
 
 
@@ -419,7 +506,8 @@ h2 {
 
 	#chats {
 		border-top: 1px solid #777;
-		height: 500px;
+		max-height: 500px;
+		overflow: auto;
 
 		dt {
 			height: 50px;
@@ -431,6 +519,7 @@ h2 {
 			position: relative;
 			text-align: right;
 			background: transparent;
+			font-weight: bold;
 		}
 
 		dd {
@@ -440,16 +529,21 @@ h2 {
 			margin: 0 0 6px 0;
 		}
 
+		img {
+			float: left;
+		}
+
 		span {
 			position: absolute;
 			bottom: 5px;
 			right: 5px;
+			font-size: 80%;
+			font-weight: normal;
 		}
 	}
 }
 
 
-/* messages */
 h2.subject,
 p.message {
 	width: 70ex;
@@ -493,27 +587,26 @@ p.message {
 }
 
 
-/* footer */
 #footerspacer {
-	height: 100px; /* make sure nothing gets hidden behind the footer */
+	height: 50px;
 	clear: both;
 }
 
 
-#footer {
-	font-size: 10px;
+footer {
+	font-size: 0.9em;
 	font-weight: bold;
-	text-align: center;
-	width: 100%;
 	line-height: 26px;
 	clear: both;
 	padding: 3px 0;
-	position: fixed;
-	bottom: 0;
 	left: 0;
 	z-index: 100;
-	background: #FFF;
-	border-top: 1px solid #BBB;
+	position: fixed;
+	bottom: 0;
+	left: -25%; /* keep side shadows from showing */
+	width: 150%;
+	padding: 15px 5px 5px;
+	text-align: center;
 
 	span {
 		margin: 0 2em;
@@ -524,24 +617,38 @@ p.message {
 		padding: 0;
 		line-height: 130%;
 	}
+
+	color: #DDD;
+	background-color: #670B0C;
+
+	-o-box-shadow: 0px 3px 16px #000000 inset;
+	-ms-box-shadow: 0px 3px 16px #000000 inset;
+	-moz-box-shadow: 0px 3px 16px #000000 inset;
+	-webkit-box-shadow: 0px 3px 16px #000000 inset;
+	box-shadow: 0px 3px 16px #000000 inset;
+
+	-o-box-sizing: border-box;
+	-ms-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	-webkit-box-sizing: border-box;
+	box-sizing: border-box;
 }
 
 
-/* other basic styles */
 .notice {
 	font-weight: bold;
 }
 
 
 .afterthought {
-	font-size: 11px;
+	font-size: 0.85em;
 	font-weight: normal;
 }
 
 
 .instruction {
 	margin: 0 0 10px 10px;
-	font-size: 11px;
+	font-size: 0.85em;
 	line-height: 11px;
 }
 
@@ -611,5 +718,4 @@ div.help {
 @import "game_layout";
 @import "datatable";
 @import "forms";
-
 

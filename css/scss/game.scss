@@ -11,7 +11,7 @@
 }
 
 #chatbox {
-	margin-left: 712px;
+	margin-left: 732px;
 }
 
 #chats {
@@ -22,35 +22,6 @@
 	#chatbox {
 		input[type=text] {
 			width: 80%;
-		}
-	}
-}
-
-#history {
-	float: left;
-	width: 150px;
-
-	table {
-		margin: 0;
-	}
-}
-
-table.history {
-	td {
-		padding: 0 5px;
-		font-size: 1.1em;
-		line-height: 130%;
-		border-bottom: 1px solid #222;
-
-		&.active {
-			font-weight: bold;
-			background-color: #444;
-			color: #FFF;
-		}
-
-		&.turn {
-			width: 1%;
-			text-align: right;
 		}
 	}
 }
@@ -67,26 +38,51 @@ table.history {
 }
 
 #history {
-	.review {
+	float: left;
+	width: 170px;
+
+	table {
+		margin: 0;
+
+		td {
+			padding: 0 5px;
+			font-size: 1.1em;
+			line-height: 130%;
+
+			&.active,
+			&:hover {
+				font-weight: bold;
+				background-color: #444;
+				color: #FFF;
+			}
+
+			&.turn {
+				width: 1%;
+				text-align: right;
+			}
+		}
+	}
+
+	div div {
 		margin-bottom: 2px;
 		text-align: center;
 
 		span {
 			padding: 2px 5px 1px;
-			border: 1px solid #AAA;
+			border: 1px solid #555;
 			-moz-border-radius: 3px;
 			-webkit-border-radius: 3px;
 			border-radius: 3px;
 			cursor: pointer;
 
-			&.disabled {
-				color: #CCC;
-				border-color: #DDD;
-				cursor: default;
+			&:hover {
+				border-color: #AAA;
 			}
 
-			&:hover {
-				border-color: #555;
+			&.disabled {
+				color: #AAA;
+				border-color: #333;
+				cursor: default;
 			}
 		}
 	}

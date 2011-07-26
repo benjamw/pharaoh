@@ -31,21 +31,20 @@ $contents = <<< EOF
 	<form method="post" action="{$_SERVER['REQUEST_URI']}"><div class="formdiv">
 		<input type="hidden" name="token" value="{$_SESSION['token']}" />
 		<input type="hidden" name="errors" id="errors" />
-		<ul>
-			<li><label>Username</label><span class="input">{$GLOBALS['Player']->username}</span></li>
 
-			<li><label for="first_name">First Name</label><input type="text" id="first_name" name="first_name" maxlength="20" value="{$GLOBALS['Player']->firstname}" tabindex="1" /></li>
-			<li><label for="last_name">Last Name</label><input type="text" id="last_name" name="last_name" maxlength="20" value="{$GLOBALS['Player']->lastname}" tabindex="2" /></li>
+		<div><label>Username</label><span class="input">{$GLOBALS['Player']->username}</span></div>
 
-			<li><label for="email" class="req">Email</label><input type="text" id="email" name="email" maxlength="100" value="{$GLOBALS['Player']->email}" tabindex="3" /><span id="email_check" class="test"></span></li>
+		<div><label for="first_name">First Name</label><input type="text" id="first_name" name="first_name" maxlength="20" value="{$GLOBALS['Player']->firstname}" tabindex="1" /></div>
+		<div><label for="last_name">Last Name</label><input type="text" id="last_name" name="last_name" maxlength="20" value="{$GLOBALS['Player']->lastname}" tabindex="2" /></div>
 
-			<li class="info">Leave password fields blank to keep current password.</li>
-			<li><label for="curpass">Current Password</label><input type="password" id="curpass" name="curpass" tabindex="4" /></li>
-			<li><label for="password">New Password</label><input type="password" id="password" name="password" tabindex="5" /></li>
-			<li><label for="passworda">Confirmation</label><input type="password" id="passworda" name="passworda" tabindex="6" /></li>
+		<div><label for="email" class="req">Email</label><input type="text" id="email" name="email" maxlength="100" value="{$GLOBALS['Player']->email}" tabindex="3" /><span id="email_check" class="test"></span></div>
 
-			<li><input type="submit" id="submit" name="submit" value="Update Profile" /></li>
-		</ul>
+		<div class="info">Leave password fields blank to keep current password.</div>
+		<div><label for="curpass">Current Password</label><input type="password" id="curpass" name="curpass" tabindex="4" /></div>
+		<div><label for="password">New Password</label><input type="password" id="password" name="password" tabindex="5" /></div>
+		<div><label for="passworda">Confirmation</label><input type="password" id="passworda" name="passworda" tabindex="6" /></div>
+
+		<div><input type="submit" id="submit" name="submit" value="Update Profile" /></div>
 	</div></form>
 
 EOF;

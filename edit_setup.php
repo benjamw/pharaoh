@@ -17,7 +17,7 @@ if (isset($_POST['id'])) {
 		Flash::store('Setup edited successfully', 'stats.php');
 	}
 	catch (MyException $e) {
-		Flash::store('Setup edit FAILED !\n'.$e->outputMessage( ), false);
+		Flash::store('Setup Edit FAILED !\n'.$e->outputMessage( ), false);
 		// it will just continue on here...
 	}
 }
@@ -71,32 +71,28 @@ if (isset($_GET['id']) || isset($_POST['id'])) {
 		<input type="hidden" name="setup" id="setup" value="" />
 		<input type="hidden" name="id" value="{$Setup->id}" />
 
-		<div>
-			<div><label for="name">Setup Name</label><input id="name" name="name" value="{$Setup->name}" readonly="readonly" /></div>
-			<div><label for="reflection">Piece Reflection</label><select id="reflection" name="reflection">
-				<option value=""{$None}>None</option>
-				<option{$Origin}>Origin</option>
-				<option{$Long}>Long</option>
-				<option{$Short}>Short</option>
-			</select></div>
-			<div><input type="submit" value="Save Edited Setup" /></div>
+		<div><label for="name">Setup Name</label><input id="name" name="name" value="{$Setup->name}" readonly="readonly" /></div>
+		<div><label for="reflection">Piece Reflection</label><select id="reflection" name="reflection">
+			<option{$None}>None</option>
+			<option{$Origin}>Origin</option>
+			<option{$Long}>Long</option>
+			<option{$Short}>Short</option>
+		</select></div>
+
+		<div id="pieces_display"><img src="images/cancel.png" alt="Cancel" title="Cancel Selection" class="cancel" /><img src="images/delete.png" alt="Delete" title="Delete Piece" class="delete" /></div>
+		<div id="setup_display">
+			<!-- the board will go here -->
+
+			<div class="buttons" style="text-align:center;">
+				<a href="javascript:;" id="red_laser" style="float:left;">Test Fire Red Laser</a>
+				<a href="javascript:;" id="invert">Invert Board</a> |
+				<a href="javascript:;" id="clear_laser">Clear Laser</a>
+				<a href="javascript:;" id="silver_laser" style="float:right;">Test Fire Silver Laser</a>
+			</div> <!-- .buttons -->
 		</div>
 
+		<div><input type="submit" value="Save Edited Setup" /></div>
 	</div></form>
-
-	<div id="pieces_display">
-		<img src="images/cancel.png" alt="Cancel" title="Cancel Selection" /><img src="images/delete.png" alt="Delete" title="Delete Piece" />
-	</div>
-	<div id="setup_display">
-		<!-- the board will go here -->
-
-		<div class="buttons" style="text-align:center;">
-			<a href="javascript:;" id="red_laser" style="float:left;">Test Fire Red Laser</a>
-			<a href="javascript:;" id="invert">Invert Board</a> |
-			<a href="javascript:;" id="clear_laser">Clear Laser</a>
-			<a href="javascript:;" id="silver_laser" style="float:right;">Test Fire Silver Laser</a>
-		</div> <!-- .buttons -->
-	</div>
 
 EOF;
 

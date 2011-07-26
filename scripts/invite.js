@@ -22,7 +22,6 @@ $(document).ready( function( ) {
 	// show the setup div in a fancybox
 	$('a#show_setup').fancybox({
 		padding : 10,
-		overlayOpacity : 0.7,
 		onStart : function( ) {
 			$('div#setup_display')
 				.empty( )

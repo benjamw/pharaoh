@@ -62,7 +62,7 @@ $(document).ready( function( ) {
 	});
 
 	// move history clicks
-	$('table.history td[id^=mv_]').click( function( ) {
+	$('#history table td[id^=mv_]').click( function( ) {
 		clear_laser( );
 
 		move_index = parseInt($(this).attr('id').slice(3));
@@ -74,7 +74,7 @@ $(document).ready( function( ) {
 
 
 	// review button clicks
-	$('.review span:not(.disabled)').live('click', review);
+	$('#history div span:not(.disabled)').live('click', review);
 
 
 	// submit form on input button clicks
@@ -324,11 +324,11 @@ function review( ) {
 
 function update_history( ) {
 	// update our active move history item
-	$('table.history td.active').removeClass('active');
+	$('#history table td.active').removeClass('active');
 	$('td#mv_'+move_index).addClass('active');
 
 	// update our disabled review buttons as needed
-	$('.review .disabled').removeClass('disabled');
+	$('#history div .disabled').removeClass('disabled');
 
 	if (1 >= move_index) {
 		$('#prev, #prev5, #first').addClass('disabled');

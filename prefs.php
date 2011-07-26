@@ -50,13 +50,11 @@ else {
 $contents = <<< EOF
 	<form method="post" action="{$_SERVER['REQUEST_URI']}"><div class="formdiv">
 		<input type="hidden" name="token" value="{$_SESSION['token']}" />
-		<div>
-			<div><label for="allow_email" class="inline">{$allow_email_cb}Allow emails for this game to be sent to your email address</label></div>
-			<div><label for="max_games">Max concurrent games</label><input type="text" id="max_games" name="max_games" size="3" maxlength="3" value="{$GLOBALS['Player']->max_games}" /></div>
-			{$color_select}
-			<div><input type="submit" name="submit" value="Update Preferences" /></div>
-		</div>
 
+		<div><label for="allow_email" class="inline">{$allow_email_cb}Allow emails for this game to be sent to your email address</label></div>
+		<div><label for="max_games">Max concurrent games</label><input type="text" id="max_games" name="max_games" size="3" maxlength="3" value="{$GLOBALS['Player']->max_games}" /></div>
+		{$color_select}
+		<div><input type="submit" name="submit" value="Update Preferences" /></div>
 	</div></form>
 EOF;
 

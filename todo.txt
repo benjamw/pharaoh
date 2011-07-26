@@ -1,37 +1,58 @@
 
-- add ability to request undo
+- revert back to ajaxing the form to prevent double posting, and page
+	refresh after moving issues
 
-- add game 2.0 rules
+- separate out the setups page and the stats page, have game/setup
+	stats on stats page and a list of setups with modals on setups page,
+	and have a link to create new setup as well as the action links for
+	the setups
 
-- revert back to ajaxing the form to prevent double posting, and page refresh after moving issues
+- for revisions for setups, allow the same name for the setup and when
+	a user creates a revision or edits their setup, it creates a new setup
+	and inactivates the previous setup, and then either sort by create
+	date, or add a field in the table called revision and increment that
+	and when we pull the setup, order by created or revision number, and
+	use the most recent.
 
-- separate out the setups page and the stats page, have game/setup stats on stats page
-	and a list of setups with modals on setups page, and have a link to create new setup
-	as well as the action links for the setups
+- add more stats:
+	white wins per setup
+	red wins per setup
+	white wins per user
+	red wins per user
+	player's favorite setup
+	player's worst setup
+	etc...
 
-- for revisions for setups, allow the same name for the setup and
-	when a user creates a revision or edits their setup, it creates a new setup
-	and inactivates the previous setup, and then either sort by
-	create date, or add a field in the table called revision and increment that
-	and when we pull the setup, order by created or revision number, and use the most recent.
+	maybe make a new table that links them together
 
-- don't refresh page if an email success message is sent
-	for things like resend invites, nudges, etc.  just make changes to html if needed
+	id	player_id	setup_id	game_id		color	win  move_count		start_date	end_date	day_count
 
-- add options for selecting which pieces are swappable with which other pieces
 
-- add a different method for removing the click on the piece, because clicking the piece again
-	doesn't work for rotatable pieces
-	- maybe run check and if two clicks happen really fast together (< 250ms) pop-up
-		a dialogue box asking if they meant to do that
+- add game 2.0 rules, but make them inter-operable with current options
+	things like:
+	make laser type selectable
+		if hitting front and/or side of laser counts as "hit" (if 2.0 style)
+		is laser movable (if 2.0 style)
+			is rotatable 360 (if movable)
+	make obelisk type selectable
+		if hitting front and/or sides and/or back count as "hit" (if 2.0 style)
 
-- don't show success messages if email is not sent
-	for things like nudge, that are only emails
-	possibly for other things like invite, etc.
-	that are largely email dependent
+- add options for selecting which pieces are swappable with which
+	other pieces
 
-- store finished games in text files and create a game reader/player
+- build game reader for saved games
 
+- don't refresh page if an email success message is sent for things
+	like resend invites, nudges, etc.  just make changes to html if needed
+
+- add a different method for removing the click on the piece, because
+	clicking the piece again doesn't work for rotatable pieces
+	- maybe run check and if two clicks happen really fast together (<
+		250ms) pop-up a dialogue box asking if they meant to do that
+
+- don't show success messages if email is not sent for things like
+	nudge, that are only emails possibly for other things like invite,
+	etc. that are largely email dependent
 
 
 

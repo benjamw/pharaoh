@@ -21,7 +21,6 @@ $(document).ready( function( ) {
 		type : 'inline',
 		href : '#setup_display',
 		padding : 10,
-		overlayOpacity : 0.7,
 		onStart : function(elem) {
 			$('div#setup_display')
 				.empty( )

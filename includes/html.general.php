@@ -136,11 +136,13 @@ function get_header($meta = null) {
 	<script type="text/javascript" src="scripts/jquery.fancybox/jquery.fancybox-1.3.4.pack.js"></script>
 	<script type="text/javascript">
 		$(document).ready( function( ) {
+			// set fancybox defaults
+			$.fn.fancybox.defaults['overlayColor'] = '#000';
+
 			$('a.help').fancybox({
 				autoDimensions : false,
 				width: 500,
 				padding : 10,
-				overlayOpacity : 0.7,
 				hideOnContentClick : false
 			});
 		});
@@ -155,7 +157,7 @@ function get_header($meta = null) {
 	{$head_data}
 	{$flash}
 
-	<link rel="stylesheet" type="text/css" media="screen" href="css/c_{$GLOBALS['_DEFAULT_COLOR']}.css" />
+	<!--<link rel="stylesheet" type="text/css" media="screen" href="css/c_{$GLOBALS['_DEFAULT_COLOR']}.css" />-->
 
 	{$admin_css}
 
@@ -164,23 +166,25 @@ function get_header($meta = null) {
 <body id="{$file_name}_page">
 	{$admin_div}
 
-	<div id="links">{$nav_links}</div>
-	<h1><a href="index.php">{$GAME_NAME}</a></h1>
-	<div id="wrapper">
+	<header>
+		<h1><a href="index.php">{$GAME_NAME}</a></h1>
+		<nav class="site">{$nav_links}</nav>
+	</header>
+
 EOF;
 
 	if ($show_menu) {
 		$html .= '
-		<div id="menuholder">';
+	<aside id="nav">';
 
 		if ($menu_data) {
 			$html .= '
-		<div id="menu">
+		<nav id="menu" class="box">
 			<ul>
-				<li'.get_active('index').'><a href="index.php'.$GLOBALS['_?_DEBUG_QUERY'].'" title="(Your Turn | Your Games | Total Games)"'.(($allow_blink && $menu_data['my_turn']) ? ' class="blink"' : '').'>Games ('.$menu_data['my_turn'].'|'.$menu_data['my_games'].'|'.$menu_data['games'].')</a></li>
-				<li'.get_active('invite').'><a href="invite.php'.$GLOBALS['_?_DEBUG_QUERY'].'" title="(Received | Open | Sent)"'.(($allow_blink && $menu_data['in_vites']) ? ' class="blink"' : '').'>Invitations ('.$menu_data['in_vites'].'|'.$menu_data['open_vites'].'|'.$menu_data['out_vites'].')</a></li>
-				<li'.get_active('messages').'><a href="messages.php'.$GLOBALS['_?_DEBUG_QUERY'].'" title="(New Messages | Total Messages)"'.(($allow_blink && $menu_data['new_msgs']) ? ' class="blink"' : '').'>Messages ('.$menu_data['new_msgs'].'|'.$menu_data['msgs'].')</a></li>
-				<li'.get_active('setups').'><a href="setups.php'.$GLOBALS['_?_DEBUG_QUERY'].'" title="(Yours | Total)">Setups ('.$menu_data['my_setups'].'|'.$menu_data['setups'].')</a></li>
+				<li'.get_active('index').'><a href="index.php'.$GLOBALS['_?_DEBUG_QUERY'].'" title="(Your Turn | Your Games | Total Games)"'.(($allow_blink && $menu_data['my_turn']) ? ' class="blink"' : '').'>Games <span class="sep">(</span> '.$menu_data['my_turn'].' <span class="sep">|</span> '.$menu_data['my_games'].' <span class="sep">|</span> '.$menu_data['games'].' <span class="sep">)</span></a></li>
+				<li'.get_active('invite').'><a href="invite.php'.$GLOBALS['_?_DEBUG_QUERY'].'" title="(Received | Open | Sent)"'.(($allow_blink && $menu_data['in_vites']) ? ' class="blink"' : '').'>Invitations <span class="sep">(</span> '.$menu_data['in_vites'].' <span class="sep">|</span> '.$menu_data['open_vites'].' <span class="sep">|</span> '.$menu_data['out_vites'].' <span class="sep">)</span></a></li>
+				<li'.get_active('messages').'><a href="messages.php'.$GLOBALS['_?_DEBUG_QUERY'].'" title="(New Messages | Total Messages)"'.(($allow_blink && $menu_data['new_msgs']) ? ' class="blink"' : '').'>Messages <span class="sep">(</span> '.$menu_data['new_msgs'].' <span class="sep">|</span> '.$menu_data['msgs'].' <span class="sep">)</span></a></li>
+				<li'.get_active('setups').'><a href="setups.php'.$GLOBALS['_?_DEBUG_QUERY'].'" title="(Yours | Total)">Setups <span class="sep">(</span> '.$menu_data['my_setups'].' <span class="sep">|</span> '.$menu_data['setups'].' <span class="sep">)</span></a></li>
 				<li'.get_active('stats').'><a href="stats.php'.$GLOBALS['_?_DEBUG_QUERY'].'">Statistics</a></li>
 				<li'.get_active('prefs').'><a href="prefs.php'.$GLOBALS['_?_DEBUG_QUERY'].'">Preferences</a></li>
 				<li'.get_active('profile').'><a href="profile.php'.$GLOBALS['_?_DEBUG_QUERY'].'">Profile</a></li>
@@ -193,13 +197,13 @@ EOF;
 			$html .= '
 				<li><a href="login.php'.$GLOBALS['_?_DEBUG_QUERY'].'">Logout</a></li>
 			</ul>
-		</div>';
+		</nav><!-- #menu -->';
 		}
 
 		if ($game_data) {
 			$html .= '
-		<div id="mygames_title"><strong>My Games</strong></div>
-		<div id="mygames">
+		<div id="mygames_title">My Games</div>
+		<nav id="mygames" class="box">
 			<ul>';
 
 			foreach ($game_data as $game) {
@@ -210,11 +214,11 @@ EOF;
 
 			$html .= '
 			</ul>
-		</div>';
+		</nav><!-- #mygames -->';
 		}
 
 		$html .= '
-		</div>';
+	</aside><!-- #nav -->';
 	}
 
 	return $html;
@@ -236,13 +240,12 @@ function get_footer($meta = array( )) {
 	$Mysql = Mysql::get_instance( );
 
 	$html = '
-		<div id="footerspacer">&nbsp;</div>
-		<div id="footer">
-			<span>Total Players - '.$players.'</span>
-			<span>Active Games - '.$cur_games.'</span>
-			<span>Games Played - '.$total_games.'</span>
-		</div>
-	</div>
+	<div id="footerspacer">&nbsp;</div>
+	<footer>
+		<span>Total Players - '.$players.'</span>
+		<span>Active Games - '.$cur_games.'</span>
+		<span>Games Played - '.$total_games.'</span>
+	</footer>
 
 	'.$foot_data.'
 
@@ -285,17 +288,21 @@ function get_item($contents, $hint, $title = '', $extra_html = '') {
 	$long_date = (class_exists('Settings') && Settings::test( )) ? Settings::read('long_date') : 'M j, Y g:i a';
 
 	$html = '
-		<div id="sidebar">
-			<div id="notes">
-				<div id="date">'.date($long_date).'</div>
-				'.$hint_html.'
+		<aside id="info">
+			<div id="notes" class="box">
+				<div>
+					<div id="date">'.date($long_date).'</div>
+					'.$hint_html.'
+				</div>
 			</div>
 			'.$extra_html.'
-		</div>
-		<div id="content">
-			'.$title.'
-			'.$contents.'
-		</div>
+		</aside><!-- #info -->
+		<div id="content" class="box">
+			<div>
+				'.$title.'
+				'.$contents.'
+			</div>
+		</div><!-- #content -->
 	';
 
 	return $html;

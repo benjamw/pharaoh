@@ -167,27 +167,29 @@ echo get_header($meta);
 				<span class="extra"><?php echo $Game->get_extra( ); ?></span>
 			</h2>
 
-			<div id="history">
-				<div class="review">
-					<span id="first">|&lt;</span>
-					<span id="prev5">&lt;&lt;</span>
-					<span id="prev">&lt;</span>
-					<span id="next">&gt;</span>
-					<span id="next5">&gt;&gt;</span>
-					<span id="last">&gt;|</span>
+			<div id="history" class="box">
+				<div>
+					<div>
+						<span id="first">|&lt;</span>
+						<span id="prev5">&lt;&lt;</span>
+						<span id="prev">&lt;</span>
+						<span id="next">&gt;</span>
+						<span id="next5">&gt;&gt;</span>
+						<span id="last">&gt;|</span>
+					</div>
+					<table>
+						<thead>
+							<tr>
+								<th>#</th>
+								<th>Silver</th>
+								<th>Red</th>
+							</tr>
+						</thead>
+						<tbody>
+							<?php echo $history_html; ?>
+						</tbody>
+					</table>
 				</div>
-				<table class="history">
-					<thead>
-						<tr>
-							<th>#</th>
-							<th>Silver</th>
-							<th>Red</th>
-						</tr>
-					</thead>
-					<tbody>
-						<?php echo $history_html; ?>
-					</tbody>
-				</table>
 			</div> <!-- #history -->
 
 			<div id="board_wrapper">
@@ -205,7 +207,7 @@ echo get_header($meta);
 
 			<?php echo $chat_html; ?>
 
-			<form id="game" method="post" action="<?php echo $_SERVER['REQUEST_URI']; ?>"><div class="formDiv">
+			<form id="game" method="post" action="<?php echo $_SERVER['REQUEST_URI']; ?>"><div class="formdiv">
 				<input type="hidden" name="token" value="<?php echo $_SESSION['token']; ?>" />
 				<input type="hidden" name="game_id" value="<?php echo $_SESSION['game_id']; ?>" />
 				<input type="hidden" name="player_id" value="<?php echo $_SESSION['player_id']; ?>" />

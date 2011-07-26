@@ -39,8 +39,9 @@ $(document).ready( function($) {
 	// show the pieces
 	var piece;
 	var $pieces_div = $('#pieces_display');
+	var $delete = $pieces_div.find('.delete');
 	for (piece in pieces) {
-		$pieces_div.append(create_piece(piece));
+		$delete.before(create_piece(piece));
 		$pieces_div.append(create_piece(piece.toLowerCase( )));
 	}
 
@@ -269,6 +270,6 @@ String.prototype.replaceAt = function(index, char) {
 
 String.prototype.repeat = function(num) {
 	num = parseInt(num);
-    return new Array(num + 1).join(this);
+	return new Array(num + 1).join(this);
 }
 
