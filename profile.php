@@ -17,7 +17,7 @@ if (isset($_POST['submit'])) {
 
 $zones = timezone_identifiers_list( );
 
-$tz_select = '';
+$tz_select = '<option value="">Use Game Default ('.$GLOBALS['_DEFAULT_TIMEZONE'].')</option>';
 foreach ($zones as $zone) {
 	$parts = explode('/', $zone); // 0 => Continent, 1 => City --OR-- 0 => Continent, 1 => Country/State, 2 => City
 
