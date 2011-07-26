@@ -1,7 +1,4 @@
 
-- revert back to ajaxing the form to prevent double posting, and page
-	refresh after moving issues
-
 - separate out the setups page and the stats page, have game/setup
 	stats on stats page and a list of setups with modals on setups page,
 	and have a link to create new setup as well as the action links for
@@ -22,11 +19,6 @@
 	player's favorite setup
 	player's worst setup
 	etc...
-
-	maybe make a new table that links them together
-
-	id	player_id	setup_id	game_id		color	win  move_count		start_date	end_date	day_count
-
 
 - add game 2.0 rules, but make them inter-operable with current options
 	things like:
@@ -54,5 +46,6 @@
 	nudge, that are only emails possibly for other things like invite,
 	etc. that are largely email dependent
 
-
+- fully convert times to UTC in MySQL and back to user's timezone everywhere
+	dates are output
 

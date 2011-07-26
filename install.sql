@@ -217,6 +217,28 @@ CREATE TABLE IF NOT EXISTS `ph_setup` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `ph_stats`
+--
+
+DROP TABLE IF EXISTS `ph_stats`;
+CREATE TABLE IF NOT EXISTS `ph_stats` (
+  `player_id` int(10) unsigned NOT NULL,
+  `game_id` int(10) unsigned NOT NULL,
+  `setup_id` int(10) unsigned NOT NULL,
+  `color` enum('white','black') COLLATE latin1_general_ci NOT NULL,
+  `win` tinyint(1) NOT NULL DEFAULT '0',
+  `move_count` int(10) unsigned NOT NULL DEFAULT '0',
+  `start_date` datetime NOT NULL,
+  `end_date` datetime NOT NULL,
+  `hour_count` float(8,3) NOT NULL DEFAULT '0.000',
+  UNIQUE KEY `player_id` (`player_id`,`game_id`,`setup_id`),
+  KEY `move_count` (`move_count`),
+  KEY `hour_count` (`hour_count`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `player`
 --
 

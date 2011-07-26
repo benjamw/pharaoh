@@ -60,6 +60,14 @@ class Game
 	const GAME_NUDGE_TABLE = T_GAME_NUDGE;
 
 
+	/** const property GAME_STATS_TABLE
+	 *		Holds the game stats table name
+	 *
+	 * @var string
+	 */
+	const GAME_STATS_TABLE = T_STATS;
+
+
 	/** static protected property _EXTRA_INFO_DEFAULTS
 	 *		Holds the default extra info data
 	 *
@@ -2042,6 +2050,15 @@ class Game
 			if ('Finished' == $this->state) {
 				$update_game['winner_id'] = $this->_players[$this->_pharaoh->winner]['player_id'];
 			}
+
+			if (in_array($this->state, array('Finished', 'Draw'))) {
+				try {
+					$this->_add_stats( );
+				}
+				catch (MyException $e) {
+					// do nothing, it gets logged
+				}
+			}
 		}
 
 		$diff = array_compare($this->_extra_info, self::$_EXTRA_INFO_DEFAULTS);
@@ -2113,6 +2130,68 @@ class Game
 		if ($update_modified) {
 			$this->_mysql->insert(self::GAME_TABLE, array('modify_date' => NULL), " WHERE game_id = '{$this->id}' ");
 		}
+	}
+
+
+	/** protected function _add_stats
+	 *		Adds data to the stats table
+	 *
+	 * @param void
+	 * @action adds stats to stats table
+	 * @return void
+	 */
+	protected function _add_stats( )
+	{
+		call(__METHOD__);
+		call($this);
+
+		if ( ! in_array($this->state, array('Finished', 'Draw'))) {
+			throw new MyException (__METHOD__.': Game (#'.$this->id.') is not finished ('.$this->state.')');
+		}
+
+		$count = count($this->_history) - 1;
+		$start = $this->_history[1]['move_date'];
+		$end = $this->_history[$count]['move_date'];
+
+		$start_unix = strtotime($start);
+		$end_unix = strtotime($end);
+		$hours = round(($end_unix - $start_unix) / (60 * 60), 3);
+
+		$stat = array(
+			'game_id' => $this->id,
+			'setup_id' => $this->_setup['id'],
+			'move_count' => $count,
+			'start_date' => $start,
+			'end_date' => $end,
+			'hour_count' => $hours,
+		);
+
+		$white_outcome = $black_outcome = 0;
+		if ('Finished' == $this->state) {
+			$white_outcome = 1;
+			$black_outcome = -1;
+
+			if ('red' == $this->_pharaoh->winner) {
+				$white_outcome = -1;
+				$black_outcome = 1;
+			}
+		}
+
+		$white = array_merge($stat, array(
+			'player_id' => $this->_players['white']['player_id'],
+			'color' => 'white',
+			'win' => $white_outcome,
+		));
+		call($white);
+		$this->_mysql->insert(self::GAME_STATS_TABLE, $white);
+
+		$black = array_merge($stat, array(
+			'player_id' => $this->_players['black']['player_id'],
+			'color' => 'black',
+			'win' => $black_outcome,
+		));
+		call($black);
+		$this->_mysql->insert(self::GAME_STATS_TABLE, $black);
 	}
 
 
@@ -2673,6 +2752,28 @@ CREATE TABLE IF NOT EXISTS `bs_game_nudge` (
 
   UNIQUE KEY `game_player` (`game_id`,`player_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci ;
+
+
+--
+-- Table structure for table `ph_stats`
+--
+
+DROP TABLE IF EXISTS `ph_stats`;
+CREATE TABLE IF NOT EXISTS `ph_stats` (
+  `player_id` int(10) unsigned NOT NULL,
+  `game_id` int(10) unsigned NOT NULL,
+  `setup_id` int(10) unsigned NOT NULL,
+  `color` enum('white','black') COLLATE latin1_general_ci NOT NULL,
+  `win` tinyint(1) NOT NULL DEFAULT '0',
+  `move_count` int(10) unsigned NOT NULL DEFAULT '0',
+  `start_date` datetime NOT NULL,
+  `end_date` datetime NOT NULL,
+  `hour_count` float(8,3) NOT NULL DEFAULT '0.000',
+  UNIQUE KEY `player_id` (`player_id`,`game_id`,`setup_id`),
+  KEY `move_count` (`move_count`),
+  KEY `hour_count` (`hour_count`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci;
+
 
 */
 
