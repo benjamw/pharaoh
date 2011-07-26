@@ -88,7 +88,8 @@ if ( ! $Game->watch_mode || $GLOBALS['Player']->is_admin) {
 
 // build the history table
 $history_html = '';
-foreach ($Game->get_move_history( ) as $i => $move) {
+$moves = $Game->get_move_history( );
+foreach ($moves as $i => $move) {
 	if ( ! is_array($move)) {
 		break;
 	}
@@ -224,7 +225,7 @@ echo get_header($meta);
 
 					<?php } ?>
 
-					<?php if ( ! $Game->undo_requested( ) && ! $Game->is_turn( )) { ?>
+					<?php if ( ! $Game->undo_requested( ) && ! $Game->is_turn( ) && ! empty($moves)) { ?>
 
 						<input type="button" name="request_undo" id="request_undo" value="Request Undo" />
 
