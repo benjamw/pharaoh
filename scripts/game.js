@@ -477,9 +477,13 @@ function clear_highlights( ) {
 
 var stage_1 = false;
 var from_index = -1;
+var time = [];
 function set_square(event) {
 	// don't allow the event to bubble up the DOM tree
 	event.stopPropagation( );
+
+	// set the time of the click
+	time.push(new Date( ).getTime( ));
 
 	clear_laser( );
 
@@ -532,12 +536,29 @@ function set_square(event) {
 
 		var rotating = false;
 		if (('r' == board_index) || ('l' == board_index)) {
+			// check the time between clicks and make sure this wasn't a mistake
+			if (1000 > (time[1] - time[0])) {
+				if ( ! confirm("You clicked that rotate button awfully fast...  ("+(time[1] - time[0])+" ms)\nWas that what you meant to do?")) {
+					// reset
+					stage_1 = false;
+					from_index = -1;
+					time = []
+					clear_highlights( );
+					$('img.rotate').remove( );
+
+					// perform the original click again
+					$fr_elem.click( );
+					return;
+				}
+			}
+
 			rotating = true;
 		}
 		else if (board_index == from_index) {
 			// reset
 			stage_1 = false;
 			from_index = -1;
+			time = []
 			clear_highlights( );
 			$('img.rotate').remove( );
 			return;
@@ -546,6 +567,7 @@ function set_square(event) {
 			// reset
 			stage_1 = false;
 			from_index = -1;
+			time = [];
 			clear_highlights( );
 			$('img.rotate').remove( );
 
@@ -573,6 +595,7 @@ function set_square(event) {
 					// reset
 					stage_1 = false;
 					from_index = -1;
+					time = []
 					clear_highlights( );
 					$('img.rotate').remove( );
 
