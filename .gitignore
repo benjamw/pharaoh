@@ -5,7 +5,7 @@
 *.epp
 .sass-cache
 
-/games/*
+/games/*.pgn
 /logs/*
 
 /includes/config.php

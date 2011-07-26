@@ -1670,16 +1670,137 @@ class Game
 
 
 	/** static public function write_game_file
-	 *		TODO
+	 *		Writes the game to a text file for storage
 	 *
-	 * @param void
-	 * @action void
-	 * @return bool true
+	 * @param int game id
+	 * @action writes the game PGN file
+	 * @return string PGN
 	 */
-	static public function write_game_file( )
+	static public function write_game_file($game_id)
 	{
-		// TODO: build a logging system to log game data
-		return true;
+		// the PGN export format is very exact when it comes to what is allowed
+		// and what is not allowed when creating a PGN file.
+		// first, the only new line character that is allowed is a single line feed character
+		// output in PHP as \n, this means that \r is not allowed, nor is \r\n
+		// second, no tab characters are allowed, neither vertical, nor horizontal (\t)
+		// third, comments do NOT nest, thus { { } } will be in error, as will { ; }
+		// fourth, { } denotes an inline comment, where ; denotes a 'rest of line' comment
+		// fifth, a percent sign (%) at the beginning of a line denotes a whole line comment
+		// sixth, comments may not be included in the meta tags ( [Meta "data"] )
+
+		$Mysql = Mysql::get_instance( );
+
+		if (empty($game_id)) {
+			throw new MyException(__METHOD__.': No game id given');
+		}
+
+		try {
+			$Game = new Game($game_id);
+		}
+		catch (MyException $e) {
+			throw $e;
+		}
+
+		$start_date = date('Y-m-d', strtotime($Game->_history[1]['move_date']));
+		$white_name = $Game->_players['white']['object']->lastname.', '.$Game->_players['white']['object']->firstname.' ('.$Game->_players['white']['object']->username.')';
+		$black_name = $Game->_players['black']['object']->lastname.', '.$Game->_players['black']['object']->firstname.' ('.$Game->_players['black']['object']->username.')';
+
+		$extra_info = $Game->_extra_info;
+		$diff = array_compare($extra_info, self::$_EXTRA_INFO_DEFAULTS);
+		$extra_info = $diff[0];
+
+		unset($extra_info['white_color']);
+		unset($extra_info['draw_offered']);
+		unset($extra_info['undo_requested']);
+
+		$xheadxtra = '';
+		$xheader = "[Event \"Pharaoh (Khet) Casual Game #{$Game->id}\"]\n"
+					. "[Site \"{$GLOBALS['_ROOT_URI']}\"]\n"
+					. "[Date \"{$start_date}\"]\n"
+					. "[Round \"-\"]\n"
+					. "[White \"{$white_name}\"]\n"
+					. "[Black \"{$black_name}\"]\n"
+					. "[Setup \"{$Game->_history[0]['board']}\"]\n";
+
+		if ($extra_info) {
+			$options = serialize($extra_info);
+			$xheadxtra .= "[Options \"{$options}\"]\n";
+		}
+
+		$xheadxtra .= "[Mode \"ICS\"]\n";
+
+		$body = '';
+		$line = '';
+		foreach ($Game->_history as $key => $move) {
+			// skip the first entry
+			if ( ! $key) {
+				continue;
+			}
+
+			if (0 != ($key % 2)) {
+				$token = floor(($key + 1) / 2) . '. ' . $move['move'];
+			}
+			else {
+				$token .= ' ' . $move['move'];
+
+				if ((strlen($line) + strlen($token)) > 79) {
+					$body .= $line . "\n";
+					$line = '';
+				}
+				elseif (strlen($line) > 0) {
+					$line .= ' ';
+				}
+
+				$line .= $token;
+				$token = '';
+			}
+		}
+
+		if ($token) {
+			if ((strlen($line) + strlen($token)) > 79) {
+				$body .= $line . "\n";
+				$line = '';
+			}
+			elseif (strlen($line) > 0) {
+				$line .= ' ';
+			}
+
+			$line .= $token;
+			$token = '';
+		}
+
+		// finish up the PGN with the game result
+		$result = '*';
+		if ('Finished' == $Game->state) {
+			if ('white' == $Game->turn) {
+				$result = '1-0';
+			}
+			else {
+				$result = '0-1';
+			}
+		}
+		elseif ('Draw' == $Game->state) {
+			$result = '1/2-1/2';
+		}
+
+		$body .= $line;
+
+		if ((strlen($line) + strlen($result)) > 79) {
+			$body .= "\n";
+		}
+		elseif (strlen($line) > 0) {
+			$body .= ' ';
+		}
+
+		$body .= $result . "\n";
+		$xheader .= "[Result \"$result\"]\n";
+
+		$data = $xheader . $xheadxtra . "\n" . $body;
+
+		$filename = GAMES_DIR."/Pharoah_Game_{$Game->id}_".str_replace(array(' ','-',':'), '', $Game->_history[count($Game->_history) - 1]['move_date']).'.pgn';
+		file_put_contents($filename, $data);
+
+		return $data;
 	}
 
 
@@ -2419,7 +2540,10 @@ class Game
 		}
 
 		foreach ($ids as $id) {
-			self::write_game_file($id);
+			try {
+				self::write_game_file($id);
+			}
+			catch (MyException $e) { }
 		}
 
 		$tables = array(
