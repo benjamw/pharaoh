@@ -5,8 +5,6 @@ $debug = false;
 // set some ini stuff
 ini_set('register_globals', 0); // you really should have this off anyways
 
-date_default_timezone_set('UTC');
-
 // deal with those lame magic quotes
 if (get_magic_quotes_gpc( )) {
 	function stripslashes_deep($value) {
@@ -57,6 +55,9 @@ require_once INCLUDE_DIR.'html.tables.php';
 // MAKE SURE TO LOAD CLASS FILES BEFORE STARTING THE SESSION
 // OR YOU END UP WITH INCOMPLETE OBJECTS PULLED FROM SESSION
 spl_autoload_register('load_class');
+
+// set the proper timezone
+date_default_timezone_set($GLOBALS['_DEFAULT_TIMEZONE']);
 
 
 /**

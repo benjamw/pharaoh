@@ -19,6 +19,11 @@
 	$GLOBALS['_ROOT_URI']   = 'http://www.yoursite.com/pharaoh/'; // The root URL of the game script (include closing / )
 	$GLOBALS['_USEEMAIL']   = true; // SMTP operations.  Test it before putting it into production
 
+	
+/* Date settings */
+/* ------------- */
+	$GLOBALS['_DEFAULT_TIMEZONE'] = 'UTC'; // Your timezone (http://php.net/manual/en/timezones.php)
+
 
 /* Table settings */
 /* -------------- */
