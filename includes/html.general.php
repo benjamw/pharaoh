@@ -267,7 +267,7 @@ function get_footer($meta = array( )) {
  */
 function get_item($contents, $hint, $title = '', $extra_html = '') {
 	$hint_html = "\n\t\t\t<p><strong>Welcome";
-	if (isset($GLOBALS['Player']) && (0 != $_SESSION['player_id'])) {
+	if ( ! empty($GLOBALS['Player']) && ! empty($_SESSION['player_id'])) {
 		$hint_html .= ", {$GLOBALS['Player']->username}";
 	}
 	$hint_html .= '</strong></p>';
