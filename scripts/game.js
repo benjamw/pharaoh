@@ -543,7 +543,7 @@ function set_square(event) {
 		if (('r' == board_index) || ('l' == board_index)) {
 			// check the time between clicks and make sure this wasn't a mistake
 			if (1000 > (time[1] - time[0])) {
-				if ( ! confirm("You clicked that rotate button awfully fast...  ("+(time[1] - time[0])+" ms)\nWas that what you meant to do?")) {
+				if ( ! confirm("You clicked that rotate button awfully fast...  ("+(time[1] - time[0])+" ms)\nWas that what you meant to do?  (Rotating "+board_index.toUpperCase( )+")")) {
 					// reset
 					stage_1 = false;
 					from_index = -1;
