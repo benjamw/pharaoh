@@ -39,6 +39,20 @@ $(document).ready( function( ) {
 	});
 	show_link( );
 
+	// show the setup div for the invites
+	$('a.setup').fancybox({
+		padding : 10,
+		onStart : function(arr, idx, opts) {
+			$('div#setup_display')
+				.empty( )
+				.append(create_board(setups[$(arr[idx]).attr('id').slice(2)]))
+				.show( );
+		},
+		onClosed :function( ) {
+			$('div#setup_display').hide( );
+		}
+	});
+
 	$('form#send').submit( function( ) {
 		if ( ! $('select#setup').val( )) {
 			alert('You must select a setup');

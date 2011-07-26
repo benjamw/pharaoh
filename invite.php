@@ -182,7 +182,7 @@ $table_meta = array(
 );
 $table_format = array(
 	array('Invitee', '###ife(\'[[[invitee]]]\', \'-- OPEN --\')') ,
-	array('Setup', 'setup') ,
+	array('Setup', '<a href="#setup_display" class="setup" id="s_[[[setup_id]]]">[[[setup]]]</a>') ,
 	array('Color', 'color') ,
 	array('Date Sent', '###date(Settings::read(\'long_date\'), strtotime(\'[[[create_date]]]\'))', null, ' class="date"') ,
 	array('Action', '###\'<input type="button" id="withdraw-[[[game_id]]]" value="Withdraw" />\'.((strtotime(\'[[[create_date]]]\') >= strtotime(\'[[[resend_limit]]]\')) ? \'\' : \'<input type="button" id="resend-[[[game_id]]]" value="Resend" />\')', false) ,
@@ -196,7 +196,7 @@ $table_meta = array(
 );
 $table_format = array(
 	array('Invitor', 'invitor') ,
-	array('Setup', 'setup') ,
+	array('Setup', '<a href="#setup_display" class="setup" id="s_[[[setup_id]]]">[[[setup]]]</a>') ,
 	array('Color', 'color') ,
 	array('Date Sent', '###date(Settings::read(\'long_date\'), strtotime(\'[[[create_date]]]\'))', null, ' class="date"') ,
 	array('Action', '<input type="button" id="accept-[[[game_id]]]" value="Accept" />', false) ,
