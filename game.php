@@ -257,6 +257,11 @@ echo get_header($meta);
 			if (draw_offered && ('watching' != state)) {
 				alert('Your opponent has offered you a draw.\n\nMake your decision with the draw\nbuttons below the game board.');
 			}
+
+			// run undo request alert
+			if (undo_requested && ('watching' != state)) {
+				alert('Your opponent has requested an undo.\n\nMake your decision with the undo\nbuttons below the game board.');
+			}
 		</script>
 
 <?php
