@@ -429,6 +429,7 @@ class Player
 		$key_list = array_merge($required, array(
 			'first_name' ,
 			'last_name' ,
+			'timezone' ,
 		));
 
 		if ($_DATA = array_clean($_POST, $key_list, $required)) {
@@ -1099,7 +1100,7 @@ CREATE TABLE IF NOT EXISTS `player` (
   `username` varchar(20) NOT NULL DEFAULT '',
   `first_name` varchar(20) DEFAULT NULL,
   `last_name` varchar(20) DEFAULT NULL,
-  `email` varchar(255) NOT NULL DEFAULT '',
+  `email` varchar(100) NOT NULL DEFAULT '',
   `timezone` varchar(255) NOT NULL DEFAULT '',
   `is_admin` tinyint(1) unsigned NOT NULL DEFAULT '0',
   `password` varchar(32) NOT NULL DEFAULT '',
