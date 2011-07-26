@@ -93,6 +93,11 @@ $(document).ready( function( ) {
 		}
 
 		if (confirmed) {
+			if (debug) {
+				window.location = 'ajax_helper.php'+debug_query+'&'+$this.parents('form').serialize( )+'&'+$this.prop('name')+'='+$this.prop('value');
+				return false;
+			}
+
 			$.ajax({
 				type: 'POST',
 				url: 'ajax_helper.php',
@@ -617,6 +622,11 @@ function set_square(event) {
 			if (stacked_obelisk && empty_to && confirm('Do you want to split this obelisk stack?\n\nOK- Split obelisk stack | Cancel- Move stack as whole')) {
 				$('input#to').val(board_index+'-split');
 			}
+		}
+
+		if (debug) {
+			window.location = 'ajax_helper.php'+debug_query+'&'+$('form#game').serialize( )+'&turn=1';
+			return false;
 		}
 
 		// ajax the form
