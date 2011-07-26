@@ -174,6 +174,11 @@ if (( ! defined('LOGIN') || LOGIN) && isset($Mysql)) {
 	if (('' != $GLOBALS['Player']->color) && (in_array($GLOBALS['Player']->color, $GLOBALS['_COLORS']))) {
 		$GLOBALS['_DEFAULT_COLOR'] = $GLOBALS['Player']->color;
 	}
+
+	// set the default timezone for the player
+	if ('' !== $GLOBALS['Player']->timezone) {
+		date_default_timezone_set($GLOBALS['Player']->timezone);
+	}
 }
 
 // grab the list of players

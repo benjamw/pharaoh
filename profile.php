@@ -14,6 +14,24 @@ if (isset($_POST['submit'])) {
 		Flash::store('Profile Update FAILED !', false);
 	}
 }
+
+$zones = timezone_identifiers_list( );
+
+$tz_select = '';
+foreach ($zones as $zone) {
+	$parts = explode('/', $zone); // 0 => Continent, 1 => City --OR-- 0 => Continent, 1 => Country/State, 2 => City
+
+	// Only use "friendly" continent names (for PHP < 5.3)
+	if (5 < PHP_MAJOR_VERSION || 3 <= PHP_MINOR_VERSION
+		|| 'Africa' === $parts[0] || 'America' === $parts[0] || 'Antarctica' === $parts[0]
+		|| 'Arctic' === $parts[0] || 'Asia' === $parts[0] || 'Atlantic' === $parts[0]
+		|| 'Australia' === $parts[0] || 'Europe' === $parts[0] || 'Indian' === $parts[0]
+		|| 'Pacific' === $parts[0] || 'UTC' === $parts[0]
+	) {
+		$tz_select .= '<option'.get_selected($GLOBALS['Player']->timezone, $zone, true).'>'.$zone.'</option>';
+	}
+}
+
 $meta['title'] = 'Update Profile';
 $meta['head_data'] = '
 	<script type="text/javascript">//<![CDATA[
@@ -39,12 +57,18 @@ $contents = <<< EOF
 
 		<div><label for="email" class="req">Email</label><input type="text" id="email" name="email" maxlength="100" value="{$GLOBALS['Player']->email}" tabindex="3" /><span id="email_check" class="test"></span></div>
 
-		<div class="info">Leave password fields blank to keep current password.</div>
-		<div><label for="curpass">Current Password</label><input type="password" id="curpass" name="curpass" tabindex="4" /></div>
-		<div><label for="password">New Password</label><input type="password" id="password" name="password" tabindex="5" /></div>
-		<div><label for="passworda">Confirmation</label><input type="password" id="passworda" name="passworda" tabindex="6" /></div>
+		<div><label for="timezone">Timezone</label>
+			<select name="timezone" tabindex="4">
+				{$tz_select}
+			</select>
+		</div>
 
-		<div><input type="submit" id="submit" name="submit" value="Update Profile" /></div>
+		<div class="info">Leave password fields blank to keep current password.</div>
+		<div><label for="curpass">Current Password</label><input type="password" id="curpass" name="curpass" tabindex="5" /></div>
+		<div><label for="password">New Password</label><input type="password" id="password" name="password" tabindex="6" /></div>
+		<div><label for="passworda">Confirmation</label><input type="password" id="passworda" name="passworda" tabindex="7" /></div>
+
+		<div><input type="submit" id="submit" name="submit" value="Update Profile" tabindex="8" /></div>
 	</div></form>
 
 EOF;
