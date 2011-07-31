@@ -155,9 +155,8 @@ if (defined('DEBUG') && DEBUG) {
 	}
 }
 else { // do not edit the following
-#	ini_set('display_errors','Off');
-	error_reporting(E_ALL | E_STRICT);
-#	error_reporting(E_ALL & ~ E_NOTICE); // show errors, but not notices
+	ini_set('display_errors','Off');
+	error_reporting(E_ALL & ~ E_NOTICE); // show errors, but not notices
 }
 
 // log the player in
