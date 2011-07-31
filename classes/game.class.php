@@ -2333,6 +2333,157 @@ class Game
 	}
 
 
+	/** static public function get_player_stats_list
+	 *		Returns a list array of all game players
+	 *		in the database with additional stats added
+	 *
+	 * @param void
+	 * @return array game player list (or bool false on failure)
+	 */
+	static public function get_player_stats_list( )
+	{
+		$Mysql = Mysql::get_instance( );
+
+		$players = GamePlayer::get_list(true);
+
+		if ($players) {
+			// add some more stats
+			$query = "
+				SELECT o.player_id
+					, COUNT(ww.win) AS white_wins
+					, COUNT(wl.win) AS white_losses
+					, COUNT(wd.win) AS white_draws
+					, COUNT(bw.win) AS black_wins
+					, COUNT(bl.win) AS black_losses
+					, COUNT(bd.win) AS black_draws
+				FROM ".self::GAME_STATS_TABLE." AS o
+					LEFT JOIN ".self::GAME_STATS_TABLE." AS ww
+						ON (o.player_id = ww.player_id
+							AND o.game_id = ww.game_id
+							AND ww.win = 1
+							AND ww.color = 'white')
+					LEFT JOIN ".self::GAME_STATS_TABLE." AS wl
+						ON (o.player_id = wl.player_id
+							AND o.game_id = wl.game_id
+							AND wl.win = -1
+							AND wl.color = 'white')
+					LEFT JOIN ".self::GAME_STATS_TABLE." AS wd
+						ON (o.player_id = wd.player_id
+							AND o.game_id = wd.game_id
+							AND wd.win = 0
+							AND wd.color = 'white')
+					LEFT JOIN ".self::GAME_STATS_TABLE." AS bw
+						ON (o.player_id = bw.player_id
+							AND o.game_id = bw.game_id
+							AND bw.win = 1
+							AND bw.color = 'black')
+					LEFT JOIN ".self::GAME_STATS_TABLE." AS bl
+						ON (o.player_id = bl.player_id
+							AND o.game_id = bl.game_id
+							AND bl.win = -1
+							AND bl.color = 'black')
+					LEFT JOIN ".self::GAME_STATS_TABLE." AS bd
+						ON (o.player_id = bd.player_id
+							AND o.game_id = bd.game_id
+							AND bd.win = 0
+							AND bd.color = 'black')
+				GROUP BY o.player_id
+			";
+			$results = $Mysql->fetch_array($query);
+
+			$stats = array( );
+			foreach ($results as $stat) {
+				$stats[$stat['player_id']] = $stat;
+			}
+
+			$empty = array(
+				'white_wins' => 0,
+				'white_losses' => 0,
+				'white_draws' => 0,
+				'black_wins' => 0,
+				'black_losses' => 0,
+				'black_draws' => 0,
+			);
+			foreach ($players as & $player) { // be careful with the reference
+				if (isset($stats[$player['player_id']])) {
+					$player = array_merge($player, $stats[$player['player_id']]);
+				}
+				else {
+					$player = array_merge($player, $empty);
+				}
+			}
+			unset($player); // kill the reference
+		}
+
+		return $players;
+	}
+
+
+	/** static public function get_setup_stats_list
+	 *		Gets the list of all the setups with
+	 *		additional stats included in the list
+	 *
+	 * @param void
+	 * @return array setups
+	 */
+	static public function get_setup_stats_list( )
+	{
+		$Mysql = Mysql::get_instance( );
+
+		$setups = Setup::get_list(true);
+
+		if ($setups) {
+			// add some more stats
+			$query = "
+				SELECT o.setup_id
+					, COUNT(ww.win) AS white_wins
+					, COUNT(bw.win) AS black_wins
+					, COUNT(d.win) AS draws
+				FROM ".self::GAME_STATS_TABLE." AS o
+					LEFT JOIN ".self::GAME_STATS_TABLE." AS ww
+						ON (o.setup_id = ww.setup_id
+							AND o.game_id = ww.game_id
+							AND ww.win = 1
+							AND ww.color = 'white')
+					LEFT JOIN ".self::GAME_STATS_TABLE." AS bw
+						ON (o.setup_id = bw.setup_id
+							AND o.game_id = bw.game_id
+							AND bw.win = 1
+							AND bw.color = 'black')
+					LEFT JOIN ".self::GAME_STATS_TABLE." AS d
+						ON (o.setup_id = d.setup_id
+							AND o.game_id = d.game_id
+							AND d.win = 0
+							AND d.color = 'white')
+				GROUP BY o.player_id
+			";
+			$results = $Mysql->fetch_array($query);
+
+			$stats = array( );
+			foreach ($results as $stat) {
+				$stats[$stat['setup_id']] = $stat;
+			}
+
+			$empty = array(
+				'white_wins' => 0,
+				'black_wins' => 0,
+				'draws' => 0,
+			);
+			foreach ($setups as & $setup) { // be careful with the reference
+				if (isset($stats[$setup['setup_id']])) {
+					$setup = array_merge($setup, $stats[$setup['setup_id']]);
+				}
+				else {
+					$setup = array_merge($setup, $empty);
+				}
+			}
+			unset($setup); // kill the reference
+		}
+
+		return $setups;
+	}
+
+
 	/** static public function get_invites
 	 *		Returns a list array of all the invites in the database
 	 *		for the given player

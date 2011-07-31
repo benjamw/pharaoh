@@ -1,9 +1,4 @@
 
-- separate out the setups page and the stats page, have game/setup
-	stats on stats page and a list of setups with modals on setups page,
-	and have a link to create new setup as well as the action links for
-	the setups
-
 - for revisions for setups, allow the same name for the setup and when
 	a user creates a revision or edits their setup, it creates a new setup
 	and inactivates the previous setup, and then either sort by create
@@ -12,12 +7,10 @@
 	use the most recent.
 
 - add more stats:
-	white wins per setup
-	red wins per setup
-	white wins per user
-	red wins per user
 	player's favorite setup
 	player's worst setup
+	player's favorite opponent
+		win-loss per opponent
 	etc...
 
 - add game 2.0 rules, but make them inter-operable with current options
@@ -49,3 +42,4 @@
 - fully convert times to UTC in MySQL and back to user's timezone everywhere
 	dates are output
 
+- add showdown to messages (JS port of Markdown, in zz_scripts_js)

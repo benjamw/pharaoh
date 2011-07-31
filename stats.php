@@ -2,7 +2,7 @@
 
 require_once 'includes/inc.global.php';
 
-$setups = Setup::get_list( );
+$setups = Game::get_setup_stats_list( );
 $setup_selection = '<option value="0">Random</option>';
 $setup_javascript = '';
 foreach ($setups as $setup) {
@@ -34,7 +34,7 @@ $hints = array(
 $contents = '';
 
 // grab the wins and losses for the players
-$list = GamePlayer::get_list(true);
+$list = Game::get_player_stats_list( );
 
 $table_meta = array(
 	'sortable' => true ,
@@ -44,9 +44,9 @@ $table_meta = array(
 );
 $table_format = array(
 	array('Player', 'username') ,
-	array('Wins', 'wins') ,
-	array('Draws', 'draws') ,
-	array('Losses', 'losses') ,
+	array('<abbr title="Silver | Red | Total">Wins</abbr>', '[[[white_wins]]] | [[[black_wins]]] | [[[wins]]]') ,
+	array('<abbr title="Silver | Red | Total">Draws</abbr>', '[[[white_draws]]] | [[[black_draws]]] | [[[draws]]]') ,
+	array('<abbr title="Silver | Red | Total">Losses</abbr>', '[[[white_losses]]] | [[[black_losses]]] | [[[losses]]]') ,
 	array('Win-Loss', '###([[[wins]]] - [[[losses]]])', null, ' class="color"') ,
 	array('Win %', '###((0 != ([[[wins]]] + [[[losses]]])) ? perc([[[wins]]] / ([[[wins]]] + [[[losses]]]), 1) : 0)') ,
 	array('Last Online', '###date(Settings::read(\'long_date\'), strtotime(\'[[[last_online]]]\'))', null, ' class="date"') ,
@@ -67,16 +67,14 @@ $table_format = array(
 
 	array('Setup', 'name') ,
 	array('Used', 'used') ,
-	array('Horus', '###(([[[has_horus]]]) ? \'Yes\' : \'No\')') ,
-//	array('Tower', '###(([[[has_tower]]]) ? \'Yes\' : \'No\')') , // TOWER
+	array('Silver Wins', 'white_wins') ,
+	array('Red Wins', 'black_wins') ,
+	array('Draws', 'draws') ,
 	array('Reflection', 'reflection') ,
 	array('Created', '###date(Settings::read(\'long_date\'), strtotime(\'[[[created]]]\'))', null, ' class="date"') ,
 	array('Creator', '###((0 == [[[created_by]]]) ? \'Admin\' : $GLOBALS[\'_PLAYERS\'][[[[created_by]]]])') ,
-	array('Action', '###((('.$_SESSION['player_id'].' == [[[created_by]]]) || '.(int) $GLOBALS['Player']->is_admin.') ? "<a href=\"edit_setup.php?id=[[[setup_id]]]'.$GLOBALS['_&_DEBUG_QUERY'].'\">Edit</a> | <a href=\"delete_setup.php?id=[[[setup_id]]]'.$GLOBALS['_&_DEBUG_QUERY'].'\">Delete</a>" : "")', null, ' class="action"') ,
 );
 $contents .= get_table($table_format, $setups, $table_meta);
-
-// TODO: possibly add game stats, like how often each side wins on which setup
 
 
 $contents .= <<< EOF
