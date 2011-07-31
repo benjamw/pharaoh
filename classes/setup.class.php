@@ -52,7 +52,7 @@ class Setup {
 	 *
 	 * @var string
 	 */
-	protected $name;
+	protected $name = '';
 
 
 	/** protected property creator
@@ -60,7 +60,7 @@ class Setup {
 	 *
 	 * @var int
 	 */
-	protected $creator;
+	protected $creator = 0;
 
 
 
@@ -80,6 +80,8 @@ class Setup {
 	{
 		$id = (int) $id;
 		call(__METHOD__);
+
+		$this->_init_board( );
 
 		if ($id) {
 			$this->id = $id;
@@ -258,7 +260,7 @@ class Setup {
 			if (9 == ($i % 10)) {
 				$ascii .= ' '.(8 - floor($i / 10)).'
    +---+---+---+---+---+---+---+---+---+---+';
-  			}
+			}
 		}
 
 		$ascii .= '
@@ -311,6 +313,19 @@ class Setup {
 		$this->board = expandFEN($setup['board']);
 		$this->creator = $setup['created_by'];
 		$this->name = $setup['name'];
+	}
+
+
+	/** protected function _init_board
+	 *		Initializes an empty board
+	 *
+	 * @param void
+	 * @action initializes an empty board
+	 * @return void
+	 */
+	protected function _init_board( )
+	{
+		$this->board = expandFEN('10/10/10/10/10/10/10/10');
 	}
 
 
