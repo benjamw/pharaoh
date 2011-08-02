@@ -61,11 +61,13 @@ $(document).ready( function( ) {
 	if (('#refresh' == document.location.hash) && turn_msg_count) {
 		$('#sounds').jPlayer({
 			ready: function ( ) {
-				$(this).setFile('sounds/message.mp3', 'sounds/message.ogg').play( );
+				$(this).jPlayer('setMedia', {
+					mp3: 'sounds/message.mp3',
+					oga: 'sounds/message.ogg'
+				}).jPlayer('play');
 			},
-			volume: 100,
-			oggSupport: false,
-			swfPath: "scripts"
+			volume: 1,
+			swfPath: 'scripts'
 		});
 	}
 
