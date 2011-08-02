@@ -231,7 +231,7 @@ EOF;
 
 		$hints = array(
 			'Click on Setup table row to view setup.' ,
-			'Clone will take you to the create setup page with that setup pre-filled out' ,
+			'Clone will take you to the create setup page with that setup pre-filled out.' ,
 		);
 
 		$table_meta = array(

@@ -118,7 +118,7 @@ $(document).ready( function($) {
 		board_changed = true;
 
 		// place the reflected piece
-		if (reflection) {
+		if (reflection && ('None' != reflection)) {
 			id = get_reflected_id(id, reflection);
 
 			new_selected = rotate_piece(selected, reflection, true);
