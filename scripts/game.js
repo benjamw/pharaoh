@@ -543,7 +543,7 @@ function set_square(event) {
 		if (('r' == board_index) || ('l' == board_index)) {
 			// check the time between clicks and make sure this wasn't a mistake
 			if (1000 > (time[1] - time[0])) {
-				if ( ! confirm("You clicked that rotate button awfully fast...  ("+(time[1] - time[0])+" ms)\nWas that what you meant to do?  (Rotating "+board_index.toUpperCase( )+")")) {
+				if ( ! confirm('You clicked that rotate button awfully fast...  ('+(time[1] - time[0])+' ms)\nWas that what you meant to do?  (Rotating '+board_index.toUpperCase( )+')')) {
 					// reset
 					stage_1 = false;
 					from_index = -1;
@@ -715,7 +715,7 @@ function show_battle_data(show_old_data) {
 		clss = 'alive';
 		value = '';
 	}
-	$("div#the_board div.silver_laser").empty( ).append('<div class="'+clss+'">'+value+'</div>');
+	$('div#the_board div.silver_laser').empty( ).append('<div class="'+clss+'">'+value+'</div>');
 
 
 	if (data[1][0]) {
@@ -730,7 +730,7 @@ function show_battle_data(show_old_data) {
 		clss = 'alive';
 		value = '';
 	}
-	$("div#the_board div.red_laser").empty( ).append('<div class="'+clss+'">'+value+'</div>');
+	$('div#the_board div.red_laser').empty( ).append('<div class="'+clss+'">'+value+'</div>');
 }
 
 

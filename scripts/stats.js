@@ -4,15 +4,15 @@ $(document).ready( function( ) {
 	$('div#setup_display').hide( );
 
 	// change the colors for the win ratios
-	$("td.color, .color td").each( function(i, elem) {
+	$('td.color, .color td').each( function(i, elem) {
 		var $elem = $(elem);
 		var text = parseFloat($elem.text( ));
 
 		if (0 < text) {
-			$elem.css("color", "green");
+			$elem.css('color', 'green');
 		}
 		else if (0 > text) {
-			$elem.css("color", "red");
+			$elem.css('color', 'red');
 		}
 	});
 

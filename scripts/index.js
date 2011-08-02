@@ -58,8 +58,8 @@ $(document).ready( function( ) {
 	});
 
 	// run the sounds
-	if (("#refresh" == document.location.hash) && turn_msg_count) {
-		$("#sounds").jPlayer({
+	if (('#refresh' == document.location.hash) && turn_msg_count) {
+		$('#sounds').jPlayer({
 			ready: function ( ) {
 				$(this).setFile('sounds/message.mp3', 'sounds/message.ogg').play( );
 			},

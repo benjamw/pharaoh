@@ -90,7 +90,7 @@ function setCaretTo(obj, pos) {
 		   position
 		*/
 		var range = obj.createTextRange();
-		range.move("character", pos);
+		range.move('character', pos);
 		range.select();
 	} else if (obj.selectionStart) {
 		/* Gecko is a little bit shorter on that. Simply
