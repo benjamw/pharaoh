@@ -396,9 +396,6 @@ class Game
 
 		call($_P);
 
-		$extra_info = array( );
-		$extra_info['white_color'] = $_P['color'];
-
 		// laser battle cleanup
 		// only run this if the laser battle box was open
 		if (isset($_P['laser_battle_box'])) {
@@ -415,6 +412,8 @@ class Game
 				'battle_immune' => (int) max($_P['battle_immune'], 0),
 			);
 		}
+
+		$extra_info['white_color'] = $_P['color'];
 
 		call($extra_info);
 
