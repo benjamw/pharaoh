@@ -241,7 +241,7 @@ class Setup {
 	static public function get_board_ascii($board)
 	{
 		$ascii = '
-     A   B   C   D   E   F   G   H   I   J
+	 A   B   C   D   E   F   G   H   I   J
    +---+---+---+---+---+---+---+---+---+---+';
 
 		for ($length = strlen($board), $i = 0; $i < $length; ++$i) {
@@ -264,7 +264,7 @@ class Setup {
 		}
 
 		$ascii .= '
-     A   B   C   D   E   F   G   H   I   J
+	 A   B   C   D   E   F   G   H   I   J
 ';
 
 		return $ascii;
