@@ -2611,9 +2611,12 @@ class Game
 			$white_color = (('random' == $extra_info['white_color']) ? 'Random' : (('white' == $extra_info['white_color']) ? 'Silver' : 'Red'));
 			$black_color = (('random' == $extra_info['white_color']) ? 'Random' : (('white' == $extra_info['white_color']) ? 'Red' : 'Silver'));
 
-			$hover = unserialize($item['extra_info']);
-			unset($hover['invite_setup']);
-			unset($hover['white_color']);
+			$hover = array( );
+			if ( ! empty($item['extra_info'])) {
+				$hover = unserialize($item['extra_info']);
+				unset($hover['invite_setup']);
+				unset($hover['white_color']);
+			}
 
 			$hover_text = array( );
 			foreach ($hover as $key => $value) {
