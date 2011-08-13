@@ -2,11 +2,11 @@
 // creates and manipulates the game board
 /*
 jQuery('<a/>', {
-    id: 'foo',
-    href: 'http://google.com',
-    title: 'Become a Googler',
-    rel: 'external',
-    text: 'Go to Google!'
+	id: 'foo',
+	href: 'http://google.com',
+	title: 'Become a Googler',
+	rel: 'external',
+	text: 'Go to Google!'
 });
 
 P - pharaoh (target)
@@ -282,13 +282,19 @@ function create_board(xFEN, blank) {
 }
 
 
-function create_piece(piece, hit) {
+function create_piece(piece, hit, title) {
 	hit = !! (hit || false);
+	title = !! (title || false);
 
 	var color = (piece == piece.toUpperCase( )) ? 'silver' : 'red';
 	var hit = (hit) ? ' hit' : '';
+	var piece_name = '';
 
-	return '<img src="'+image_dir+color+'_'+pieces[piece.toUpperCase( )].toLowerCase( )+'.png" alt="'+piece+'" class="piece'+hit+'" />';
+	if (title) {
+		piece_name = ' title="'+color+' '+pieces[piece.toUpperCase( )].toLowerCase( ).sliceToChar(0, '_')+'"';
+	}
+
+	return '<img src="'+image_dir+color+'_'+pieces[piece.toUpperCase( )].toLowerCase( )+'.png" alt="'+piece+'"'+piece_name+' class="piece'+hit+'" />';
 }
 
 
