@@ -1783,6 +1783,10 @@ class Game
 			throw $e;
 		}
 
+		if ( ! isset($Game->_history[1])) {
+			return false;
+		}
+
 		$start_date = date('Y-m-d', strtotime($Game->_history[1]['move_date']));
 		$white_name = $Game->_players['white']['object']->lastname.', '.$Game->_players['white']['object']->firstname.' ('.$Game->_players['white']['object']->username.')';
 		$black_name = $Game->_players['black']['object']->lastname.', '.$Game->_players['black']['object']->firstname.' ('.$Game->_players['black']['object']->username.')';
@@ -1813,6 +1817,7 @@ class Game
 
 		$body = '';
 		$line = '';
+		$token = '';
 		foreach ($Game->_history as $key => $move) {
 			// skip the first entry
 			if ( ! $key) {
