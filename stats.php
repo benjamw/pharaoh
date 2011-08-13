@@ -44,9 +44,9 @@ $table_meta = array(
 );
 $table_format = array(
 	array('Player', 'username') ,
-	array('<abbr title="Silver | Red | Total">Wins</abbr>', '[[[white_wins]]] | [[[black_wins]]] | [[[wins]]]') ,
-	array('<abbr title="Silver | Red | Total">Draws</abbr>', '[[[white_draws]]] | [[[black_draws]]] | [[[draws]]]') ,
-	array('<abbr title="Silver | Red | Total">Losses</abbr>', '[[[white_losses]]] | [[[black_losses]]] | [[[losses]]]') ,
+	array('<abbr title="Silver | Red | Total">Wins</abbr>', '[[[white_wins]]]&nbsp;|&nbsp;[[[black_wins]]]&nbsp;|&nbsp;[[[wins]]]') ,
+	array('<abbr title="Silver | Red | Total">Draws</abbr>', '[[[white_draws]]]&nbsp;|&nbsp;[[[black_draws]]]&nbsp;|&nbsp;[[[draws]]]') ,
+	array('<abbr title="Silver | Red | Total">Losses</abbr>', '[[[white_losses]]]&nbsp;|&nbsp;[[[black_losses]]]&nbsp;|&nbsp;[[[losses]]]') ,
 	array('Win-Loss', '###([[[wins]]] - [[[losses]]])', null, ' class="color"') ,
 	array('Win %', '###((0 != ([[[wins]]] + [[[losses]]])) ? perc([[[wins]]] / ([[[wins]]] + [[[losses]]]), 1) : 0)') ,
 	array('Last Online', '###date(Settings::read(\'long_date\'), strtotime(\'[[[last_online]]]\'))', null, ' class="date"') ,
