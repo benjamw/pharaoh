@@ -1,4 +1,31 @@
 
+CURRENTLY WORKING ON:
+------------------------------------------------
+
+	making the Khet 2.0 stuff work...
+
+	done:
+		laser works as expected in pharaoh class
+		setup creator has new pieces and all works
+		game mechanics work for both anubises and sphynxes
+		laser cannot point directly into wall
+
+		setup table has new fields
+
+		invite page has options
+
+		invites are processed properly
+		setup code is stored in invite
+
+	need:
+		add ability to hit self from side...  if requested (some of it is kinda built)
+
+		other invite options ???
+
+_______________________________________________________________________________
+
+- make hover tooltips better
+
 - for revisions for setups, allow the same name for the setup and when
 	a user creates a revision or edits their setup, it creates a new setup
 	and inactivates the previous setup, and then either sort by create
@@ -13,18 +40,6 @@
 		win-loss per opponent
 	etc...
 
-- add game 2.0 rules, but make them inter-operable with current options
-	things like:
-	make laser type selectable
-		if hitting front and/or side of laser counts as "hit" (if 2.0 style)
-		is laser movable (if 2.0 style)
-			is rotatable 360 (if movable)
-	make obelisk type selectable
-		if hitting front and/or sides and/or back count as "hit" (if 2.0 style)
-
-- add options for selecting which pieces are swappable with which
-	other pieces
-
 - build game reader for saved games
 
 - don't refresh page if an email success message is sent for things
@@ -32,8 +47,6 @@
 
 - add a different method for removing the click on the piece, because
 	clicking the piece again doesn't work for rotatable pieces
-	- maybe run check and if two clicks happen really fast together (<
-		250ms) pop-up a dialogue box asking if they meant to do that
 
 - don't show success messages if email is not sent for things like
 	nudge, that are only emails possibly for other things like invite,

@@ -115,7 +115,14 @@ switch ($act) {
 					<option{$Short}>Short</option>
 				</select></div>
 
-				<div id="pieces_display"><img src="images/cancel.png" alt="Cancel" title="Cancel Selection" class="cancel" /><img src="images/delete.png" alt="Delete" title="Delete Piece" class="delete" /></div>
+				<div id="pieces_display">
+					<div id="cancel_delete">
+						<img src="images/cancel.png" alt="Cancel" title="Cancel Selection" class="cancel" />
+						<img src="images/delete.png" alt="Delete" title="Delete Piece" class="delete" />
+					</div>
+					<div id="silver_pieces"></div>
+					<div id="red_pieces"></div>
+				</div> <!-- #pieces_display -->
 				<div id="setup_display">
 					<!-- the board will go here -->
 
@@ -246,6 +253,7 @@ EOF;
 			array('Setup', 'name') ,
 			array('Used', 'used') ,
 			array('Horus', '###(([[[has_horus]]]) ? \'Yes\' : \'No\')') ,
+			array('Sphynx', '###(([[[has_sphynx]]]) ? \'Yes\' : \'No\')') ,
 		//	array('Tower', '###(([[[has_tower]]]) ? \'Yes\' : \'No\')') , // TOWER
 			array('Reflection', 'reflection') ,
 			array('Created', '###date(Settings::read(\'long_date\'), strtotime(\'[[[created]]]\'))', null, ' class="date"') ,

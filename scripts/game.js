@@ -387,6 +387,11 @@ function highlight_valid_moves(elem) {
 		var fr_class = $elem.prop('class');
 		var fr_color = fr_class.match(/p_[^\s]+/ig);
 
+		// check the ability to move the sphynx
+		if ((-1 != fr_class.indexOf('sphynx')) && ! move_sphynx) {
+			return;
+		}
+
 		// if the class is an empty string, just set the class and exit here
 		if ('' == to_class) {
 			add_highlight($idx);
@@ -410,6 +415,9 @@ function highlight_valid_moves(elem) {
 				// do nothing
 			}
 			else if (-1 != to_class.indexOf('obelisk')) {
+				// do nothing
+			}
+			else if (-1 != to_class.indexOf('anubis')) {
 				// do nothing
 			}
 			else {
@@ -505,21 +513,53 @@ function set_square(event) {
 		// if the piece is not an obelisk or pharaoh
 		var piece_code = $elem.prop('class').match(/i_[^\s]+/ig)[0].slice(2).toLowerCase( );
 		if (('v' != piece_code) && ('w' != piece_code) && ('p' != piece_code)) {
-			$('div#idx_'+board_index)
-				.append($('<img/>', {
-					'id' : 'rot_r',
-					'class' : 'rotate cw',
-					'src' : 'images/rotate_cw.png',
-					'alt' : '->',
-					'click' : set_square
-				}))
-				.append($('<img/>', {
-					'id' : 'rot_l',
-					'class' : 'rotate ccw',
-					'src' : 'images/rotate_ccw.png',
-					'alt' : '<-',
-					'click' : set_square
-				}));
+			var allow_right = true;
+			var allow_left = true;
+
+			// make sure the sphynx doesn't get rotated toward a wall
+			if (piece_code.match(/[efjk]/i)) {
+				var up_right = (piece_code.match(/[e]/i) && (9 == (board_index % 10))); // pointing up against right wall
+				var down_right = (piece_code.match(/[j]/i) && (9 == (board_index % 10))); // pointing down against right wall
+				var up_left = (piece_code.match(/[e]/i) && (0 == (board_index % 10))); // pointing up against left wall
+				var down_left = (piece_code.match(/[j]/i) && (0 == (board_index % 10))); // pointing down against left wall
+
+				var right_top = (piece_code.match(/[f]/i) && (board_index < 10)); // pointing right against top wall
+				var left_top = (piece_code.match(/[k]/i) && (board_index < 10)); // pointing left against top wall
+				var right_bottom = (piece_code.match(/[f]/i) && (board_index >= 70)); // pointing right against bottom wall
+				var left_bottom = (piece_code.match(/[k]/i) && (board_index >= 70)); // pointing left against bottom wall
+
+				if (( ! invert && (up_right || down_left || left_top || right_bottom))
+					|| (invert && (up_left || down_right || left_bottom || right_top))) {
+					allow_right = false;
+				}
+
+				if (( ! invert && (up_left || down_right || left_bottom || right_top))
+					|| (invert && (up_right || down_left || left_top || right_bottom))) {
+					allow_left = false;
+				}
+			}
+
+			if (allow_right) {
+				$('div#idx_'+board_index)
+					.append($('<img/>', {
+						'id' : 'rot_r',
+						'class' : 'rotate cw',
+						'src' : 'images/rotate_cw.png',
+						'alt' : '->',
+						'click' : set_square
+					}));
+			}
+
+			if (allow_left) {
+				$('div#idx_'+board_index)
+					.append($('<img/>', {
+						'id' : 'rot_l',
+						'class' : 'rotate ccw',
+						'src' : 'images/rotate_ccw.png',
+						'alt' : '<-',
+						'click' : set_square
+					}));
+			}
 		}
 
 		$('input#from').val(board_index);

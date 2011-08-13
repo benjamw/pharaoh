@@ -10,6 +10,10 @@ jQuery('<a/>', {
 });
 
 P - pharaoh (target)
+E - sphynx (Khet 2.0 laser, N | ) - needs 4 characters to show orientation
+	F - E --
+	J - S |
+	K - W --
 A - pyramid (1-sided mirror, NE .\ ) - needs 4 characters to show orientation
 	B - SE `/
 	C - SW \`
@@ -18,6 +22,10 @@ X - djed (2-sided mirror, NE-SW \ ) - needs 2 characters to show orientation
 	Y - NW-SE /
 V - Obelisk (defense block) - needs 2 characters to show stacking
 	W - double stacked obelisks
+L - anubis (Khet 2.0 one-sided defense block, N | ) - needs 4 characters to show orientation
+	M - E --
+	N - S |
+	O - W --
 H - eye of horus (splitter, NE-SW \ ) - needs 2 characters to show orientation
 	I - NW-SE /
 T - Tower
@@ -44,6 +52,16 @@ var image_dir = 'images/pieces/',
 		'H' : 'horus_ne',
 		'I' : 'horus_nw',
 
+		'E' : 'sphynx_n',
+		'F' : 'sphynx_e',
+		'J' : 'sphynx_s',
+		'K' : 'sphynx_w',
+
+		'L' : 'anubis_n',
+		'M' : 'anubis_e',
+		'N' : 'anubis_s',
+		'O' : 'anubis_w',
+
 //		'T' : 'tower'
 	};
 
@@ -69,7 +87,13 @@ function rotate_piece(piece, rotation, toggle_color) {
 				'Y' : 'X',
 
 				'H' : 'I',
-				'I' : 'H'
+				'I' : 'H',
+
+				'F' : 'K',
+				'K' : 'F',
+
+				'M' : 'O',
+				'O' : 'M'
 			};
 			break;
 
@@ -84,7 +108,13 @@ function rotate_piece(piece, rotation, toggle_color) {
 				'Y' : 'X',
 
 				'H' : 'I',
-				'I' : 'H'
+				'I' : 'H',
+
+				'E' : 'J',
+				'J' : 'E',
+
+				'L' : 'N',
+				'N' : 'L'
 			};
 			break;
 
@@ -94,7 +124,17 @@ function rotate_piece(piece, rotation, toggle_color) {
 				'A' : 'C',
 				'B' : 'D',
 				'C' : 'A',
-				'D' : 'B'
+				'D' : 'B',
+
+				'E' : 'J',
+				'F' : 'K',
+				'J' : 'E',
+				'K' : 'F',
+
+				'L' : 'N',
+				'M' : 'O',
+				'N' : 'L',
+				'O' : 'M'
 			};
 			break;
 	}
@@ -407,5 +447,36 @@ function c_sort(dirs) {
 	if (-1 != dirs.indexOf('e')) { output += 'e'; }
 
 	return output;
+}
+
+
+String.prototype.sliceToChar = function(idx, str) {
+	if ('number' === typeof str) {
+		var tmp = idx;
+		idx = str;
+		str = tmp;
+
+		if (-1 == this.indexOf(str)) {
+			return this;
+		}
+
+		return this.slice(this.indexOf(str), idx);
+	}
+
+	if (-1 == this.indexOf(str)) {
+		return this;
+	}
+
+	return this.slice(idx, this.indexOf(str));
+}
+
+
+String.prototype.repeat = function(num) {
+	return new Array(parseInt(num) + 1).join(this);
+}
+
+
+String.prototype.expandFEN = function( ) {
+	return this.replace(/\s*/g, '').replace(/(?:10|[1-9])/g, function(len) { return '0'.repeat(len); }).replace(/\//g, '');
 }
 

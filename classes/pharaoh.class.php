@@ -40,11 +40,17 @@ class Pharaoh {
 	/** static public property EXTRA_INFO_DEFAULTS
 	 *		Holds the default extra info data
 	 *		Values:
-	 *		- none_yet
+	 *		- move_sphynx (laser) - boolean default false
+	 *		- battle_front_only (sphynx) - boolean default true - hit sphynx in front only (n/a for Khet 1.0)
+	 *		- battle_hit_self (sphynx) - boolean default false - hit your own sphynx (from side only) (n/a for Khet 1.0)
 	 *
 	 * @var array
 	 */
-	static public $EXTRA_INFO_DEFAULTS = array( );
+	static public $EXTRA_INFO_DEFAULTS = array(
+			'move_sphynx' => false,
+			'battle_front_only' => true,
+			'battle_hit_self' => false,
+		);
 
 
 	/** public property players
@@ -91,6 +97,14 @@ class Pharaoh {
 	 * @var string
 	 */
 	protected $_board;
+
+
+	/** public property has_sphynx
+	 *		True if there is a sphynx on the board
+	 *
+	 * @var bool board has sphynx
+	 */
+	public $has_sphynx;
 
 
 	/** protected property _move
@@ -246,10 +260,25 @@ class Pharaoh {
 	public function set_extra_info($extra_info)
 	{
 		call(__METHOD__);
+		$this->_extra_info = self::extra_info($extra_info);
+	}
 
-		$extra_info = array_clean($extra_info, array_keys(self::$EXTRA_INFO_DEFAULTS));
 
-		$this->_extra_info = array_merge_plus(self::$EXTRA_INFO_DEFAULTS, $extra_info);
+	/** public function get_extra_info
+	 *		Returns the extra info for the game
+	 *
+	 * @param void
+	 * @return array extra game info
+	 */
+	public function get_extra_info( )
+	{
+		call(__METHOD__);
+
+		$diff = array_compare($this->_extra_info, self::$EXTRA_INFO_DEFAULTS);
+		$extra_info = $diff[0];
+		ksort($extra_info);
+
+		return $extra_info;
 	}
 
 
@@ -355,7 +384,7 @@ class Pharaoh {
 	protected function _fire_laser($color)
 	{
 		try {
-			$return = self::fire_laser($color, $this->_board);
+			$return = self::fire_laser($color, $this->_board, $this->_extra_info);
 			$this->_laser_path = $return['laser_path'];
 			$this->laser_hit = $return['laser_hit'];
 			return $return['hits'];
@@ -374,16 +403,22 @@ class Pharaoh {
 	 *
 	 * @param string color (red or silver)
 	 * @param string board (expanded FEN)
+	 * @param array [optional] extra info
 	 * @return array (laser path array, and squares hit (empty array if none) array)
 	 */
-	static public function fire_laser($color, $board)
+	static public function fire_laser($color, $board, $extra_info = false)
 	{
 		call(__METHOD__);
 
+		// search for the sphynx in the board
+		$has_sphynx = Setup::has_sphynx($board);
+
 		$color = strtolower($color);
 		$board = expandFEN($board);
+		$extra_info = self::extra_info($extra_info);
 		call($color);
 		call($board);
+		call($extra_info);
 
 		if ( ! in_array($color, array('silver', 'red'))) {
 			throw new MyException(__METHOD__.': Trying to fire laser for unknown color: '.$color);
@@ -427,11 +462,31 @@ class Pharaoh {
 
 		// fire the laser
 
-		if ('silver' == $color) {
-			$laser_path = array(array(array(79, I_UP)));
+		if ( ! $has_sphynx) {
+			if ('silver' == $color) {
+				$laser_path = array(array(array(79, I_UP)));
+			}
+			else { // red
+				$laser_path = array(array(array(0, I_DOWN)));
+			}
 		}
-		else { // red
-			$laser_path = array(array(array(0, I_DOWN)));
+		else {
+			list($shoot_sphynx_idx, $shoot_sphynx_dir) = self::find_sphynx($board, ('silver' == $color));
+			list($hit_sphynx_idx, $hit_sphynx_dir) = self::find_sphynx($board, ('silver' != $color));
+			$laser_path = array(array(array($shoot_sphynx_idx + $shoot_sphynx_dir, $shoot_sphynx_dir)));
+		}
+
+		// because we can now possibly move the laser around and rotate it
+		// make sure we don't hit a wall right out of the gate
+		// check if we hit a wall
+		list($current, $dir) = $laser_path[0][0];
+		$long_wall = (0 > $current) || (80 <= $current);
+		$short_wall = (1 == abs($dir)) && (floor($current / 10) !== floor(($current - $dir) / 10));
+		if ($long_wall || $short_wall) {
+			// we hit the wall...  just stop
+			$laser_path[0][0][0] = false;
+			return array('laser_path' => $laser_path, 'hits' => array( ), 'hit_laser' => false);
+
 		}
 
 		$i = 0; // infinite loop protection
@@ -458,11 +513,25 @@ class Pharaoh {
 				// dir is the direction that the laser was heading
 				// when it entered the current index
 				list($current, $dir) = $node;
+
 				// check the current location for a piece
 				if ('0' != ($piece = $board[$current])) {
 					// check for hit or reflection
 					if ( ! isset($reflections[strtoupper($piece)][$dir])) {
-						$hits[] = $current;
+						// dont track the hit for the following situations:
+
+						// is an anubis and hit the front
+						$front_anubis = (preg_match('/[LMNO]/i', $piece) && ($dir == -self::get_anubis_dir($piece)));
+
+						// hit the sphynx (laser hits get tracked elsewhere)
+						$hit_sphynx = ($has_sphynx && (($current == $hit_sphynx_idx) || ($current == $shoot_sphynx_idx)));
+
+						// if any of those hit, don't track the hit
+						if ( ! ($front_anubis || $hit_sphynx)) {
+							$hits[] = $current;
+						}
+
+						// but still change the path data to recognize the path stopped
 
 						// we store dir here because it keeps the output format consistent
 						// we don't really care at this point because we just hit a piece
@@ -500,8 +569,25 @@ class Pharaoh {
 					}
 					else {
 						// check if we hit the laser
-						$hit_red = (-10 == $split_current) && ('silver' == $color);
-						$hit_silver = (89 == $split_current) && ('red' == $color);
+						$hit_silver = $hit_red = false;
+						if ( ! $has_sphynx) {
+							$hit_red = (-10 == $split_current) && ('silver' == $color);
+							$hit_silver = (89 == $split_current) && ('red' == $color);
+						}
+						else {
+							// find the laser
+							$var_name = 'hit_'.(('silver' == $color) ? 'silver' : 'red');
+
+							if ($hit_sphynx_idx == $split_current) {
+								if ( ! $extra_info['battle_front_only']) {
+									${$var_name} = true;
+								}
+								elseif ($hit_sphynx_dir == -$split_dir) {
+									${$var_name} = true;
+								}
+							}
+						}
+
 						if ($hit_red || $hit_silver) {
 							$laser_hit = true;
 						}
@@ -547,8 +633,24 @@ class Pharaoh {
 				}
 
 				// check if we hit the laser
-				$hit_red = (-10 == $current) && ('silver' == $color);
-				$hit_silver = (89 == $current) && ('red' == $color);
+				$hit_silver = $hit_red = false;
+				if ( ! $has_sphynx) {
+					$hit_red = (-10 == $current) && ('silver' == $color);
+					$hit_silver = (89 == $current) && ('red' == $color);
+				}
+				else {
+					$var_name = 'hit_'.(('silver' == $color) ? 'silver' : 'red');
+
+					if ($hit_sphynx_idx == $current) {
+						if ( ! $extra_info['battle_front_only']) {
+							${$var_name} = true;
+						}
+						elseif ($hit_sphynx_dir == -$dir) {
+							${$var_name} = true;
+						}
+					}
+				}
+
 				if ($hit_red || $hit_silver) {
 					$laser_hit = true;
 				}
@@ -600,6 +702,60 @@ class Pharaoh {
 	}
 
 
+	/** static public function find_sphynx
+	 *		Finds the sphynx on the board and
+	 *		returns both the index and orientation
+	 *
+	 * @param string expanded board
+	 * @param bool [optional] silver
+	 * @return array sphynx index, orientation
+	 */
+	static public function find_sphynx($board, $silver = true)
+	{
+		$sphynxes = ($silver) ? array('E','F','J','K') : array('e','f','j','k');
+
+		// find the sphynx
+		foreach ($sphynxes as $sphynx) {
+			if (false !== ($idx = strpos($board, $sphynx))) {
+				break;
+			}
+		}
+
+		if ( ! isset($idx)) {
+			throw new MyException(__METHOD__.': Sphynx not found on board');
+		}
+
+		// get the orientation
+		switch (strtoupper($sphynx)) {
+			case 'E' : $dir = I_UP; break;
+			case 'F' : $dir = I_RIGHT; break;
+			case 'J' : $dir = I_DOWN; break;
+			case 'K' : $dir = I_LEFT; break;
+		}
+
+		return array($idx, $dir);
+	}
+
+
+	/** static public function get_anubis_dir
+	 *		Gets the direction the anubis is facing
+	 *
+	 * @param string piece
+	 * @return int anubis direction (or false otherwise)
+	 */
+	static public function get_anubis_dir($piece)
+	{
+		switch (strtoupper($piece)) {
+			case 'L' : return I_UP; break;
+			case 'M' : return I_RIGHT; break;
+			case 'N' : return I_DOWN; break;
+			case 'O' : return I_LEFT; break;
+		}
+
+		return false;
+	}
+
+
 	/** public function get_laser_path
 	 *		Returns the laser path array
 	 *
@@ -629,6 +785,8 @@ class Pharaoh {
 		}
 
 		$this->_board = $xFEN;
+
+		$this->has_sphynx = Setup::has_sphynx($this->_board);
 
 		call($this->_get_board_ascii( ));
 	}
@@ -730,6 +888,11 @@ class Pharaoh {
 		// TOWER: test for moving a pharaoh into a corner of the tower
 		// it's not allowed
 
+		// check for trying to move stationary sphynx
+		if (in_array(strtoupper($piece), array('E','F','J','K')) && ! $this->_extra_info['move_sphynx']) {
+			throw new MyException(__METHOD__.': Cannot move stationary sphynx');
+		}
+
 		// check for a piece in the way
 		if ('0' != $to_piece) {
 			$to_color_array = 'not_'.self::get_piece_color($to_piece);
@@ -743,8 +906,8 @@ class Pharaoh {
 			elseif ( ! in_array(strtoupper($piece), array('H','I','X','Y','W','V'))) {
 				throw new MyException(__METHOD__.': Target square not empty - '.$piece);
 			}
-				// but only with pyramids or obelisks
-			elseif ( ! in_array(strtoupper($to_piece), array('A','B','C','D','V','W'))) {
+				// but only with pyramids, obelisks, or anubises
+			elseif ( ! in_array(strtoupper($to_piece), array('A','B','C','D','V','W','L','M','N','O'))) {
 				throw new MyException(__METHOD__.': Target piece not swappable - '.$to_piece);
 			}
 				// make sure the swapped piece isn't going onto an off-color square
@@ -809,6 +972,16 @@ class Pharaoh {
 
 			'H' => array('I', 'I'),
 			'I' => array('H', 'H'),
+
+			'E' => array('K', 'F'),
+			'F' => array('E', 'J'),
+			'J' => array('F', 'K'),
+			'K' => array('J', 'E'),
+
+			'L' => array('O', 'M'),
+			'M' => array('L', 'N'),
+			'N' => array('M', 'O'),
+			'O' => array('N', 'L'),
 		);
 
 		$piece = $this->_board[$index];
@@ -824,6 +997,19 @@ class Pharaoh {
 	}
 
 
+	/** static public function extra_info
+	 *		Returns the extra info merged with the default values
+	 *
+	 * @param array [optional] extra info
+	 * @return array extra info
+	 */
+	static public function extra_info($extra_info = array( ))
+	{
+		$extra_info = array_clean($extra_info, array_keys(self::$EXTRA_INFO_DEFAULTS));
+		return array_merge_plus(self::$EXTRA_INFO_DEFAULTS, $extra_info);
+	}
+
+
 	/** static public function get_board_ascii
 	 *		Returns the board in an ASCII format
 	 *
@@ -832,9 +1018,9 @@ class Pharaoh {
 	 */
 	static public function get_board_ascii($board)
 	{
-		$ascii = '
-     A   B   C   D   E   F   G   H   I   J
-   +---+---+---+---+---+---+---+---+---+---+';
+		$ascii = "\n"
+			.'     A   B   C   D   E   F   G   H   I   J'."\n"
+			.'   +---+---+---+---+---+---+---+---+---+---+';
 
 		for ($length = strlen($board), $i = 0; $i < $length; ++$i) {
 			$char = $board[$i];

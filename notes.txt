@@ -7,6 +7,11 @@ board layout (silver, red is lowercase)
 
 P - pharaoh (target)
 
+E - sphynx (Khet 2.0 laser, N | ) - needs 4 characters to show orientation
+	F - E --
+	J - S |
+	K - W --
+
 A - pyramid (1-sided mirror, NE .\ ) - needs 4 characters to show orientation
 	B - SE `/
 	C - SW \`
@@ -15,25 +20,30 @@ A - pyramid (1-sided mirror, NE .\ ) - needs 4 characters to show orientation
 X - djed (2-sided mirror, NE-SW \ ) - needs 2 characters to show orientation
 	Y - NW-SE /
 
-V - Obelisk (defense block) - needs 2 characters to show stacking
+V - obelisk (defense block) - needs 2 characters to show stacking
 	W - double stacked obelisks
+
+L - anubis (Khet 2.0 one-sided defense block, N | ) - needs 4 characters to show orientation
+	M - E --
+	N - S |
+	O - W --
 
 H - eye of horus (splitter, NE-SW \ ) - needs 2 characters to show orientation
 	I - NW-SE /
 
-T - Tower of Kadesh base ( x4 )
+T - tower of kadesh base ( x4 )
 
 
 S - silver (player color - white)
 R - red (player color - black)
 
 ABCDEFGHIJKLMNOPQRSTUVWXYZ
-----   --      - --- ----
+------ --------- --- ----
 
 set up and use the FEN notation for the board
 
 
-	    A   B   C   D   E   F   G   H   I   J
+		A   B   C   D   E   F   G   H   I   J
 	  +---+---+---+---+---+---+---+---+---+---+
 	8 | R | S |   |   |   |   |   |   | R | S | 8
 	  +---+---+---+---+---+---+---+---+---+---+
@@ -51,10 +61,12 @@ set up and use the FEN notation for the board
 	  +---+---+---+---+---+---+---+---+---+---+
 	1 | R | S |   |   |   |   |   |   | R | S | 1
 	  +---+---+---+---+---+---+---+---+---+---+
-	    A   B   C   D   E   F   G   H   I   J
+		A   B   C   D   E   F   G   H   I   J
 
 red laser comes down from above A8
+	or in 2.0 games from direction indicated by sphynx orientation and location
 silver laser comes up from below J1
+	or in 2.0 games from direction indicated by sphynx orientation and location
 
 A1 = 70 -> A8 = 00
 B1 = 71 -> B8 = 01

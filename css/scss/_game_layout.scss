@@ -17,11 +17,28 @@ h2 span {
 
 
 #pieces_display {
-	height: 100px;
-	width: 600px;
+	height: 200px;
+	width: 700px;
 	float: left;
 	clear: left;
 	margin-top: 20px;
+
+	#cancel_delete {
+		float: left;
+		height: 200px;
+		width: 50px;
+	}
+
+	#silver_pieces,
+	#red_pieces {
+		float: left;
+		height: 100px;
+		width: 530px;
+	}
+
+	#red_pieces {
+		margin-top: 5px;
+	}
 
 	img {
 		border: 2px solid transparent;

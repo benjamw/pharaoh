@@ -77,9 +77,13 @@ class Game
 			'white_color' => 'random',
 			'battle_dead' => false,
 			'battle_immune' => false,
+			'battle_front_only' => true,
+			'battle_hit_self' => false,
+			'move_sphynx' => false,
 			'draw_offered' => false,
 			'undo_requested' => false,
 			'custom_rules' => '',
+			'invite_setup' => '', // this is to hold the setup for invites only
 		);
 
 
@@ -392,40 +396,14 @@ class Game
 		$_P['white_id'] = (int) $_SESSION['player_id'];
 		$_P['black_id'] = (int) $_P['opponent'];
 		$_P['setup_id'] = (int) $_P['setup'];
-		$_P['laser_battle'] = (isset($_P['laser_battle']) && ('yes' == $_P['laser_battle']));
+		$_P['laser_battle'] = is_checked($_P['laser_battle_box']);
+		$_P['battle_front_only'] = is_checked($_P['battle_front_only']);
+		$_P['battle_hit_self'] = is_checked($_P['battle_hit_self']);
+		$_P['move_sphynx'] = is_checked($_P['move_sphynx']);
 
 		call($_P);
 
-		// laser battle cleanup
-		// only run this if the laser battle box was open
-		if (isset($_P['laser_battle_box'])) {
-			if (empty($_P['battle_dead'])) {
-				$_P['battle_dead'] = 1;
-			}
-
-			if (empty($_P['battle_immune'])) {
-				$_P['battle_immune'] = 1;
-			}
-
-			$extra_info = array(
-				'battle_dead' => (int) max($_P['battle_dead'], 1),
-				'battle_immune' => (int) max($_P['battle_immune'], 0),
-			);
-		}
-
-		$extra_info['white_color'] = $_P['color'];
-
-		call($extra_info);
-
-		$diff = array_compare($extra_info, self::$_EXTRA_INFO_DEFAULTS);
-		$extra_info = $diff[0];
-		ksort($extra_info);
-
-		call($extra_info);
-		if ( ! empty($extra_info)) {
-			$_P['extra_info'] = serialize($extra_info);
-		}
-
+		// grab the setup
 		$query = "
 			SELECT setup_id
 			FROM ".Setup::SETUP_TABLE."
@@ -444,6 +422,73 @@ class Game
 		// make sure the setup id is valid
 		if ( ! in_array($_P['setup_id'], $setup_ids)) {
 			throw new MyException(__METHOD__.': Setup is not valid');
+		}
+
+		$query = "
+			SELECT board
+			FROM ".Setup::SETUP_TABLE."
+			WHERE setup_id = '{$_P['setup_id']}'
+		";
+		$setup = $Mysql->fetch_value($query);
+
+		// laser battle cleanup
+		// only run this if the laser battle box was open
+		if ($_P['laser_battle']) {
+			if (empty($_P['battle_dead'])) {
+				$_P['battle_dead'] = 1;
+			}
+
+			if (empty($_P['battle_immune'])) {
+				$_P['battle_immune'] = 1;
+			}
+
+			// we can only hit ourselves in the sides or back, never front
+			if ($_P['battle_front_only']) {
+				$_P['battle_hit_self'] = false;
+			}
+
+			$extra_info = array(
+				'battle_dead' => (int) max($_P['battle_dead'], 1),
+				'battle_immune' => (int) max($_P['battle_immune'], 0),
+				'battle_front_only' => (bool) $_P['battle_front_only'],
+				'battle_hit_self' => (bool) $_P['battle_hit_self'],
+			);
+		}
+
+		$extra_info['white_color'] = $_P['color'];
+		$extra_info['move_sphynx'] = $_P['move_sphynx'];
+
+		$setup = expandFEN($setup);
+
+		if (is_checked($_P['convert_to_1'])) {
+			// add the sphynxes
+			$setup = preg_replace('/[efjk]/i', '0', $setup);
+
+			// replace the obelisks with anubises
+			$setup = preg_replace('/[lmno]/', 'w', $setup);
+			$setup = preg_replace('/[LMNO]/', 'W', $setup);
+		}
+		elseif (is_checked($_P['convert_to_2'])) {
+			// add the sphynxes
+			$setup = substr_replace($setup, 'j', 0, 1);
+			$setup = substr_replace($setup, 'E', -1, 1);
+
+			// replace the obelisks with anubises
+			$setup = str_replace('w', 'n', $setup);
+			$setup = str_replace('W', 'L', $setup);
+		}
+
+		$extra_info['invite_setup'] = packFEN($setup);
+
+		call($extra_info);
+
+		$diff = array_compare($extra_info, self::$_EXTRA_INFO_DEFAULTS);
+		$extra_info = $diff[0];
+		ksort($extra_info);
+
+		call($extra_info);
+		if ( ! empty($extra_info)) {
+			$_P['extra_info'] = serialize($extra_info);
 		}
 
 		// create the game
@@ -579,11 +624,18 @@ class Game
 		call($extra_info);
 		unset($extra_info['white_color']);
 
+		$board = false;
+		if ( ! empty($extra_info['invite_setup'])) {
+			$board = $extra_info['invite_setup'];
+		}
+		$extra_info['invite_setup'] = '';
+
 		$diff = array_compare($extra_info, self::$_EXTRA_INFO_DEFAULTS);
 		$extra_info = $diff[0];
 		ksort($extra_info);
 
 		call($extra_info);
+		unset($game['extra_info']);
 		if ( ! empty($extra_info)) {
 			$game['extra_info'] = serialize($extra_info);
 		}
@@ -593,17 +645,28 @@ class Game
 		$Mysql->insert(self::GAME_TABLE, $game, " WHERE game_id = '{$game_id}' ");
 
 		// add the first entry in the history table
-		$query = "
-			INSERT INTO ".self::GAME_HISTORY_TABLE."
-				(game_id, board)
-			VALUES
-				('{$game_id}', (
-					SELECT board
-					FROM ".Setup::SETUP_TABLE."
-					WHERE setup_id = '{$game['setup_id']}'
-				))
-		";
-		$Mysql->query($query);
+		if (empty($board)) {
+			$query = "
+				INSERT INTO ".self::GAME_HISTORY_TABLE."
+					(game_id, board)
+				VALUES
+					('{$game_id}', (
+						SELECT board
+						FROM ".Setup::SETUP_TABLE."
+						WHERE setup_id = '{$game['setup_id']}'
+					))
+			";
+			$Mysql->query($query);
+		}
+		else {
+			$query = "
+				INSERT INTO ".self::GAME_HISTORY_TABLE."
+					(game_id, board)
+				VALUES
+					('{$game_id}', '{$board}')
+			";
+			$Mysql->query($query);
+		}
 
 		// add a used count to the setup table
 		Setup::add_used($game['setup_id']);
@@ -1107,7 +1170,17 @@ class Game
 		$return = array( );
 
 		if ($this->_extra_info['battle_dead']) {
-			$return[] = '<span>Laser Battle (<abbr title="Dead for">'.$this->_extra_info['battle_dead'].'</abbr>, <abbr title="Immune for">'.$this->_extra_info['battle_immune'].'</abbr>)</span>';
+			$front_abbr = $front_text = '';
+			if ($this->_pharaoh->has_sphynx) {
+				$front_abbr = ', Front Only';
+				$front_text = ($this->_extra_info['battle_front_only'] ? ', Yes' : ', No');
+			}
+
+			$return[] = '<span>Laser Battle (<abbr title="Dead, Immune'.$front_abbr.'">'.$this->_extra_info['battle_dead'].', '.$this->_extra_info['battle_immune'].$front_text.'</abbr>)</span>';
+		}
+
+		if ($this->_pharaoh->has_sphynx && $this->_extra_info['move_sphynx']) {
+			$return[] = '<span>Movable Sphynx</span>';
 		}
 
 		return implode(' | ', $return);
@@ -1331,15 +1404,16 @@ class Game
 		// and if we try and fire the laser at the current board, it will pass through
 		// any hit piece because it's no longer there (unless it's a stacked obelisk, of course)
 
-		// create a dummy pharaoh class and set the board as it was prior to the laser (+1)
+		// create a dummy pharaoh class and set the board as it was prior to the laser (-1)
 		$PH = new Pharaoh( );
 		$PH->set_board(expandFEN($this->_history[$index - 1]['board']));
+		$PH->set_extra_info($this->_extra_info);
 
 		// do the move, but do not fire the laser, and store the board
 		$pre_board = $PH->do_move($this->_history[$index]['move'], false);
 
 		// now fire the laser at that board
-		$return = Pharaoh::fire_laser($color, $pre_board);
+		$return = Pharaoh::fire_laser($color, $pre_board, $this->_pharaoh->get_extra_info( ));
 
 		if ($json) {
 			return json_encode($return['laser_path']);
@@ -1379,9 +1453,10 @@ class Game
 			// of the pieces as they were hit in case any pieces were rotated
 			// into the beam
 
-			// create a dummy pharaoh class and set the board as it was prior to the laser (+1)
+			// create a dummy pharaoh class and set the board as it was prior to the laser (-1)
 			$PH = new Pharaoh( );
 			$PH->set_board(expandFEN($this->_history[$index - 1]['board']));
+			$PH->set_extra_info($this->_extra_info);
 
 			// do the move and store that board
 			$prev_board = $PH->do_move($this->_history[$index]['move'], false);
@@ -1900,6 +1975,9 @@ class Game
 		$this->modify_date = strtotime($result['modify_date']);
 
 		$this->_extra_info = array_merge_plus(self::$_EXTRA_INFO_DEFAULTS, unserialize($result['extra_info']));
+
+		// just empty this out, we don't need it anymore
+		$this->_extra_info['invite_setup'] = '';
 
 		// grab the initial setup
 		// TODO: convert to the setup object
@@ -2527,6 +2605,25 @@ class Game
 			$extra_info = array_merge_plus(self::$_EXTRA_INFO_DEFAULTS, unserialize($item['extra_info']));
 			$white_color = (('random' == $extra_info['white_color']) ? 'Random' : (('white' == $extra_info['white_color']) ? 'Silver' : 'Red'));
 			$black_color = (('random' == $extra_info['white_color']) ? 'Random' : (('white' == $extra_info['white_color']) ? 'Red' : 'Silver'));
+
+			$hover = unserialize($item['extra_info']);
+			unset($hover['invite_setup']);
+			unset($hover['white_color']);
+
+			$hover_text = array( );
+			foreach ($hover as $key => $value) {
+				if (is_bool($value)) {
+					$value = ($value ? 'Yes' : 'No');
+				}
+
+				$hover_text[] = humanize($key).': '.$value;
+			}
+			$item['hover_text'] = implode(' | ', $hover_text);
+
+			$item['board'] = 'setup_display';
+			if ( ! empty($extra_info['invite_setup'])) {
+				$item['board'] = expandFEN($extra_info['invite_setup']);
+			}
 
 			if ($player_id == $item['white_id']) {
 				$item['color'] = $white_color;

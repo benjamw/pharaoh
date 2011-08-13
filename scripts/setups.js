@@ -38,14 +38,15 @@ $(document).ready( function($) {
 
 	// show the pieces
 	var piece;
-	var $pieces_div = $('#pieces_display');
-	var $delete = $pieces_div.find('.delete');
+	var $silver_pieces_div = $('#silver_pieces');
+	var $red_pieces_div = $('#red_pieces');
 	for (piece in pieces) {
-		$delete.before(create_piece(piece));
-		$pieces_div.append(create_piece(piece.toLowerCase( )));
+		$silver_pieces_div.append(create_piece(piece, false, true));
+		$red_pieces_div.append(create_piece(piece.toLowerCase( ), false, true));
 	}
 
 	// make the pieces clickable
+	var $pieces_div = $('#pieces_display');
 	$pieces_div.find('img').click( function( ) {
 		$('.selected').removeClass('selected');
 		selected = $(this).addClass('selected').attr('alt');
@@ -106,11 +107,14 @@ $(document).ready( function($) {
 			return;
 		}
 
-		if ('p' == selected.toLowerCase( )) {
-			if (-1 !== board.indexOf(selected)) {
-				alert('Only one pharaoh of each color is allowed.\nPlease delete the current pharaoh to place a new one.');
-				return;
-			}
+		if (('p' == selected.toLowerCase( )) && (-1 !== board.indexOf(selected))) {
+			alert('Only one pharaoh of each color is allowed.\nPlease delete the current pharaoh to place a new one.');
+			return;
+		}
+
+		if (selected.toLowerCase( ).match(/[efjk]/) && board.toLowerCase( ).match(/[efjk]/)) {
+			alert('Only one sphynx of each color is allowed.\nPlease delete the current sphynx to place a new one.');
+			return;
 		}
 
 		$this.empty( ).append(create_piece(selected));
@@ -262,9 +266,9 @@ function do_clear_laser( ) {
 }
 
 
-String.prototype.replaceAt = function(index, char) {
+String.prototype.replaceAt = function(index, str) {
 	index = parseInt(index);
-	return this.slice(0, index) + char + this.slice(index + char.length);
+	return this.slice(0, index) + str + this.slice(index + str.length);
 }
 
 

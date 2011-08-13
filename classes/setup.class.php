@@ -410,6 +410,7 @@ class Setup {
 		$data['board'] = packFEN($this->board);
 		$data['reflection'] = self::_get_reflection($this->board);
 		$data['has_horus'] = self::has_horus($this->board);
+		$data['has_sphynx'] = self::has_sphynx($this->board);
 		$data['has_tower'] = self::has_tower($this->board);
 		$data['created_by'] = (int) $this->creator;
 		call($data);
@@ -423,6 +424,7 @@ class Setup {
 		$key_list = array_merge($required, array(
 			'reflection',
 			'has_horus',
+			'has_sphynx',
 			'has_tower',
 			'created_by',
 		));
@@ -533,8 +535,18 @@ class Setup {
 			throw new MyException(__METHOD__.': Too many of one or both Pharaohs');
 		}
 
+		// test for a sphynx on both sides (if any)
+		if (preg_match('/[EFJK]/i', $xFEN) && ( ! preg_match('/[EFJK]/', $xFEN, $s_match) || ! preg_match('/[efjk]/', $xFEN, $r_match))) {
+			throw new MyException(__METHOD__.': Missing one or both Sphynxes');
+		}
+
+		// make sure there's only one of each sphynx
+		if ((1 != count($s_match)) || (1 != count($r_match))) {
+			throw new MyException(__METHOD__.': Too many of one or both Sphynxes');
+		}
+
 		// look for invalid characters
-		if (preg_match('/[^abcdhiptvwxy0]/i', $xFEN)) {
+		if (preg_match('/[^abcdefhijklmnoptvwxy0]/i', $xFEN)) {
 			throw new MyException(__METHOD__.': Invalid characters found in setup');
 		}
 
@@ -764,6 +776,18 @@ class Setup {
 	}
 
 
+	/** static public function has_sphynx
+	 *		Does the given setup use the Sphynx?
+	 *
+	 * @param void
+	 * @return bool setup has sphynx
+	 */
+	static public function has_sphynx($setup)
+	{
+		return preg_match('/[efjk]/i', $setup);
+	}
+
+
 	/** static public function delete
 	 *		Deletes the given setup and all related data
 	 *
@@ -814,6 +838,7 @@ class Setup {
 					ON (G.setup_id = S.setup_id)
 			GROUP BY S.setup_id
 			ORDER BY S.has_tower ASC
+				, S.has_sphynx ASC
 				, S.has_horus ASC
 				, S.name ASC
 		";
@@ -892,6 +917,7 @@ CREATE TABLE IF NOT EXISTS `ph_setup` (
   `board` varchar(87) COLLATE latin1_general_ci NOT NULL,
   `reflection` enum('Origin','Short','Long','None') COLLATE latin1_general_ci NOT NULL DEFAULT 'Origin',
   `has_horus` tinyint(1) NOT NULL DEFAULT '0',
+  `has_sphynx` tinyint(1) NOT NULL DEFAULT '0',
   `has_tower` tinyint(1) NOT NULL DEFAULT '0',
   `used` int(11) NOT NULL DEFAULT '0',
   `silver_wins` int(10) unsigned NOT NULL DEFAULT '0',

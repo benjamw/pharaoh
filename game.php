@@ -146,6 +146,7 @@ $meta['head_data'] = '
 		var move_count = game_history.length;
 		var move_index = (move_count - 1);
 		var laser_battle = '.json_encode( !! $extra_info['battle_dead']).';
+		var move_sphynx = '.json_encode( !! $extra_info['move_sphynx']).';
 	/*]]>*/</script>
 	<script type="text/javascript" src="scripts/game.js"></script>
 ';

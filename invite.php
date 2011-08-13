@@ -55,8 +55,8 @@ foreach ($players_full as $player) {
 $groups = array(
 	'Normal' => array(0, 0),
 	'Eye of Horus' => array(0, 1),
-	'Tower of Kadesh' => array(1, 0),
-	'Tower & Horus' => array(1, 1),
+	'Sphynx' => array(1, 0),
+	'Sphynx & Horus' => array(1, 1),
 );
 $group_names = array_keys($groups);
 $group_markers = array_values($groups);
@@ -67,7 +67,7 @@ $setup_javascript = '';
 $cur_group = false;
 $group_open = false;
 foreach ($setups as $setup) {
-	$marker = array((int) $setup['has_tower'], (int) $setup['has_horus']);
+	$marker = array((int) $setup['has_sphynx'], (int) $setup['has_horus']);
 	$group_index = array_search($marker, $group_markers, true);
 
 	if ($cur_group !== $group_names[$group_index]) {
@@ -129,6 +129,41 @@ $contents = <<< EOF
 		<div><label for="setup">Setup</label><select id="setup" name="setup">{$setup_selection}</select> <a href="#setup_display" id="show_setup">Show Setup</a></div>
 		<div><label for="color">Your Color</label><select id="color" name="color"><option value="random">Random</option><option value="white">Silver</option><option value="black">Red</option></select></div>
 
+		<div class="pharaoh_1">
+			<fieldset>
+				<legend>v1.0 Options</legend>
+				<p class="conversion">
+					Here you can convert old v1.0 setups to play v2.0 Pharaoh.<br />
+					The conversion places a Sphynx in your lower-right corner facing upwards (and opposite for your opponent)
+					and converts any double-stacked Obelisks to Anubises which face forward.
+				</p>
+				<p class="conversion">
+					When you select to convert, more options will be shown below, as well as the "Show Setup" link will show the updated setup.
+				</p>
+
+				<div class="conversion"><label class="inline"><input type="checkbox" id="convert_to_2" name="convert_to_2" /> Convert to 2.0</label></div>
+
+			</fieldset>
+		</div> <!-- .pharaoh_1 -->
+
+		<div class="pharaoh_2 p2_box">
+			<fieldset>
+				<legend>v2.0 Options</legend>
+				<p class="conversion">
+					Here you can convert the new v2.0 setups to play v1.0 Pharaoh.<br />
+					The conversion removes any Sphynxes from the board and converts any Anubises to double-stacked Obelisks.
+				</p>
+				<p class="conversion">
+					When you select to convert, the "Show Setup" link will show the updated setup.
+				</p>
+
+				<div class="conversion"><label class="inline"><input type="checkbox" id="convert_to_1" name="convert_to_1" /> Convert to 1.0</label></div>
+
+				<div class="pharaoh_2"><label class="inline"><input type="checkbox" id="move_sphynx" name="move_sphynx" /> Sphynx is movable</label></div>
+
+			</fieldset>
+		</div> <!-- .pharaoh_2 -->
+
 		<fieldset>
 			<legend><label class="inline"><input type="checkbox" name="laser_battle_box" id="laser_battle_box" class="fieldset_box" /> Laser Battle</label></legend>
 			<div id="laser_battle">
@@ -136,14 +171,18 @@ $contents = <<< EOF
 					When a laser gets shot by the opponents laser, it will be disabled for a set number of turns, making that laser unable to shoot until those turns have passed.<br />
 					After those turns have passed, and the laser has recovered, it will be immune from further shots for a set number of turns.<br />
 					After the immunity turns have passed, whether or not the laser was shot again, it will now be susceptible to being shot again.
+					<span class="pharaoh_2"><br />You can also select if the Sphynx is hittable only in the front, or on all four sides.</span>
 				</p>
 
 				<div><label for="battle_dead">Dead for:</label><input type="text" id="battle_dead" name="battle_dead" size="4" /> <span class="info">(Default: 1; Minimum: 1)</span></div>
 				<div><label for="battle_immune">Immune for:</label><input type="text" id="battle_immune" name="battle_immune" size="4" /> <span class="info">(Default: 1; Minimum: 0)</span></div>
+				<div class="pharaoh_2"><label class="inline"><input type="checkbox" id="battle_front_only" name="battle_front_only" checked="checked" /> Only front hits on Sphynx count</label></div>
+				<!-- <div class="pharaoh_2"><label class="inline"><input type="checkbox" id="battle_hit_self" name="battle_hit_self" /> Hit Self</label></div> -->
 
 				<p>You can set the "Immune for" value to 0 to allow a laser to be shot continuously, but the minimum value for the "Dead for" value is 1, as it makes no sense otherwise.</p>
 			</div> <!-- #laser_battle -->
 		</fieldset>
+
 
 		{$submit_button}
 
@@ -168,8 +207,9 @@ $table_meta = array(
 );
 $table_format = array(
 	array('Invitor', 'invitor') ,
-	array('Setup', '<a href="#setup_display" class="setup" id="s_[[[setup_id]]]">[[[setup]]]</a>') ,
+	array('Setup', '<a href="#[[[board]]]" class="setup" id="s_[[[setup_id]]]">[[[setup]]]</a>') ,
 	array('Color', 'color') ,
+	array('Extra', '<abbr title="[[[hover_text]]]">Hover</abbr>') ,
 	array('Date Sent', '###date(Settings::read(\'long_date\'), strtotime(\'[[[create_date]]]\'))', null, ' class="date"') ,
 	array('Action', '<input type="button" id="accept-[[[game_id]]]" value="Accept" /><input type="button" id="decline-[[[game_id]]]" value="Decline" />', false) ,
 );
@@ -182,8 +222,9 @@ $table_meta = array(
 );
 $table_format = array(
 	array('Invitee', '###ife(\'[[[invitee]]]\', \'-- OPEN --\')') ,
-	array('Setup', '<a href="#setup_display" class="setup" id="s_[[[setup_id]]]">[[[setup]]]</a>') ,
+	array('Setup', '<a href="#[[[board]]]" class="setup" id="s_[[[setup_id]]]">[[[setup]]]</a>') ,
 	array('Color', 'color') ,
+	array('Extra', '<abbr title="[[[hover_text]]]">Hover</abbr>') ,
 	array('Date Sent', '###date(Settings::read(\'long_date\'), strtotime(\'[[[create_date]]]\'))', null, ' class="date"') ,
 	array('Action', '###\'<input type="button" id="withdraw-[[[game_id]]]" value="Withdraw" />\'.((strtotime(\'[[[create_date]]]\') >= strtotime(\'[[[resend_limit]]]\')) ? \'\' : \'<input type="button" id="resend-[[[game_id]]]" value="Resend" />\')', false) ,
 );
@@ -196,8 +237,9 @@ $table_meta = array(
 );
 $table_format = array(
 	array('Invitor', 'invitor') ,
-	array('Setup', '<a href="#setup_display" class="setup" id="s_[[[setup_id]]]">[[[setup]]]</a>') ,
+	array('Setup', '<a href="#[[[board]]]" class="setup" id="s_[[[setup_id]]]">[[[setup]]]</a>') ,
 	array('Color', 'color') ,
+	array('Extra', '<abbr title="[[[hover_text]]]">Hover</abbr>') ,
 	array('Date Sent', '###date(Settings::read(\'long_date\'), strtotime(\'[[[create_date]]]\'))', null, ' class="date"') ,
 	array('Action', '<input type="button" id="accept-[[[game_id]]]" value="Accept" />', false) ,
 );
