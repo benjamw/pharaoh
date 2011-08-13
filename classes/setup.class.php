@@ -531,7 +531,7 @@ class Setup {
 		}
 
 		// make sure there's only one of each pharaoh
-		if ((1 != count($s_match)) || (1 != count($s_match))) {
+		if ((1 != count($s_match)) || (1 != count($r_match))) {
 			throw new MyException(__METHOD__.': Too many of one or both Pharaohs');
 		}
 
