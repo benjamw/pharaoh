@@ -157,7 +157,7 @@ function get_header($meta = null) {
 	{$head_data}
 	{$flash}
 
-	<!--<link rel="stylesheet" type="text/css" media="screen" href="css/c_{$GLOBALS['_DEFAULT_COLOR']}.css" />-->
+	<link rel="stylesheet" type="text/css" media="screen" href="css/c_{$GLOBALS['_DEFAULT_COLOR']}.css" />
 
 	{$admin_css}
 

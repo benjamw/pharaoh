@@ -183,7 +183,6 @@ $contents = <<< EOF
 			</div> <!-- #laser_battle -->
 		</fieldset>
 
-
 		{$submit_button}
 
 		<div class="clr"></div>
