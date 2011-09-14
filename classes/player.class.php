@@ -385,9 +385,7 @@ class Player
 			// fill the ident with a random string
 			$_DATA['ident'] = md5(uniqid(mt_rand( ), true));
 
-			if ('0' == Settings::read('approve_users')) {
-				$_DATA['is_approved'] = 1;
-			}
+			$_DATA['is_approved'] = (int) ! (bool) (int) Settings::read('approve_users');
 
 			// now check the password
 			if (empty($_POST['password'])) {
@@ -397,7 +395,7 @@ class Player
 			$this->id = $this->_mysql->insert(self::PLAYER_TABLE, $_DATA);
 
 			if ($this->id) {
-				if ('1' == Settings::read('approve_users')) {
+				if ((bool) (int) Settings::read('approve_users')) {
 					Email::send('register', explode(',', Settings::read('to_email')), array_merge(array('id' => $this->id), $_DATA));
 				}
 
