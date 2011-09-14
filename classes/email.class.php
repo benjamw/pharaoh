@@ -143,17 +143,24 @@ class Email
 		// replace the meta vars
 		$replace = array(
 			'/\[\[\[GAME_NAME\]\]\]/' => GAME_NAME,
-			'/\[\[\[game_name\]\]\]/' => @$data['name'],
 			'/\[\[\[site_name\]\]\]/' => $site_name,
-			'/\[\[\[extra_text\]\]\]/' => $this->_strip(@$_POST['extra_text']),
-			'/\[\[\[sender\]\]\]/' => @$data['player'],
-			'/\[\[\[winner\]\]\]/' => @$data['winner'],
+
+			'/\[\[\[opponent\]\]\]/' => @$data['opponent'],
+
 			'/\[\[\[export_data\]\]\]/' => var_export($data, true),
 		);
 
 		$message = preg_replace(array_keys($replace), $replace, $message);
 
 		$subject = GAME_NAME.' - '.$subject;
+
+		if ( ! empty($data['game_id'])) {
+			$message .= "\n\n".'Game Link: '.$GLOBALS['_ROOT_URI'].'game.php?id='.(int) $data['game_id'];
+		}
+		elseif ( ! empty($data['page'])) {
+			$message .= "\n\n".'Direct Link: '.$GLOBALS['_ROOT_URI'].$data['page'];
+		}
+
 		$message .= '
 
 =============================================

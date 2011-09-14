@@ -521,7 +521,7 @@ class Game
 
 		// send the email
 		if ($_DATA['black_id']) {
-			Email::send('invite', $_DATA['black_id'], array('name' => $GLOBALS['_PLAYERS'][$_DATA['white_id']]));
+			Email::send('invite', $_DATA['black_id'], array('opponent' => $GLOBALS['_PLAYERS'][$_DATA['white_id']], 'page' => 'invite.php'));
 		}
 
 		return $insert_id;
@@ -572,7 +572,7 @@ class Game
 
 		// if we get here, all is good...
 
-		$sent = Email::send('invite', $invite['black_id'], array('name' => $GLOBALS['_PLAYERS'][$invite['white_id']]));
+		$sent = Email::send('invite', $invite['black_id'], array('opponent' => $GLOBALS['_PLAYERS'][$invite['white_id']], 'page' => 'invite.php'));
 
 		if ($sent) {
 			// update the modify_date to prevent invite resend flooding
@@ -672,7 +672,7 @@ class Game
 		Setup::add_used($game['setup_id']);
 
 		// send the email
-		Email::send('start', $invitor_id, array('name' => $GLOBALS['_PLAYERS'][$_SESSION['player_id']]));
+		Email::send('start', $invitor_id, array('opponent' => $GLOBALS['_PLAYERS'][$_SESSION['player_id']], 'game_id' => $game_id));
 
 		return $game_id;
 	}
@@ -783,7 +783,7 @@ class Game
 				$this->_players['red']['object']->add_draw( );
 
 				// send the email
-				Email::send('draw', $this->_players['opponent']['player_id'], array('player' => $this->_players['player']['object']->username));
+				Email::send('draw', $this->_players['opponent']['player_id'], array('opponent' => $this->_players['player']['object']->username));
 			}
 			else {
 				$this->state = 'Finished';
@@ -792,12 +792,12 @@ class Game
 
 				// send the email
 				$type = (($this->_players[$winner]['player_id'] == $_SESSION['player_id']) ? 'defeated' : 'won');
-				Email::send($type, $this->_players['opponent']['player_id'], array('player' => $this->_players['player']['object']->username));
+				Email::send($type, $this->_players['opponent']['player_id'], array('opponent' => $this->_players['player']['object']->username));
 			}
 		}
 		else {
 			// send the email
-			Email::send('turn', $this->_players['opponent']['player_id'], array('name' => $this->_players['player']['object']->username));
+			Email::send('turn', $this->_players['opponent']['player_id'], array('opponent' => $this->_players['player']['object']->username, 'game_id' => $this->id));
 		}
 
 		return $hits;
@@ -836,7 +836,7 @@ class Game
 		$this->_players['player']['object']->add_loss( );
 		$this->state = 'Finished';
 		$this->_pharaoh->winner = 'opponent';
-		Email::send('resigned', $this->_players['opponent']['player_id'], array('name' => $this->_players['player']['object']->username));
+		Email::send('resigned', $this->_players['opponent']['player_id'], array('opponent' => $this->_players['player']['object']->username, 'game_id' => $this->id));
 	}
 
 
@@ -870,7 +870,7 @@ class Game
 
 		$this->_extra_info['draw_offered'] = $player_id;
 
-		Email::send('draw_offered', $this->_players['opponent']['player_id'], array('name' => $this->_players['player']['object']->username));
+		Email::send('draw_offered', $this->_players['opponent']['player_id'], array('opponent' => $this->_players['player']['object']->username, 'game_id' => $this->id));
 	}
 
 
@@ -929,7 +929,7 @@ class Game
 		$this->state = 'Draw';
 		$this->_extra_info['draw_offered'] = false;
 
-		Email::send('draw', $this->_players['opponent']['player_id'], array('player' => $this->_players['player']['object']->username));
+		Email::send('draw', $this->_players['opponent']['player_id'], array('opponent' => $this->_players['player']['object']->username, 'game_id' => $this->id));
 	}
 
 
@@ -995,7 +995,7 @@ class Game
 
 		$this->_extra_info['undo_requested'] = $player_id;
 
-		Email::send('undo_requested', $this->_players['opponent']['player_id'], array('player' => $this->_players['player']['object']->username));
+		Email::send('undo_requested', $this->_players['opponent']['player_id'], array('opponent' => $this->_players['player']['object']->username, 'game_id' => $this->id));
 	}
 
 
@@ -1061,7 +1061,7 @@ class Game
 		$this->_pull( );
 		$this->_extra_info['undo_requested'] = false;
 
-		Email::send('undo_accepted', $this->_players['opponent']['player_id'], array('name' => $this->_players['player']['object']->username));
+		Email::send('undo_accepted', $this->_players['opponent']['player_id'], array('opponent' => $this->_players['player']['object']->username, 'game_id' => $this->id));
 	}
 
 
@@ -1607,10 +1607,8 @@ class Game
 			throw new MyException(__METHOD__.': Trying to perform an action on a paused game');
 		}
 
-		$nudger = $this->_players['player']['object']->username;
-
 		if ($this->test_nudge( )) {
-			Email::send('nudge', $this->_players['opponent']['player_id'], array('id' => $this->id, 'name' => $this->name, 'player' => $nudger));
+			Email::send('nudge', $this->_players['opponent']['player_id'], array('opponent' => $this->_players['player']['object']->username, 'game_id' => $this->id));
 			$this->_mysql->delete(self::GAME_NUDGE_TABLE, " WHERE game_id = '{$this->id}' ");
 			$this->_mysql->insert(self::GAME_NUDGE_TABLE, array('game_id' => $this->id, 'player_id' => $this->_players['opponent']['player_id']));
 			return true;
