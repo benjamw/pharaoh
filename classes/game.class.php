@@ -2371,7 +2371,7 @@ class Game
 			{$WHERE}
 			GROUP BY G.game_id
 			ORDER BY G.state ASC
-				, last_move ASC
+				, last_move DESC
 		";
 		$list = $Mysql->fetch_array($query);
 
