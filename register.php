@@ -16,7 +16,7 @@ $max_users_reached = (GamePlayer::get_count( ) >= Settings::read('max_users'));
 $not_admin = empty($GLOBALS['Player']) || ! $GLOBALS['Player']->is_admin;
 
 if ($not_admin && ($no_new_users || ($max_users_set && $max_users_reached))) {
-	Flash::store('Sorry, but we are not accepting new applications at this time.');
+	Flash::store('Sorry, but we are not accepting new registrations at this time.');
 }
 
 if ($not_admin && isset($_SESSION['player_id'])) {
