@@ -216,7 +216,11 @@ class GamePlayer
 		}
 
 		if ($this->id) {
+			// add the user to the table
 			$this->_mysql->insert(self::EXTEND_TABLE, array('player_id' => $this->id));
+
+			// update the last_online time so we don't break things later
+			$this->_mysql->insert(self::EXTEND_TABLE, array('last_online' => NULL), " WHERE player_id = '{$this->id}' ");
 		}
 	}
 
