@@ -1,30 +1,7 @@
 
-CURRENTLY WORKING ON:
-------------------------------------------------
-
-	making the Khet 2.0 stuff work...
-
-	done:
-		laser works as expected in pharaoh class
-		setup creator has new pieces and all works
-		game mechanics work for both anubises and sphynxes
-		laser cannot point directly into wall
-
-		setup table has new fields
-
-		invite page has options
-
-		invites are processed properly
-		setup code is stored in invite
-
-	need:
-		add ability to hit self from side...  if requested (some of it is kinda built)
-
-		other invite options ???
-
-_______________________________________________________________________________
-
 - make hover tooltips better
+
+- add ability to hit own laser from side as option
 
 - for revisions for setups, allow the same name for the setup and when
 	a user creates a revision or edits their setup, it creates a new setup
@@ -34,6 +11,7 @@ _______________________________________________________________________________
 	use the most recent.
 
 - add more stats:
+	player's most played setup
 	player's favorite setup
 	player's worst setup
 	player's favorite opponent
@@ -51,6 +29,8 @@ _______________________________________________________________________________
 - don't show success messages if email is not sent for things like
 	nudge, that are only emails possibly for other things like invite,
 	etc. that are largely email dependent
+	- make accept invite and withdraw invite pages ajax powered and
+		just remove the item from the table (and other places as well)
 
 - fully convert times to UTC in MySQL and back to user's timezone everywhere
 	dates are output
