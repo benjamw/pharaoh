@@ -2230,8 +2230,12 @@ class Game
 		}
 
 		$count = count($this->_history) - 1;
-		$start = $this->_history[1]['move_date'];
-		$end = $this->_history[$count]['move_date'];
+
+		$start = $end = $this->_history[0]['move_date'];
+		if ($count) {
+			$start = $this->_history[1]['move_date'];
+			$end = $this->_history[$count]['move_date'];
+		}
 
 		$start_unix = strtotime($start);
 		$end_unix = strtotime($end);
