@@ -1,9 +1,10 @@
+/.sass-cache
 /config
+/old_css
 /testpages
 
-*.err
 *.epp
-.sass-cache
+*.err
 
 /games/*.pgn
 /logs/*
@@ -12,3 +13,4 @@
 /scripts/ba-debug.js
 
 !/logs/.htaccess
+
