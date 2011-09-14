@@ -688,7 +688,7 @@ CREATE TABLE IF NOT EXISTS `ph_ph_player` (
   `is_admin` tinyint(1) unsigned NOT NULL DEFAULT '0',
   `allow_email` tinyint(1) unsigned NOT NULL DEFAULT '1',
   `max_games` tinyint(2) unsigned NOT NULL DEFAULT '0',
-  `color` varchar(25) NOT NULL DEFAULT 'blue_white',
+  `color` varchar(25) NULL DEFAULT NULL,
   `wins` smallint(5) unsigned NOT NULL DEFAULT '0',
   `draws` smallint(5) unsigned NOT NULL DEFAULT '0',
   `losses` smallint(5) unsigned NOT NULL DEFAULT '0',
