@@ -202,52 +202,52 @@ echo get_header($meta);
 					<a href="javascript:;" id="fire_laser">Fire Laser</a> |
 					<a href="javascript:;" id="clear_laser">Clear Laser</a>
 				</div> <!-- .buttons -->
+
+				<form id="game" method="post" action="<?php echo $_SERVER['REQUEST_URI']; ?>"><div class="formdiv">
+					<input type="hidden" name="token" value="<?php echo $_SESSION['token']; ?>" />
+					<input type="hidden" name="game_id" value="<?php echo $_SESSION['game_id']; ?>" />
+					<input type="hidden" name="player_id" value="<?php echo $_SESSION['player_id']; ?>" />
+					<input type="hidden" name="from" id="from" value="" />
+					<input type="hidden" name="to" id="to" value="" />
+
+					<?php if (('Playing' == $Game->state) && $Game->is_player($_SESSION['player_id'])) { ?>
+
+						<?php if ( ! $Game->draw_offered( )) { ?>
+
+							<input type="button" name="offer_draw" id="offer_draw" value="Offer Draw" />
+
+						<?php } elseif ($Game->draw_offered($_SESSION['player_id'])) { ?>
+
+							<input type="button" name="accept_draw" id="accept_draw" value="Accept Draw Offer" />
+							<input type="button" name="reject_draw" id="reject_draw" value="Reject Draw Offer" />
+
+						<?php } ?>
+
+						<?php if ( ! $Game->undo_requested( ) && ! $Game->is_turn( ) && ! empty($moves)) { ?>
+
+							<input type="button" name="request_undo" id="request_undo" value="Request Undo" />
+
+						<?php } elseif ($Game->undo_requested($_SESSION['player_id'])) { ?>
+
+							<input type="button" name="accept_undo" id="accept_undo" value="Accept Undo Request" />
+							<input type="button" name="reject_undo" id="reject_undo" value="Reject Undo Request" />
+
+						<?php } ?>
+
+						<input type="button" name="resign" id="resign" value="Resign" />
+
+						<?php if ($Game->test_nudge( )) { ?>
+
+							<input type="button" name="nudge" id="nudge" value="Nudge" />
+
+						<?php } ?>
+
+					<?php } ?>
+
+				</div></form>
 			</div> <!-- #board_wrapper -->
 
 			<?php echo $chat_html; ?>
-
-			<form id="game" method="post" action="<?php echo $_SERVER['REQUEST_URI']; ?>"><div class="formdiv">
-				<input type="hidden" name="token" value="<?php echo $_SESSION['token']; ?>" />
-				<input type="hidden" name="game_id" value="<?php echo $_SESSION['game_id']; ?>" />
-				<input type="hidden" name="player_id" value="<?php echo $_SESSION['player_id']; ?>" />
-				<input type="hidden" name="from" id="from" value="" />
-				<input type="hidden" name="to" id="to" value="" />
-
-				<?php if (('Playing' == $Game->state) && $Game->is_player($_SESSION['player_id'])) { ?>
-
-					<?php if ( ! $Game->draw_offered( )) { ?>
-
-						<input type="button" name="offer_draw" id="offer_draw" value="Offer Draw" />
-
-					<?php } elseif ($Game->draw_offered($_SESSION['player_id'])) { ?>
-
-						<input type="button" name="accept_draw" id="accept_draw" value="Accept Draw Offer" />
-						<input type="button" name="reject_draw" id="reject_draw" value="Reject Draw Offer" />
-
-					<?php } ?>
-
-					<?php if ( ! $Game->undo_requested( ) && ! $Game->is_turn( ) && ! empty($moves)) { ?>
-
-						<input type="button" name="request_undo" id="request_undo" value="Request Undo" />
-
-					<?php } elseif ($Game->undo_requested($_SESSION['player_id'])) { ?>
-
-						<input type="button" name="accept_undo" id="accept_undo" value="Accept Undo Request" />
-						<input type="button" name="reject_undo" id="reject_undo" value="Reject Undo Request" />
-
-					<?php } ?>
-
-					<input type="button" name="resign" id="resign" value="Resign" />
-
-					<?php if ($Game->test_nudge( )) { ?>
-
-						<input type="button" name="nudge" id="nudge" value="Nudge" />
-
-					<?php } ?>
-
-				<?php } ?>
-
-			</div></form>
 
 		</div> <!-- #contents -->
 
