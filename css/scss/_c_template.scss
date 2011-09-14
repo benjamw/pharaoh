@@ -54,8 +54,8 @@ $box_border_gradient_background_color: $main_shadow_color !default;
 $box_border_gradient_highlight_color: #232323 !default;
 $box_gradient_background_color: #2E2F34 !default;
 $box_gradient_highlight_color: #212225 !default;
-$box_highlight_dark_color: rgba(255, 255, 255, 0.1) !default;
-$box_highlight_light_color: rgba(255, 255, 255, 0.2) !default;
+$box_highlight_top_color: rgba(255, 255, 255, 0.1) !default;
+$box_highlight_bottom_color: rgba(0, 0, 0, 0.2) !default;
 
 $nav_link_color: $main_link_color !default;
 $nav_background_color: transparent !default;
@@ -200,11 +200,11 @@ nav.site {
 		background: -webkit-linear-gradient($box_gradient_background_color, $box_gradient_highlight_color) $box_gradient_background_color;
 		background: linear-gradient($box_gradient_background_color, $box_gradient_highlight_color) $box_gradient_background_color;
 
-		-o-box-shadow: 0px 1px 0px $box_highlight_dark_color inset, 0px -2px 1px $box_highlight_light_color inset;
-		-ms-box-shadow: 0px 1px 0px $box_highlight_dark_color inset, 0px -2px 1px $box_highlight_light_color inset;
-		-moz-box-shadow: 0px 1px 0px $box_highlight_dark_color inset, 0px -2px 1px $box_highlight_light_color inset;
-		-webkit-box-shadow: 0px 1px 0px $box_highlight_dark_color inset, 0px -2px 1px $box_highlight_light_color inset;
-		box-shadow: 0px 1px 0px $box_highlight_dark_color inset, 0px -2px 1px $box_highlight_light_color inset;
+		-o-box-shadow: 0px 1px 0px $box_highlight_top_color inset, 0px -2px 1px $box_highlight_bottom_color inset;
+		-ms-box-shadow: 0px 1px 0px $box_highlight_top_color inset, 0px -2px 1px $box_highlight_bottom_color inset;
+		-moz-box-shadow: 0px 1px 0px $box_highlight_top_color inset, 0px -2px 1px $box_highlight_bottom_color inset;
+		-webkit-box-shadow: 0px 1px 0px $box_highlight_top_color inset, 0px -2px 1px $box_highlight_bottom_color inset;
+		box-shadow: 0px 1px 0px $box_highlight_top_color inset, 0px -2px 1px $box_highlight_bottom_color inset;
 	}
 }
 
@@ -293,6 +293,7 @@ footer {
 #buttons {
 	a {
 		border: $nav_separator;
+		border-width: 0 1px; /* because we override this with the above property */
 	}
 }
 
