@@ -73,7 +73,7 @@ class Email
 	protected function __construct( )
 	{
 		if ( ! $this->email_data && defined('INCLUDE_DIR')) {
-			require_once INCLUDE_DIR.'inc.email.php';
+			require INCLUDE_DIR.'inc.email.php';
 			$this->email_data = $GLOBALS['__EMAIL_DATA'];
 			unset($GLOBALS['__EMAIL_DATA']);
 		}
