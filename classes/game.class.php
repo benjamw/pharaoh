@@ -443,8 +443,8 @@ class Game
 			}
 
 			$extra_info = array(
-				'battle_dead' => (int) max($_P['battle_dead'], 1),
-				'battle_immune' => (int) max($_P['battle_immune'], 0),
+				'battle_dead' => (int) max((int) $_P['battle_dead'], 1),
+				'battle_immune' => (int) max((int) $_P['battle_immune'], 0),
 				'battle_front_only' => (bool) $_P['battle_front_only'],
 				'battle_hit_self' => (bool) $_P['battle_hit_self'],
 			);
