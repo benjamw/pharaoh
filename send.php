@@ -8,9 +8,9 @@ if (isset($_POST['submit'])) {
 	// clean the data
 	$subject = $_POST['subject'];
 	$message = $_POST['message'];
-	$user_ids = $_POST['user_ids'];
-	$send_date = ('' != $_POST['send_date']) ? $_POST['send_date'] : false;
-	$expire_date = ('' != $_POST['expire_date']) ? $_POST['expire_date'] : false;
+	$user_ids = (array) ife($_POST['user_ids'], array( ), false);
+	$send_date = ife($_POST['send_date'], false, false);
+	$expire_date = ife($_POST['expire_date'], false, false);
 
 	try {
 		$Message->send_message($subject, $message, $user_ids, $send_date, $expire_date);

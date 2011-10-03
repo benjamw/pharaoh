@@ -434,13 +434,8 @@ class Game
 		// laser battle cleanup
 		// only run this if the laser battle box was open
 		if ($_P['laser_battle']) {
-			if (empty($_P['battle_dead'])) {
-				$_P['battle_dead'] = 1;
-			}
-
-			if (empty($_P['battle_immune'])) {
-				$_P['battle_immune'] = 1;
-			}
+			ifer($_P['battle_dead'], 1, false);
+			ifer($_P['battle_immune'], 1);
 
 			// we can only hit ourselves in the sides or back, never front
 			if ($_P['battle_front_only']) {

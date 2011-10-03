@@ -220,7 +220,7 @@ $table_meta = array(
 	'caption' => 'Invitations Sent' ,
 );
 $table_format = array(
-	array('Invitee', '###ife(\'[[[invitee]]]\', \'-- OPEN --\')') ,
+	array('Invitee', '###ifenr(\'[[[invitee]]]\', \'-- OPEN --\')') ,
 	array('Setup', '<a href="#[[[board]]]" class="setup" id="s_[[[setup_id]]]">[[[setup]]]</a>') ,
 	array('Color', 'color') ,
 	array('Extra', '<abbr title="[[[hover_text]]]">Hover</abbr>') ,

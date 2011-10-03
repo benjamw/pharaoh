@@ -487,8 +487,9 @@ if ( ! function_exists('ifemptyor')) {
 }
 
 
-if ( ! function_exists('ife')) {
-	function ife($param, $or) {
+if ( ! function_exists('ifenr')) {
+	// if-else non-reference
+	function ifenr($param, $or = null) {
 		if (empty($param)) {
 			return $or;
 		}
