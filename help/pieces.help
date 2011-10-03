@@ -38,21 +38,43 @@
 		<li>
 			<img src="images/pieces/silver_djed_ne.png" />
 			<img src="images/pieces/red_djed_ne.png" />
-			Djed - the Djed can move one space in any direction as well as swap places with a Pyramid or Obelisk.
+			Djed - the Djed can move one space in any direction as well as swap places with a Pyramid, Obelisk, or Anubis.
 			The Djed can also rotate.  The Djed is mirrored on both sides and therefore can not be destroyed.
 		</li>
 
 		<li>
 			<img src="images/pieces/silver_horus_ne.png" />
 			<img src="images/pieces/red_horus_ne.png" />
-			Eye of Horus - the Eye of Horus can move one space in any direction as well as swap places with a Pyramid or Obelisk.
+			Eye of Horus - the Eye of Horus can move one space in any direction as well as swap places with a Pyramid, Obelisk, or Anubis.
 			The Eye of Horus can also rotate.  The Eye of Horus is mirrored on both sides and therefore can not be destroyed.
 			The Eye of Horus is a beam splitter and will split the laser beam into two beams, one traveling directly through
 			the piece, and the other reflecting off the face.  The game can end in a tie if both Pharaohs are shot in the same
 			turn due to the laser beam being split via the Eye of Horus.  The Eye of Horus is not present in all setups.
+		</li>
+	</ul>
 
+	<h4>v2 pieces</h4>
+
+	<p>These pieces are used in v2 of the game:</p>
+
+	<ul>
+		<li>
+			<img src="images/pieces/silver_anubis_n.png" />
+			<img src="images/pieces/red_anubis_n.png" />
+			Anubis - the Anubis behaves just like the Obelisk, but it cannot be destroyed from the front (the yellow side).
 		</li>
 
+		<li>
+			<img src="images/pieces/silver_sphynx_n.png" />
+			<img src="images/pieces/red_sphynx_n.png" />
+			Sphynx - when the Sphynx is on the board, it takes the place of the ordinary laser.  The laser comes out of the front
+			of the Sphynx and then behaves like any other laser.  The Sphynx can be rotated, and optionally moved one space in
+			any direction so long as the space is unoccupied.  The Sphynx cannot be rotated to point directly into a wall, as
+			that would be the same as skipping your laser shot, which is not allowed.The Sphynx cannot be swapped with a Djed
+			or Eye of Horus (just as with the Pharaoh).  If laser battle is enabled and the Sphynx is hit in the front (and
+			optionally the sides), it will become disabled just as with the ordinary laser.
+		</li>
 	</ul>
 
 </div>
+
