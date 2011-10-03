@@ -171,6 +171,13 @@ if (isset($_POST['invite'])) {
 }
 
 
+// we'll need a game id from here forward, so make sure we have one
+if (empty($_SESSION['game_id'])) {
+	echo 'ERROR: Game not found';
+	exit;
+}
+
+
 // init our game
 if ( ! isset($Game)) {
 	$Game = new Game((int) $_SESSION['game_id']);
