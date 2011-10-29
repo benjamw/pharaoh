@@ -145,7 +145,7 @@ class Email
 			'/\[\[\[GAME_NAME\]\]\]/' => GAME_NAME,
 			'/\[\[\[site_name\]\]\]/' => $site_name,
 
-			'/\[\[\[opponent\]\]\]/' => @$data['opponent'],
+			'/\[\[\[opponent\]\]\]/' => ife($data['opponent'], 'opponent'),
 
 			'/\[\[\[export_data\]\]\]/' => var_export($data, true),
 		);
