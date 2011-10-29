@@ -148,7 +148,7 @@ EOF;
 			// make sure this user can delete this setup
 			$Setup = new Setup((int) $_POST['id']);
 
-			if ( ! $Setup->creator || (((string) $_SESSION['player_id'] !== (string) $Setup->creator) && ! $GLOBALS['Player']->is_admin)) {
+			if ( ! $GLOBALS['Player']->is_admin && ( ! $Setup->creator || ((string) $_SESSION['player_id'] !== (string) $Setup->creator))) {
 				Flash::store('You are not allowed to perform this action', 'setups.php');
 			}
 
@@ -159,7 +159,7 @@ EOF;
 			// make sure this user can edit / delete this setup
 			$Setup = new Setup((int) $_GET['id']);
 
-			if ( ! $Setup->creator || (((string) $_SESSION['player_id'] !== (string) $Setup->creator) && ! $GLOBALS['Player']->is_admin)) {
+			if ( ! $GLOBALS['Player']->is_admin && ( ! $Setup->creator || ((string) $_SESSION['player_id'] !== (string) $Setup->creator))) {
 				Flash::store('You are not allowed to perform this action', 'setups.php');
 			}
 
@@ -189,7 +189,8 @@ EOF;
 				<input type="hidden" name="act" value="delete" />
 				<input type="hidden" name="id" value="{$Setup->id}" />
 
-				<div>Are you sure you wish to delete your setup, {$Setup->name}?  This cannot be undone.</div>
+				<div>Are you sure you wish to delete your setup, {$Setup->name}?<br />
+				<strong>THIS CANNOT BE UNDONE.</strong> <a href="setups.php">Cancel Delete</a></div>
 				<div><input type="submit" value="Delete Setup" /></div>
 			</div></form>
 
