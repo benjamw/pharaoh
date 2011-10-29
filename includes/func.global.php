@@ -112,7 +112,10 @@ function debug($var = 'Th&F=xUFucreSp2*ezAhe=ApuPR*$axe', $bypass = true, $show_
 function load_class($class_name) {
 	$class_file = CLASSES_DIR.strtolower($class_name).'.class.php';
 
-	if (file_exists($class_file)) {
+	if (class_exists($class_name)) {
+		return true;
+	}
+	elseif (file_exists($class_file) && is_readable($class_file)) {
 		require_once $class_file;
 		return true;
 	}
