@@ -48,7 +48,7 @@ $(document).ready( function( ) {
 		show_link( );
 		show_version( );
 	});
-	$('input#convert_to_2, input#convert_to_1').change( function( ) {
+	$('input#convert_to_1, input#convert_to_2, input#rand_convert_to_1, input#rand_convert_to_2').change( function( ) {
 		show_version( );
 	});
 
@@ -161,6 +161,7 @@ function show_link( ) {
 function show_version( ) {
 	if (0 != $('select#setup').val( )) {
 		if (setups[$('select#setup').val( )].match(/[efjk]/i)) {
+			$('.random_convert').hide( );
 			$('.pharaoh_1').hide( );
 			$('.pharaoh_2').show( );
 			$('.pharaoh_2 .conversion').show( );
@@ -175,6 +176,7 @@ function show_version( ) {
 			}
 		}
 		else {
+			$('.random_convert').hide( );
 			$('.pharaoh_2').hide( );
 			$('.pharaoh_1').show( );
 
@@ -190,6 +192,12 @@ function show_version( ) {
 	}
 	else {
 		$('.pharaoh_1, .pharaoh_2').hide( );
+		$('.random_convert').show( );
+
+		if ($('input#rand_convert_to_2').prop('checked')) {
+			$('.pharaoh_2').show( );
+			$('.pharaoh_2 .conversion').hide( );
+		}
 	}
 }
 

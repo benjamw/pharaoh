@@ -126,14 +126,32 @@ $contents = <<< EOF
 		{$warning}
 
 		<div><label for="opponent">Opponent</label><select id="opponent" name="opponent">{$opponent_selection}</select></div>
-		<div><label for="setup">Setup</label><select id="setup" name="setup">{$setup_selection}</select> <a href="#setup_display" id="show_setup">Show Setup</a></div>
+		<div><label for="setup">Setup</label><select id="setup" name="setup">{$setup_selection}</select> <a href="#setup_display" id="show_setup" class="options">Show Setup</a></div>
 		<div><label for="color">Your Color</label><select id="color" name="color"><option value="random">Random</option><option value="white">Silver</option><option value="black">Red</option></select></div>
 
-		<div class="pharaoh_1">
+		<div class="random_convert options">
+			<fieldset>
+				<legend>Conversion</legend>
+
+				<p>
+					If your random game is a v1.0 game, you can convert it to play v2.0 Pharaoh.<br />
+					Or, if your random game is a v2.0 game, you can convert it to play v1.0 Pharaoh.<br />
+				</p>
+				<p>
+					When you select to convert, more options may be shown below.
+				</p>
+
+				<div><label class="inline"><input type="checkbox" id="rand_convert_to_1" name="rand_convert_to_1" /> Convert to 1.0</label></div>
+				<div><label class="inline"><input type="checkbox" id="rand_convert_to_2" name="rand_convert_to_2" /> Convert to 2.0</label></div>
+
+			</fieldset>
+		</div> <!-- .random_convert -->
+
+		<div class="pharaoh_1 options">
 			<fieldset>
 				<legend>v1.0 Options</legend>
 				<p class="conversion">
-					Here you can convert old v1.0 setups to play v2.0 Pharaoh.<br />
+					Here you can convert v1.0 setups to play v2.0 Pharaoh.<br />
 					The conversion places a Sphynx in your lower-right corner facing upwards (and opposite for your opponent)
 					and converts any double-stacked Obelisks to Anubises which face forward.
 				</p>
@@ -146,11 +164,11 @@ $contents = <<< EOF
 			</fieldset>
 		</div> <!-- .pharaoh_1 -->
 
-		<div class="pharaoh_2 p2_box">
+		<div class="pharaoh_2 p2_box options">
 			<fieldset>
 				<legend>v2.0 Options</legend>
 				<p class="conversion">
-					Here you can convert the new v2.0 setups to play v1.0 Pharaoh.<br />
+					Here you can convert the v2.0 setups to play v1.0 Pharaoh.<br />
 					The conversion removes any Sphynxes from the board and converts any Anubises to double-stacked Obelisks.
 				</p>
 				<p class="conversion">
@@ -166,7 +184,7 @@ $contents = <<< EOF
 
 		<fieldset>
 			<legend><label class="inline"><input type="checkbox" name="laser_battle_box" id="laser_battle_box" class="fieldset_box" /> Laser Battle</label></legend>
-			<div id="laser_battle">
+			<div id="laser_battle" class="options">
 				<p>
 					When a laser gets shot by the opponents laser, it will be disabled for a set number of turns, making that laser unable to shoot until those turns have passed.<br />
 					After those turns have passed, and the laser has recovered, it will be immune from further shots for a set number of turns.<br />

@@ -788,6 +788,69 @@ class Setup {
 	}
 
 
+	/** static public function convert_to_1
+	 *		Convert the given setup to a v1.0 layout
+	 *		Will not perform conversion on already v1.0 setups
+	 *
+	 * @param string setup
+	 * @return string converted setup
+	 */
+	static public function convert_to_1($setup)
+	{
+		try {
+			self::is_valid_setup($setup);
+		}
+		catch (MyException $e) {
+			throw $e;
+		}
+
+		if ( ! self::has_sphynx($setup)) {
+			return $setup;
+		}
+
+		// add the sphynxes
+		$setup = preg_replace('/[efjk]/i', '0', $setup);
+
+		// replace the obelisks with anubises
+		$setup = preg_replace('/[lmno]/', 'w', $setup);
+		$setup = preg_replace('/[LMNO]/', 'W', $setup);
+
+		return $setup;
+	}
+
+
+	/** static public function convert_to_2
+	 *		Convert the given setup to a v2.0 layout
+	 *		Will not perform conversion on already v2.0 setups
+	 *
+	 * @param string setup
+	 * @return string converted setup
+	 */
+	static public function convert_to_2($setup)
+	{
+		try {
+			self::is_valid_setup($setup);
+		}
+		catch (MyException $e) {
+			throw $e;
+		}
+
+		if (self::has_sphynx($setup)) {
+			return $setup;
+		}
+
+		// add the sphynxes
+		$setup = substr_replace($setup, 'j', 0, 1);
+		$setup = substr_replace($setup, 'E', -1, 1);
+
+		// replace the obelisks with anubises
+		$setup = str_replace('w', 'n', $setup);
+		$setup = str_replace('W', 'L', $setup);
+
+		return $setup;
+	}
+
+
 	/** static public function delete
 	 *		Deletes the given setup and all related data
 	 *

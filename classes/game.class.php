@@ -455,22 +455,16 @@ class Game
 
 		$setup = expandFEN($setup);
 
-		if (is_checked($_P['convert_to_1'])) {
-			// add the sphynxes
-			$setup = preg_replace('/[efjk]/i', '0', $setup);
-
-			// replace the obelisks with anubises
-			$setup = preg_replace('/[lmno]/', 'w', $setup);
-			$setup = preg_replace('/[LMNO]/', 'W', $setup);
+		try {
+			if (is_checked($_P['convert_to_1']) || is_checked($_P['rand_convert_to_1'])) {
+				$setup = Setup::convert_to_1($setup);
+			}
+			elseif (is_checked($_P['convert_to_2']) || is_checked($_P['rand_convert_to_2'])) {
+				$setup = Setup::convert_to_2($setup);
+			}
 		}
-		elseif (is_checked($_P['convert_to_2'])) {
-			// add the sphynxes
-			$setup = substr_replace($setup, 'j', 0, 1);
-			$setup = substr_replace($setup, 'E', -1, 1);
-
-			// replace the obelisks with anubises
-			$setup = str_replace('w', 'n', $setup);
-			$setup = str_replace('W', 'L', $setup);
+		catch (MyException $e) {
+			throw $e;
 		}
 
 		$extra_info['invite_setup'] = packFEN($setup);
