@@ -107,14 +107,27 @@ $(document).ready( function($) {
 			return;
 		}
 
-		if (('p' == selected.toLowerCase( )) && (-1 !== board.indexOf(selected))) {
-			alert('Only one pharaoh of each color is allowed.\nPlease delete the current pharaoh to place a new one.');
-			return;
-		}
+		if ('None' == reflection) {
+			if (('p' == selected.toLowerCase( )) && (-1 !== board.indexOf(selected))) {
+				alert('Only one pharaoh of each color is allowed.\nPlease delete the current pharaoh to place a new one.');
+				return;
+			}
 
-		if (selected.toLowerCase( ).match(/[efjk]/) && board.toLowerCase( ).match(/[efjk]/)) {
-			alert('Only one sphynx of each color is allowed.\nPlease delete the current sphynx to place a new one.');
-			return;
+			if ((selected.match(/[efjk]/) && board.match(/[efjk]/)) || (selected.match(/[EFJK]/) && board.match(/[EFJK]/))) {
+				alert('Only one sphynx of each color is allowed.\nPlease delete the current sphynx to place a new one.');
+				return;
+			}
+		}
+		else { // there's a reflection at work
+			if (('p' == selected.toLowerCase( )) && (-1 !== board.toLowerCase( ).indexOf(selected.toLowerCase( )))) {
+				alert('Only one pharaoh of each color is allowed.\nPlease delete any pharaohs before placing the new ones.');
+				return;
+			}
+
+			if (selected.match(/[efjk]/i) && board.match(/[efjk]/i)) {
+				alert('Only one sphynx of each color is allowed.\nPlease delete any sphynxes before placing the new ones.');
+				return;
+			}
 		}
 
 		$this.empty( ).append(create_piece(selected));
