@@ -132,8 +132,12 @@ if (isset($_POST['invite'])) {
 	if ('delete' == $_POST['invite']) {
 		// make sure we are one of the two people in the invite
 		if (Game::has_invite($_POST['game_id'], $_SESSION['player_id'])) {
-			Game::delete_invite($_POST['game_id']);
-			echo 'Invite Deleted';
+			if (Game::delete_invite($_POST['game_id'])) {
+				echo 'Invite Deleted';
+			}
+			else {
+				echo 'ERROR: Invite not deleted';
+			}
 		}
 		else {
 			echo 'ERROR: Not your invite';
@@ -142,11 +146,16 @@ if (isset($_POST['invite'])) {
 	else if ('resend' == $_POST['invite']) {
 		// make sure we are one of the two people in the invite
 		if (Game::has_invite($_POST['game_id'], $_SESSION['player_id'])) {
-			if (Game::resend_invite($_POST['game_id'])) {
-				echo 'Invite Resent';
+			try {
+				if (Game::resend_invite($_POST['game_id'])) {
+					echo 'Invite Resent';
+				}
+				else {
+					echo 'ERROR: Could not resend invite';
+				}
 			}
-			else {
-				echo 'Could not resend invite';
+			catch (MyException $e) {
+				echo 'ERROR: '.$e->outputMessage( );
 			}
 		}
 		else {

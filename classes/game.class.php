@@ -682,7 +682,7 @@ class Game
 
 		$Mysql = Mysql::get_instance( );
 
-		$Mysql->delete(self::GAME_TABLE, " WHERE game_id = '{$game_id}' AND state = 'Waiting' ");
+		return $Mysql->delete(self::GAME_TABLE, " WHERE game_id = '{$game_id}' AND state = 'Waiting' ");
 	}
 
 

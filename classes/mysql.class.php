@@ -544,7 +544,12 @@ class Mysql
 
 		$this->query = $query;
 
-		return $this->query( );
+		try {
+			return $this->query( );
+		}
+		catch (MySQLException $e) {
+			throw $e;
+		}
 	}
 
 

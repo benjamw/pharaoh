@@ -91,7 +91,8 @@ $(document).ready( function( ) {
 
 	// this runs all the ...vites
 	$('div#invites input').click( function( ) {
-		var id = $(this).attr('id').split('-');
+		var $this = $(this);
+		var id = $this.attr('id').split('-');
 
 		if ('accept' == id[0]) { // invites and openvites
 			// accept the invite
@@ -105,7 +106,13 @@ $(document).ready( function( ) {
 				url: 'ajax_helper.php',
 				data: 'invite=accept&game_id='+id[1],
 				success: function(msg) {
-					window.location = 'game.php?id='+msg+debug_query_;
+					if ('ERROR' == msg.slice(0, 5)) {
+						alert(msg);
+						if (reload) { window.location.reload( ); }
+					}
+					else {
+						window.location = 'game.php?id='+msg+debug_query_;
+					}
 					return;
 				}
 			});
@@ -123,7 +130,13 @@ $(document).ready( function( ) {
 				data: 'invite=resend&game_id='+id[1],
 				success: function(msg) {
 					alert(msg);
-					if (reload) { window.location.reload( ); }
+					if ('ERROR' == msg.slice(0, 5)) {
+						if (reload) { window.location.reload( ); }
+					}
+					else {
+						// remove the resend button
+						$this.remove( );
+					}
 					return;
 				}
 			});
@@ -141,7 +154,13 @@ $(document).ready( function( ) {
 				data: 'invite=delete&game_id='+id[1],
 				success: function(msg) {
 					alert(msg);
-					if (reload) { window.location.reload( ); }
+					if ('ERROR' == msg.slice(0, 5)) {
+						if (reload) { window.location.reload( ); }
+					}
+					else {
+						// remove the parent TR
+						$this.parent( ).parent( ).remove( );
+					}
 					return;
 				}
 			});

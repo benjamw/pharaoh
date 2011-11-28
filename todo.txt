@@ -1,4 +1,7 @@
 
+- there are errors when trying to re-send invites
+	- make sure everything is working with the invites
+
 - make hover tooltips better
 
 - add ability to hit own laser from side as option
@@ -23,14 +26,8 @@
 - don't refresh page if an email success message is sent for things
 	like resend invites, nudges, etc.  just make changes to html if needed
 
-- add a different method for removing the click on the piece, because
-	clicking the piece again doesn't work for rotatable pieces
-
 - don't show success messages if email is not sent for things like
-	nudge, that are only emails possibly for other things like invite,
-	etc. that are largely email dependent
-	- make accept invite and withdraw invite pages ajax powered and
-		just remove the item from the table (and other places as well)
+	nudge, that are only email dependent
 
 - fully convert times to UTC in MySQL and back to user's timezone everywhere
 	dates are output
