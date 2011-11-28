@@ -1623,6 +1623,10 @@ class Game
 			return false;
 		}
 
+		if ( ! $this->_players['opponent']['object']->allow_email || ('' == $this->_players['opponent']['object']->email)) {
+			return false;
+		}
+
 		try {
 			$nudge_time = Settings::read('nudge_flood_control');
 		}

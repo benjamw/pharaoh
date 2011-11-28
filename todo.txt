@@ -7,11 +7,11 @@
 - add ability to hit own laser from side as option
 
 - for revisions for setups, allow the same name for the setup and when
-	a user creates a revision or edits their setup, it creates a new setup
-	and inactivates the previous setup, and then either sort by create
-	date, or add a field in the table called revision and increment that
-	and when we pull the setup, order by created or revision number, and
-	use the most recent.
+	a user creates a revision or edits their setup, it creates a new
+	setup and inactivates the previous setup, and then either sort by
+	create date, or add a field in the table called revision and
+	increment that and when we pull the setup, order by created or
+	revision number, and use the most recent.
 
 - add more stats:
 	player's most played setup
@@ -23,13 +23,10 @@
 
 - build game reader for saved games
 
-- don't refresh page if an email success message is sent for things
-	like resend invites, nudges, etc.  just make changes to html if needed
-
 - don't show success messages if email is not sent for things like
 	nudge, that are only email dependent
 
-- fully convert times to UTC in MySQL and back to user's timezone everywhere
-	dates are output
+- fully convert times to UTC in MySQL and back to user's timezone
+	everywhere dates are output
 
 - add showdown to messages (JS port of Markdown, in zz_scripts_js)
