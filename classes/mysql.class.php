@@ -386,7 +386,7 @@ class Mysql
 
 		if ($done) {
 			// if we just performed an insert, grab the insert_id and return it
-			if (preg_match('/^\s*(INSERT|REPLACE)/i', $this->query)) {
+			if (preg_match('/^\s*(?:INSERT|REPLACE)\b/i', $this->query)) {
 				$this->result = $this->fetch_insert_id( );
 			}
 
@@ -394,8 +394,14 @@ class Mysql
 			return $this->result;
 		}
 
-		// no result found
-		return false;
+		if (preg_match('/^\s*SELECT\b/i', $this->query)) {
+			// no result found
+			return false;
+		}
+		else {
+			// query performed successfully
+			return true;
+		}
 	}
 
 
