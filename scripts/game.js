@@ -773,21 +773,26 @@ function show_battle_data(show_old_data) {
 	$('div#the_board div.red_laser').empty( ).append('<div class="'+clss+'">'+value+'</div>');
 }
 
-
+var jqXHR = false;
 function ajax_refresh( ) {
 	// no debug redirect, just do it
 
-	$.ajax({
-		type: 'POST',
-		url: 'ajax_helper.php',
-		data: 'refresh=1',
-		success: function(msg) {
-			if (msg != last_move) {
-				// don't just reload( ), it tries to submit the POST again
-				if (reload) { window.location = window.location.href; }
+	// only run this if the previous ajax call has completed
+	if (false == jqXHR) {
+		jqXHR = $.ajax({
+			type: 'POST',
+			url: 'ajax_helper.php',
+			data: 'refresh=1',
+			success: function(msg) {
+				if (msg != last_move) {
+					// don't just reload( ), it tries to submit the POST again
+					if (reload) { window.location = window.location.href; }
+				}
 			}
-		}
-	});
+		}).always( function( ) {
+			jqXHR = false;
+		});
+	}
 
 	// successively increase the timeout time in case someone
 	// leaves their window open, don't poll the server every
