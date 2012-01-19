@@ -115,7 +115,7 @@ function load_class($class_name) {
 	if (class_exists($class_name)) {
 		return true;
 	}
-	elseif (file_exists($class_file) && is_readable($class_file)) {
+	elseif (file_exists($class_file)) {
 		require_once $class_file;
 		return true;
 	}
