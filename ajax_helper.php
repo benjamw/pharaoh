@@ -206,7 +206,7 @@ if (empty($DEBUG) && empty($_POST['notoken'])) {
 }
 
 if ($_POST['game_id'] != $_SESSION['game_id']) {
-	throw new MyException('ERROR: Incorrect game id given');
+	throw new MyException('ERROR: Incorrect game id given.  Was #'.$_POST['game_id'].', should be #'.$_SESSION['game_id'].'.');
 }
 
 
@@ -233,8 +233,12 @@ $actions = array(
 foreach ($actions as $action) {
 	if (isset($_POST[$action])) {
 		try {
-			$Game->{$action}($player_id);
-			echo 'OK';
+			if ($Game->{$action}($player_id)) {
+				echo 'OK';
+			}
+			else {
+				echo 'ERROR';
+			}
 		}
 		catch (MyException $e) {
 			echo $e;

@@ -1,6 +1,13 @@
 
+- update scripts
+	- use yepnope and cdn
+
 - there are errors when trying to re-send invites
 	- make sure everything is working with the invites
+		- i didn't find any errors  =(
+		- it may be something to do with the resend button being shown
+			before it should be, or that the resnd time checker is off
+			somehow.  it's basically failing due to being too new
 
 - make hover tooltips better
 
