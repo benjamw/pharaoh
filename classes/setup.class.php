@@ -99,6 +99,7 @@ class Setup {
 	 * @action destroys object
 	 * @return void
 	 */
+/*
 	public function __destruct( )
 	{
 		// save anything changed to the database
@@ -114,6 +115,7 @@ class Setup {
 			}
 		}
 	}
+*/
 
 
 	/** public function __get

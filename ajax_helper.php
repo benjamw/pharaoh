@@ -282,6 +282,7 @@ if (isset($_POST['turn'])) {
 			$Game->do_move($target.'-'.$dir);
 		}
 
+		$Game->save( );
 		$return['action'] = 'RELOAD';
 	}
 	catch (MyException $e) {

@@ -283,6 +283,7 @@ class Game
 	 * @action destroys object
 	 * @return void
 	 */
+/*
 	public function __destruct( )
 	{
 		// save anything changed to the database
@@ -291,13 +292,14 @@ class Game
 
 		if ($this->id && (0 == ((E_ERROR | E_WARNING | E_PARSE) & $error['type']))) {
 			try {
-				$this->_save( );
+				$this->save( );
 			}
 			catch (MyException $e) {
 				// do nothing, it will be logged
 			}
 		}
 	}
+*/
 
 
 	/** public function __get
@@ -1039,7 +1041,7 @@ class Game
 		}
 
 		// we need to adjust the database here
-		// it's not really possible via the _save function
+		// it's not really possible via the save function
 		$this->_mysql->delete(self::GAME_HISTORY_TABLE, "
 			WHERE `game_id` = '{$this->id}'
 			ORDER BY `move_date` DESC
@@ -2075,14 +2077,14 @@ class Game
 	}
 
 
-	/** protected function _save
+	/** public function save
 	 *		Saves all changed data to the database
 	 *
 	 * @param void
 	 * @action saves the game data
 	 * @return void
 	 */
-	protected function _save( )
+	public function save( )
 	{
 		call(__METHOD__);
 
