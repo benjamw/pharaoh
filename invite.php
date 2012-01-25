@@ -10,8 +10,6 @@ Game::delete_inactive(Settings::read('expire_games'));
 Game::delete_finished(Settings::read('expire_finished_games'));
 
 if (isset($_POST['invite'])) {
-	$Game = new Game( );
-
 	// make sure this user is not full
 	if ($GLOBALS['Player']->max_games && ($GLOBALS['Player']->max_games <= $GLOBALS['Player']->current_games)) {
 		Flash::store('You have reached your maximum allowed games !', false);
@@ -20,8 +18,7 @@ if (isset($_POST['invite'])) {
 	test_token( );
 
 	try {
-		$game_id = $Game->invite( );
-		$Game->save( );
+		Game::invite( );
 		Flash::store('Invitation Sent Successfully', true);
 	}
 	catch (MyException $e) {
