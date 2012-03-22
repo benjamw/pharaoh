@@ -204,13 +204,17 @@ function arraySumField($array, $key) { return array_sum_field($array, $key); }
  *		extra divider between key-value pairs
  *		Can be used to create URL GET strings from arrays
  *
- * @param string separator between elements (for URL GET, use '&')
- * @param string divider between key-value pairs (for URL GET, use '=')
  * @param array
- * @param bool optional URL encode flag
+ * @param string optional separator between elements (for URL GET, use '&', default)
+ * @param string optional divider between key-value pairs (for URL GET, use '=', default)
+ * @param bitwise int optional URL encode flag
  * @return string
  */
-function implode_full($separator, $divider, $array, $url = false)
+define('URL_ENCODE_NONE', 0);
+define('URL_ENCODE_KEY', 1);
+define('URL_ENCODE_VAL', 2);
+define('URL_ENCODE_FULL', 4);
+function implode_full($array, $separator = '&', $divider = '=', $url = URL_ENCODE_NONE)
 {
 	if ( ! is_array($array) || (0 == count($array))) {
 		return $array;
@@ -218,18 +222,26 @@ function implode_full($separator, $divider, $array, $url = false)
 
 	$str = '';
 	foreach ($array as $key => $val) {
+		if (URL_ENCODE_KEY & $url) {
+			$key = urlencode($key);
+		}
+
+		if (URL_ENCODE_VAL & $url) {
+			$val = urlencode($val);
+		}
+
 		$str .= $key.$divider.$val.$separator;
 	}
 
 	$str = substr($str, 0, -(strlen($separator)));
 
-	if ($url) {
-		$str = url_encode($str);
+	if (URL_ENCODE_FULL & $url) {
+		$str = urlencode($str);
 	}
 
 	return $str;
 }
-function implodeFull($separator, $divider, $array, $url = false) { return implode_full($separator, $divider, $array, $url); }
+function implodeFull($array, $separator = '&', $divider = '=', $url = URL_ENCODE_NONE) { return implode_full($array, $separator, $divider, $url); }
 
 
 /** function explode_full [explodeFull]
@@ -237,13 +249,12 @@ function implodeFull($separator, $divider, $array, $url = false) { return implod
  *		extra divider between key-value pairs
  *		Can be used to create arrays from URL GET strings
  *
- * @param string separator between elements (for URL GET, use '&')
- * @param string divider between key-value pairs (for URL GET, use '=')
  * @param string
- * @param bool optional URL encode flag
+ * @param string optional separator between elements (for URL GET, use '&', default)
+ * @param string optional divider between key-value pairs (for URL GET, use '=', default)
  * @return array
  */
-function explode_full($separator, $divider, $string, $url = false)
+function explode_full($string, $separator = '&', $divider = '=')
 {
 	// explode the string about the separator
 	$first = explode($separator, $string);
@@ -256,7 +267,7 @@ function explode_full($separator, $divider, $string, $url = false)
 
 	return $array;
 }
-function explodeFull($separator, $divider, $string, $url = false) { return explode_full($separator, $divider, $string, $url); }
+function explodeFull($string, $separator = '&', $divider = '=') { return explode_full($string, $separator, $divider); }
 
 
 /** function kshuffle
@@ -273,6 +284,7 @@ function kshuffle( & $array)
 
 
 /** function array_merge_plus
+ *
  *		Exactly the same as array_merge except this function
  *		allows entry of non-arrays without throwing errors
  *		If an empty argument is encountered, it removes it.
