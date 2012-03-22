@@ -117,7 +117,6 @@ $_SESSION['PWD'] = __FILE__;
 if ( ! isset($_SESSION['token'])) {
 	$_SESSION['token'] = md5(uniqid(rand( ), true));
 }
-call($_SESSION['token']);
 
 if ( ! defined('DEBUG')) {
 	if (test_debug( )) {
