@@ -1048,6 +1048,8 @@ class Mysql
 class MySQLException
 	extends Exception {
 
+	protected $_backtrace = true;
+
 	/**
 	 *		METHODS
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * */
