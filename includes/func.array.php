@@ -368,3 +368,38 @@ function array_compare($array1, $array2) {
 
 	return $diff;
 }
+
+
+/** function array_filter_recursive
+ *
+ *		Exactly the same as array_filter except this function
+ *		filters within multi-dimensional arrays
+ *
+ * @param array
+ * @param string optional callback function name
+ * @param bool optional flag removal of empty arrays after filtering
+ * @return array merged array
+ */
+function array_filter_recursive($array, $callback = null, $remove_empty_arrays = false) {
+	foreach ($array as $key => & $value) { // mind the reference
+		if (is_array($value)) {
+			$value = array_filter_recursive($value, $callback);
+
+			if ($remove_empty_arrays && ! (bool) $value) {
+				unset($array[$key]);
+			}
+		}
+		else {
+			if ( ! is_null($callback) && ! $callback($value)) {
+				unset($array[$key]);
+			}
+			elseif ( ! (bool) $value) {
+				unset($array[$key]);
+			}
+		}
+	}
+	unset($value); // kill the reference
+
+	return $array;
+}
+
