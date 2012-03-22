@@ -1598,18 +1598,18 @@ class Game
 			throw new MyException(__METHOD__.': Trying to perform an action on a paused game');
 		}
 
-		if ($this->test_nudge( )) {
-			$sent = Email::send('nudge', $this->_players['opponent']['player_id'], array('opponent' => $this->_players['player']['object']->username, 'game_id' => $this->id));
-
-			if ($sent) {
-				$this->_mysql->delete(self::GAME_NUDGE_TABLE, " WHERE game_id = '{$this->id}' ");
-				$this->_mysql->insert(self::GAME_NUDGE_TABLE, array('game_id' => $this->id, 'player_id' => $this->_players['opponent']['player_id']));
-			}
-
-			return $sent;
+		if ( ! $this->test_nudge( )) {
+			throw new MyException(__METHOD__.': Trying to nudge a person who is not nudgable');
 		}
 
-		return false;
+		$sent = Email::send('nudge', $this->_players['opponent']['player_id'], array('opponent' => $this->_players['player']['object']->username, 'game_id' => $this->id));
+
+		if ( ! $sent) {
+			throw new MyException(__METHOD__.': Failed to send email');
+		}
+
+		$this->_mysql->delete(self::GAME_NUDGE_TABLE, " WHERE game_id = '{$this->id}' ");
+		$this->_mysql->insert(self::GAME_NUDGE_TABLE, array('game_id' => $this->id, 'player_id' => $this->_players['opponent']['player_id']));
 	}
 
 
