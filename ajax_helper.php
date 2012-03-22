@@ -233,12 +233,8 @@ $actions = array(
 foreach ($actions as $action) {
 	if (isset($_POST[$action])) {
 		try {
-			if ($Game->{$action}($player_id)) {
-				echo 'OK';
-			}
-			else {
-				echo 'ERROR';
-			}
+			$Game->{$action}($player_id);
+			echo 'OK';
 		}
 		catch (MyException $e) {
 			echo $e;
