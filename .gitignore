@@ -6,7 +6,9 @@
 *.epp
 *.err
 
-/games/*.pgn
+.svn
+
+/games/*
 /logs/*
 
 /includes/config.php
