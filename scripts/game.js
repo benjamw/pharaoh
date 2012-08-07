@@ -4,185 +4,200 @@ var refresh_timer = false;
 var refresh_timeout = 2001; // 2 seconds
 var old_board = false;
 
-$(document).ready( function( ) {
-	// show the board
-	// this will show the current board if no old board is available
-	show_old_board(true);
 
-	// set our move history active class and disabled review buttons
+// show the board
+// this will show the current board if no old board is available
+show_old_board(true);
+
+// set our move history active class and disabled review buttons
+update_history( );
+
+// invert board button
+$('a#invert').click( function( ) {
+	invert = ! invert;
+	show_old_board( );
+	show_new_board( );
+	clear_laser( );
+	return false;
+});
+
+// show full move button
+$('a#show_full').click( function( ) {
+	show_old_board(true);
+	return false;
+});
+
+// show move button
+$('a#show_move').click( function( ) {
+	show_old_board( );
+	blink_move( ); // calls show_new_board when done
+	return false;
+});
+
+// clear move button
+$('a#clear_move').click( function( ) {
+	show_new_board( );
+	return false;
+});
+
+// fire laser button
+$('a#fire_laser').click( function( ) {
+	if (false != timer) {
+		return false;
+	}
+
+	show_new_board( );
+
+	// show the hit piece
+	$('img.hit').show( ).fadeTo(50, 0.75);
+
+	fire_laser(game_history[move_index][2]);
+	return false;
+});
+
+// clear laser button
+$('a#clear_laser').click( function( ) {
+	clear_laser( );
+	return false;
+});
+
+// move history clicks
+$('#history table td[id^=mv_]').click( function( ) {
+	clear_laser( );
+
+	move_index = parseInt($(this).attr('id').slice(3));
+
 	update_history( );
 
-	// invert board button
-	$('a#invert').click( function( ) {
-		invert = ! invert;
-		show_old_board( );
-		show_new_board( );
-		clear_laser( );
-		return false;
-	});
-
-	// show full move button
-	$('a#show_full').click( function( ) {
-		show_old_board(true);
-		return false;
-	});
-
-	// show move button
-	$('a#show_move').click( function( ) {
-		show_old_board( );
-		blink_move( ); // calls show_new_board when done
-		return false;
-	});
-
-	// clear move button
-	$('a#clear_move').click( function( ) {
-		show_new_board( );
-		return false;
-	});
-
-	// fire laser button
-	$('a#fire_laser').click( function( ) {
-		if (false != timer) {
-			return false;
-		}
-
-		show_new_board( );
-
-		// show the hit piece
-		$('img.hit').show( ).fadeTo(50, 0.75);
-
-		fire_laser(game_history[move_index][2]);
-		return false;
-	});
-
-	// clear laser button
-	$('a#clear_laser').click( function( ) {
-		clear_laser( );
-		return false;
-	});
-
-	// move history clicks
-	$('#history table td[id^=mv_]').click( function( ) {
-		clear_laser( );
-
-		move_index = parseInt($(this).attr('id').slice(3));
-
-		update_history( );
-
-		show_old_board(true);
-	}).css('cursor', 'pointer');
+	show_old_board(true);
+}).css('cursor', 'pointer');
 
 
-	// review button clicks
-	$('#history div span:not(.disabled)').live('click', review);
+// review button clicks
+$('#history div span:not(.disabled)').live('click', review);
 
 
-	// ajax form on input button clicks
-	$('form input[type=button]').click( function( ) {
-		var $this = $(this);
-		var confirmed = true;
+// ajax form on input button clicks
+$('form input[type=button]').click( function( ) {
+	var $this = $(this);
+	var confirmed = true;
 
-		switch ($this.prop('name')) {
-			case 'nudge' :
-				confirmed = confirm('Are you sure you wish to nudge this person?');
-				break;
+	switch ($this.prop('name')) {
+		case 'nudge' :
+			confirmed = confirm('Are you sure you wish to nudge this person?');
+			break;
 
-			case 'resign' :
-				confirmed = confirm('Are you sure you wish to resign?');
-				break;
-		}
+		case 'resign' :
+			confirmed = confirm('Are you sure you wish to resign?');
+			break;
+	}
 
-		if (confirmed) {
-			if (debug) {
-				window.location = 'ajax_helper.php'+debug_query+'&'+$this.parents('form').serialize( )+'&'+$this.prop('name')+'='+$this.prop('value');
-				return false;
-			}
-
-			$.ajax({
-				type: 'POST',
-				url: 'ajax_helper.php',
-				data: $this.parents('form').serialize( )+'&'+$this.prop('name')+'='+$this.prop('value'),
-				success: function(msg) {
-					if ('OK' != msg) {
-						alert('ERROR: AJAX failed');
-					}
-
-					if (reload) { window.location.reload( ); }
-				}
-			});
-		}
-	});
-
-
-	// chat box functions
-	$('#chatbox form').submit( function( ) {
-		if ('' == $.trim($('#chatbox input#chat').val( ))) {
-			return false;
-		}
-
+	if (confirmed) {
 		if (debug) {
-			window.location = 'ajax_helper.php'+debug_query+'&'+$('#chatbox form').serialize( );
+			window.location = 'ajax_helper.php'+debug_query+'&'+$this.parents('form').serialize( )+'&'+$this.prop('name')+'='+$this.prop('value');
 			return false;
 		}
 
 		$.ajax({
 			type: 'POST',
 			url: 'ajax_helper.php',
-			data: $('#chatbox form').serialize( ),
+			data: $this.parents('form').serialize( )+'&'+$this.prop('name')+'='+$this.prop('value'),
 			success: function(msg) {
-				// if something happened, just reload
-				if ('{' != msg[0]) {
+				if ('OK' != msg) {
 					alert('ERROR: AJAX failed');
-					if (reload) { window.location.reload( ); }
 				}
 
-				var reply = JSON.parse(msg);
-
-				if (reply.error) {
-					alert(reply.error);
-				}
-				else {
-					var entry = '<dt><span>'+reply.create_date+'</span> '+reply.username+'</dt>'+
-						'<dd'+(('1' == reply.private) ? ' class="private"' : '')+'>'+reply.message+'</dd>';
-
-					$('#chats').prepend(entry);
-					$('#chatbox input#chat').val('');
-				}
-			}
-		});
-
-		return false;
-	});
-
-
-	// tha fancybox stuff
-	$('a.fancybox').fancybox({
-		autoDimensions : true,
-		onStart : function(link) {
-			$($(link).attr('href')).show( );
-		},
-		onCleanup : function( ) {
-			$(this.href).hide( );
-		}
-	});
-
-
-	// run the ajax refresher
-	if ( ! my_turn && ('finished' != state)) {
-		ajax_refresh( );
-
-		// set some things that will halt the timer
-		$('#chatbox form input').focus( function( ) {
-			clearTimeout(refresh_timer);
-		});
-
-		$('#chatbox form input').blur( function( ) {
-			if ('' != $(this).val( )) {
-				refresh_timer = setTimeout('ajax_refresh( )', refresh_timeout);
+				if (reload) { window.location.reload( ); }
 			}
 		});
 	}
 });
+
+
+// chat box functions
+$('#chatbox form').submit( function( ) {
+	if ('' == $.trim($('#chatbox input#chat').val( ))) {
+		return false;
+	}
+
+	if (debug) {
+		window.location = 'ajax_helper.php'+debug_query+'&'+$('#chatbox form').serialize( );
+		return false;
+	}
+
+	$.ajax({
+		type: 'POST',
+		url: 'ajax_helper.php',
+		data: $('#chatbox form').serialize( ),
+		success: function(msg) {
+			// if something happened, just reload
+			if ('{' != msg[0]) {
+				alert('ERROR: AJAX failed');
+				if (reload) { window.location.reload( ); }
+			}
+
+			var reply = JSON.parse(msg);
+
+			if (reply.error) {
+				alert(reply.error);
+			}
+			else {
+				var entry = '<dt><span>'+reply.create_date+'</span> '+reply.username+'</dt>'+
+					'<dd'+(('1' == reply.private) ? ' class="private"' : '')+'>'+reply.message+'</dd>';
+
+				$('#chats').prepend(entry);
+				$('#chatbox input#chat').val('');
+			}
+		}
+	});
+
+	return false;
+});
+
+
+// tha fancybox stuff
+$('a.fancybox').fancybox({
+	autoDimensions : true,
+	onStart : function(link) {
+		$($(link).attr('href')).show( );
+	},
+	onCleanup : function( ) {
+		$(this.href).hide( );
+	}
+});
+
+
+// run the ajax refresher
+if ( ! my_turn && ('finished' != state)) {
+	ajax_refresh( );
+
+	// set some things that will halt the timer
+	$('#chatbox form input').focus( function( ) {
+		clearTimeout(refresh_timer);
+	});
+
+	$('#chatbox form input').blur( function( ) {
+		if ('' != $(this).val( )) {
+			refresh_timer = setTimeout('ajax_refresh( )', refresh_timeout);
+		}
+	});
+}
+
+
+// run draw offer alert
+if (draw_offered && ('watching' != state)) {
+	alert('Your opponent has offered you a draw.\n\nMake your decision with the draw\nbuttons below the game board.');
+}
+
+
+// run undo request alert
+if (undo_requested && ('watching' != state)) {
+	alert('Your opponent has requested an undo.\n\nMake your decision with the undo\nbuttons below the game board.');
+}
+
+
+
+// FUNCTIONS
 
 
 function show_old_board(cont) {

@@ -148,6 +148,9 @@ $meta['head_data'] = '
 		var laser_battle = '.json_encode( !! $extra_info['battle_dead']).';
 		var move_sphynx = '.json_encode( !! $extra_info['move_sphynx']).';
 	/*]]>*/</script>
+';
+
+$meta['foot_data'] = '
 	<script type="text/javascript" src="scripts/game.js"></script>
 ';
 
@@ -253,20 +256,10 @@ echo get_header($meta);
 
 		<script type="text/javascript">
 			document.write('<'+'div id="setup"'+'>'+create_board('<?php echo expandFEN($Game->get_setup( )); ?>', true)+'<'+'/'+'div'+'>');
-
-			// run draw offer alert
-			if (draw_offered && ('watching' != state)) {
-				alert('Your opponent has offered you a draw.\n\nMake your decision with the draw\nbuttons below the game board.');
-			}
-
-			// run undo request alert
-			if (undo_requested && ('watching' != state)) {
-				alert('Your opponent has requested an undo.\n\nMake your decision with the undo\nbuttons below the game board.');
-			}
 		</script>
 
 <?php
 
 call($GLOBALS);
-echo get_footer( );
+echo get_footer($meta);
 
