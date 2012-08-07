@@ -791,6 +791,8 @@ class Game
 			Email::send('turn', $this->_players['opponent']['player_id'], array('opponent' => $this->_players['player']['object']->username, 'game_id' => $this->id));
 		}
 
+		$this->save( );
+
 		return $hits;
 	}
 
@@ -827,7 +829,10 @@ class Game
 		$this->_players['player']['object']->add_loss( );
 		$this->state = 'Finished';
 		$this->_pharaoh->winner = 'opponent';
+
 		Email::send('resigned', $this->_players['opponent']['player_id'], array('opponent' => $this->_players['player']['object']->username, 'game_id' => $this->id));
+
+		$this->save( );
 	}
 
 
@@ -862,6 +867,8 @@ class Game
 		$this->_extra_info['draw_offered'] = $player_id;
 
 		Email::send('draw_offered', $this->_players['opponent']['player_id'], array('opponent' => $this->_players['player']['object']->username, 'game_id' => $this->id));
+
+		$this->save( );
 	}
 
 
@@ -921,6 +928,8 @@ class Game
 		$this->_extra_info['draw_offered'] = false;
 
 		Email::send('draw', $this->_players['opponent']['player_id'], array('opponent' => $this->_players['player']['object']->username, 'game_id' => $this->id));
+
+		$this->save( );
 	}
 
 
@@ -953,6 +962,8 @@ class Game
 		}
 
 		$this->_extra_info['draw_offered'] = false;
+
+		$this->save( );
 	}
 
 
@@ -987,6 +998,8 @@ class Game
 		$this->_extra_info['undo_requested'] = $player_id;
 
 		Email::send('undo_requested', $this->_players['opponent']['player_id'], array('opponent' => $this->_players['player']['object']->username, 'game_id' => $this->id));
+
+		$this->save( );
 	}
 
 
@@ -1053,6 +1066,8 @@ class Game
 		$this->_extra_info['undo_requested'] = false;
 
 		Email::send('undo_accepted', $this->_players['opponent']['player_id'], array('opponent' => $this->_players['player']['object']->username, 'game_id' => $this->id));
+
+		$this->save( );
 	}
 
 
@@ -1085,6 +1100,8 @@ class Game
 		}
 
 		$this->_extra_info['undo_requested'] = false;
+
+		$this->save( );
 	}
 
 
