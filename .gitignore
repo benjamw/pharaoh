@@ -5,10 +5,11 @@
 
 *.epp
 *.err
+*.log
 
 .svn
 
-/games/*
+/games/*.pgn
 /logs/*
 
 /includes/config.php
