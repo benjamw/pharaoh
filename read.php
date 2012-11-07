@@ -82,7 +82,6 @@ foreach ($list as $item) {
 }
 
 $meta['title'] = 'Message Viewer';
-$meta['show_menu'] = false;
 $meta['head_data'] = '
 	<script type="text/javascript" src="scripts/messages.js"></script>
 ';

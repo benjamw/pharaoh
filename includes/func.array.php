@@ -284,7 +284,6 @@ function kshuffle( & $array)
 
 
 /** function array_merge_plus
- *
  *		Exactly the same as array_merge except this function
  *		allows entry of non-arrays without throwing errors
  *		If an empty argument is encountered, it removes it.

@@ -1,6 +1,7 @@
 Pharoah v1.0
+============
 
-2012-08-07
+2012-11-06
 
 Benjam Welker (http://iohelix.net)
 

@@ -26,8 +26,8 @@ function get_header($meta = null) {
 	$file_name = substr($file_name, 0, strrpos($file_name, '.'));
 
 	// make sure we have these
-	$GLOBALS['_&_DEBUG_QUERY'] = (isset($GLOBALS['_&_DEBUG_QUERY'])) ? $GLOBALS['_&_DEBUG_QUERY'] : '';
-	$GLOBALS['_?_DEBUG_QUERY'] = (isset($GLOBALS['_?_DEBUG_QUERY'])) ? $GLOBALS['_?_DEBUG_QUERY'] : '';
+	$GLOBALS['_&_DEBUG_QUERY'] = ( ! empty($GLOBALS['_&_DEBUG_QUERY'])) ? $GLOBALS['_&_DEBUG_QUERY'] : '';
+	$GLOBALS['_?_DEBUG_QUERY'] = ( ! empty($GLOBALS['_?_DEBUG_QUERY'])) ? $GLOBALS['_?_DEBUG_QUERY'] : ((defined('DEBUG') && DEBUG) ? '?' : '');
 
 	$flash = '';
 	if (class_exists('Flash')) {
@@ -128,7 +128,7 @@ function get_header($meta = null) {
 	</script>
 
 	<script type="text/javascript" src="scripts/json.js"></script>
-	<script type="text/javascript" src="scripts/jquery-1.6.1.min.js"></script>
+	<script type="text/javascript" src="scripts/jquery-1.8.0.min.js"></script>
 	<script type="text/javascript" src="scripts/jquery.tablesorter.js"></script>
 
 	<!-- fancybox -->
@@ -183,7 +183,7 @@ EOF;
 			<ul>
 				<li'.get_active('index').'><a href="index.php'.$GLOBALS['_?_DEBUG_QUERY'].'" title="(Your Turn | Your Games | Total Games)"'.(($allow_blink && $menu_data['my_turn']) ? ' class="blink"' : '').'>Games <span class="sep">(</span> '.$menu_data['my_turn'].' <span class="sep">|</span> '.$menu_data['my_games'].' <span class="sep">|</span> '.$menu_data['games'].' <span class="sep">)</span></a></li>
 				<li'.get_active('invite').'><a href="invite.php'.$GLOBALS['_?_DEBUG_QUERY'].'" title="(Received | Open | Sent)"'.(($allow_blink && $menu_data['in_vites']) ? ' class="blink"' : '').'>Invitations <span class="sep">(</span> '.$menu_data['in_vites'].' <span class="sep">|</span> '.$menu_data['open_vites'].' <span class="sep">|</span> '.$menu_data['out_vites'].' <span class="sep">)</span></a></li>
-				<li'.get_active('messages').'><a href="messages.php'.$GLOBALS['_?_DEBUG_QUERY'].'" title="(New Messages | Total Messages)"'.(($allow_blink && $menu_data['new_msgs']) ? ' class="blink"' : '').'>Messages <span class="sep">(</span> '.$menu_data['new_msgs'].' <span class="sep">|</span> '.$menu_data['msgs'].' <span class="sep">)</span></a></li>
+				<li'.get_active('messages', 'read', 'send').'><a href="messages.php'.$GLOBALS['_?_DEBUG_QUERY'].'" title="(New Messages | Total Messages)"'.(($allow_blink && $menu_data['new_msgs']) ? ' class="blink"' : '').'>Messages <span class="sep">(</span> '.$menu_data['new_msgs'].' <span class="sep">|</span> '.$menu_data['msgs'].' <span class="sep">)</span></a></li>
 				<li'.get_active('setups').'><a href="setups.php'.$GLOBALS['_?_DEBUG_QUERY'].'" title="(Yours | Total)">Setups <span class="sep">(</span> '.$menu_data['my_setups'].' <span class="sep">|</span> '.$menu_data['setups'].' <span class="sep">)</span></a></li>
 				<li'.get_active('stats').'><a href="stats.php'.$GLOBALS['_?_DEBUG_QUERY'].'">Statistics</a></li>
 				<li'.get_active('prefs').'><a href="prefs.php'.$GLOBALS['_?_DEBUG_QUERY'].'">Preferences</a></li>
@@ -232,7 +232,7 @@ EOF;
  * @return string HTML footer for page
  */
 function get_footer($meta = array( )) {
-	$foot_data = (isset($meta['foot_data'])) ? $meta['foot_data'] : '';
+	$foot_data = isset($meta['foot_data']) ? $meta['foot_data'] : '';
 
 	$players = GamePlayer::get_count( );
 	list($cur_games, $total_games) = Game::get_count( );
@@ -317,10 +317,14 @@ function get_item($contents, $hint, $title = '', $extra_html = '') {
  * @return string HTML active class attribute (or empty string)
  */
 function get_active($value) {
+	$values = func_get_args( );
+
 	$self = substr(basename($_SERVER['SCRIPT_NAME']), 0, -4);
 
-	if ($value == $self) {
-		return ' class="active"';
+	foreach ($values as $value) {
+		if ($value == $self) {
+			return ' class="active"';
+		}
 	}
 
 	return '';

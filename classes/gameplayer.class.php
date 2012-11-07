@@ -181,7 +181,8 @@ class GamePlayer
 		parent::log_in( );
 
 		// test an arbitrary property for existence, so we don't _pull twice unnecessarily
-		if (is_null($this->color)) {
+		// but don't test color, because it might actually be null when valid
+		if (is_null($this->last_online)) {
 			$this->_mysql->insert(self::EXTEND_TABLE, array('player_id' => $this->id));
 
 			$this->_pull( );
@@ -281,7 +282,7 @@ class GamePlayer
 	/** public function admin_delete
 	 *		Deletes the given players from the players database
 	 *
-	 * @param mixed csv or array of player ids
+	 * @param mixed csv or array of player IDs
 	 * @action deletes the players from the database
 	 * @return void
 	 */
@@ -309,7 +310,7 @@ class GamePlayer
 	/** public function admin_add_admin
 	 *		Gives the given players admin status
 	 *
-	 * @param mixed csv or array of player ids
+	 * @param mixed csv or array of player IDs
 	 * @action gives the given players admin status
 	 * @return void
 	 */
@@ -339,7 +340,7 @@ class GamePlayer
 	/** public function admin_remove_admin
 	 *		Removes admin status from the given players
 	 *
-	 * @param mixed csv or array of player ids
+	 * @param mixed csv or array of player IDs
 	 * @action removes the given players admin status
 	 * @return void
 	 */
@@ -533,11 +534,11 @@ return false;
 
 
 	/** static public function get_maxed
-	 *		Returns an array of all player ids
+	 *		Returns an array of all player IDs
 	 *		who have reached their max games count
 	 *
 	 * @param void
-	 * @return array of int player ids
+	 * @return array of int player IDs
 	 */
 	static public function get_maxed( )
 	{
@@ -654,7 +655,7 @@ return false;
 		$results = $Mysql->fetch_value_array($query);
 		$exception_ids = array_merge($exception_ids, $results);
 
-		$exception_ids[] = 0;
+		$exception_ids[] = 0; // don't break the IN clause
 		$exception_id_list = implode(',', $exception_ids);
 
 		// select unused accounts

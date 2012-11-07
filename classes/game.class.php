@@ -207,7 +207,7 @@ class Game
 	 *		Holds our player's object references
 	 *		along with other game data
 	 *
-	 * @var array of player data
+	 * @var array
 	 */
 	protected $_players;
 
@@ -1106,13 +1106,15 @@ class Game
 
 
 	/** public function is_player
-	 *		Tests if the given ID is a player in the game
+	 *		Tests if the given player is a player in the game
 	 *
 	 * @param int player id
 	 * @return bool player is in game
 	 */
 	public function is_player($player_id)
 	{
+		call(__METHOD__);
+
 		$player_id = (int) $player_id;
 
 		return ((isset($this->_players['white']['player_id']) && ($player_id == $this->_players['white']['player_id']))
@@ -1210,8 +1212,8 @@ class Game
 	/** public function get_board
 	 *		Returns the current board
 	 *
-	 * @param bool optional return expanded FEN
 	 * @param int optional history index
+	 * @param bool optional return expanded FEN
 	 * @return string board FEN (or xFEN)
 	 */
 	public function get_board($index = null, $expanded = false)
@@ -1951,8 +1953,7 @@ class Game
 
 
 	/** protected function _pull
-	 *		Pulls the data from the database
-	 *		and sets up the objects
+	 *		Pulls all game data from the database
 	 *
 	 * @param void
 	 * @action pulls the game data
@@ -1962,7 +1963,7 @@ class Game
 	{
 		call(__METHOD__);
 
-		if ( ! $this->id) {
+		if (empty($this->id)) {
 			return false;
 		}
 
@@ -2353,6 +2354,7 @@ class Game
 		$Mysql = Mysql::get_instance( );
 
 		$player_id = (int) $player_id;
+		$all = (bool) $all;
 
 		if ( ! $all && ! $player_id) {
 			throw new MyException(__METHOD__.': Player ID required when not pulling all games');
@@ -2877,7 +2879,7 @@ class Game
 	/** static public function delete
 	 *		Deletes the given game and all related data
 	 *
-	 * @param mixed array or csv of game ids
+	 * @param mixed array or csv of game IDs
 	 * @action deletes the game and all related data from the database
 	 * @return void
 	 */
@@ -2887,9 +2889,7 @@ class Game
 
 		array_trim($ids, 'int');
 
-		if (empty($ids)) {
-			throw new MyException(__METHOD__.': No game ids given');
-		}
+		$ids[] = 0; // don't break the IN clause
 
 		foreach ($ids as $id) {
 			try {
@@ -2949,7 +2949,7 @@ class Game
 	/** static public function pause
 	 *		Pauses the given games
 	 *
-	 * @param mixed array or csv of game ids
+	 * @param mixed array or csv of game IDs
 	 * @param bool optional pause game (false = unpause)
 	 * @action pauses the games
 	 * @return void
@@ -2962,9 +2962,7 @@ class Game
 
 		$pause = (int) (bool) $pause;
 
-		if (empty($ids)) {
-			throw new MyException(__METHOD__.': No game ids given');
-		}
+		$ids[] = 0; // don't break the IN clause
 
 		$Mysql->insert(self::GAME_TABLE, array('paused' => $pause), " WHERE game_id IN (".implode(',', $ids).") ");
 	}

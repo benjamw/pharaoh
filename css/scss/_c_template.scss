@@ -1,5 +1,5 @@
 
-/* Pharaoh color style */
+/* Game color style */
 
 /*
 	color style sheet template
@@ -121,6 +121,11 @@ hr {
 
 fieldset {
 	border: $fieldset_border;
+}
+
+
+form + form {
+	border-top: $header_border_bottom;
 }
 
 
