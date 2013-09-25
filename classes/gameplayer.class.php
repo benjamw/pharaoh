@@ -9,7 +9,7 @@
 |
 +---------------------------------------------------------------------------
 |
-|   > Game Player Extension module for Pharaoh (Khet)
+|   > Game Player Extension module
 |   > Date started: 2008-02-28
 |
 |   > Module Version Number: 0.8.0
@@ -132,35 +132,6 @@ class GamePlayer
 
 	 	parent::__construct($id);
 	}
-
-
-	/** public function __destruct
-	 *		Class destructor
-	 *		Gets object ready for destruction
-	 *
-	 * @param void
-	 * @action destroys object
-	 * @return void
-	 */
-/*
-	public function __destruct( )
-	{
-		return; // until i can figure out WTF?
-
-		// save anything changed to the database
-		// BUT... only if PHP didn't die because of an error
-		$error = error_get_last( );
-
-		if (0 == ((E_ERROR | E_WARNING | E_PARSE) & $error['type'])) {
-			try {
-				$this->save( );
-			}
-			catch (MyException $e) {
-				// do nothing, it will be logged
-			}
-		}
-	}
-*/
 
 
 	/** public function log_in

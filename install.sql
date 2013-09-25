@@ -11,7 +11,7 @@ SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
 
 --
--- Database: `iohelixn_games`
+-- Database: `iohelix_games`
 --
 
 -- --------------------------------------------------------
@@ -213,6 +213,46 @@ CREATE TABLE IF NOT EXISTS `ph_setup` (
   KEY `has_tower` (`has_tower`),
   KEY `active` (`active`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci;
+
+--
+-- Dumping data for table `ph_setup`
+--
+
+INSERT INTO `ph_setup` (`setup_id`, `name`, `board`, `reflection`, `has_horus`, `has_sphynx`, `has_anubis`, `has_tower`, `used`, `created`, `created_by`) VALUES
+(NULL, 'Classic', '4wpwb2/2c7/3D6/a1C1xy1b1D/b1D1YX1a1C/6b3/7A2/2DWPW4', 'Origin', 0, 0, 0, 0, 0, NOW(), 0),
+(NULL, 'Dynasty', '4cwb3/5p4/a3cwy3/b1x1D1B3/3d1b1X1D/3YWA3C/4P5/3DWA4', 'Origin', 0, 0, 0, 0, 0, NOW(), 0),
+(NULL, 'Imhotep', '4wpwy2/10/3D2a3/aC2By2bD/bD2Yd2aC/3C2b3/10/2YWPW4', 'Origin', 0, 0, 0, 0, 0, NOW(), 0),
+(NULL, 'Osiris', '1Y3cp1bC/2w3wb2/6D3/a3ix3D/b3XI3C/3b6/2DW3W2/aD1PA3y1', 'Origin', 1, 0, 0, 0, 0, NOW(), 0),
+(NULL, 'Isis', '6wpb1/a1x3cw2/1X8/a1a1DI2c1/1A2ib1C1C/8x1/2WA3X1C/1DPW6', 'Origin', 1, 0, 0, 0, 0, NOW(), 0),
+(NULL, 'Classic 2', '4wpwb2/2c7/3D6/a1C1xi1b1D/b1D1IX1a1C/6b3/7A2/2DWPW4', 'Origin', 1, 0, 0, 0, 0, NOW(), 0),
+(NULL, 'Dynasty 2', '4cwb3/5p4/a3cwy3/b1h1D1B3/3d1b1H1D/3YWA3C/4P5/3DWA4', 'Origin', 1, 0, 0, 0, 0, NOW(), 0),
+(NULL, 'Imhotep 2', '4wpwy2/10/3D2a3/aC2Bi2bD/bD2Id2aC/3C2b3/10/2YWPW4', 'Origin', 1, 0, 0, 0, 0, NOW(), 0),
+(NULL, 'Khufu', '4wpwb2/5cb3/a5D3/4yX1a1D/b1C1Xy4/3b5C/3DA5/2DWPW4', 'Origin', 0, 0, 0, 0, 0, NOW(), 0),
+(NULL, 'Imseti', '1B1wpb4/2Xbcw4/10/a3xc3D/b3AX3C/10/4WADx2/4DPW1d1', 'Origin', 0, 0, 0, 0, 0, NOW(), 0),
+(NULL, 'Nefertiti', '4w1w3/3c1pb3/2C1cy1c2/a1Y6D/b6y1C/2A1YA1a2/3DP1A3/3W1W4', 'Origin', 0, 0, 0, 0, 0, NOW(), 0),
+(NULL, 'Rameses', '3w1pwb2/4bc4/2Cb2x3/a4X3D/b3x4C/3X2Da2/4AD4/2DWP1W3', 'Origin', 0, 0, 0, 0, 0, NOW(), 0),
+(NULL, 'Amarna', '1CBcwpw3/4bcb3/10/a2x2x3/3X2X2C/10/3DAD4/3WPWAda1', 'Origin', 0, 0, 0, 0, 0, NOW(), 0),
+(NULL, 'Saqqara', '3cwp1wb1/4bxb3/a2D6/4X4D/b4x4/6b2C/3DXD4/1DW1PWA3', 'Origin', 0, 0, 0, 0, 0, NOW(), 0),
+(NULL, 'Djoser''s Step', '3cw1w1b1/5p1b2/4bxb3/a4y3D/b3Y4C/3DXD4/2D1P5/1D1W1WA3', 'Origin', 0, 0, 0, 0, 0, NOW(), 0),
+(NULL, 'Horemheb', '3c3b2/4wpw3/3x1x1b2/a3c1b2D/b2D1A3C/2D1X1X3/3WPW4/2D3A3', 'Origin', 0, 0, 0, 0, 0, NOW(), 0),
+(NULL, 'Senet', '4cwb3/a2c1p1b2/4xwy3/5b3C/a3D5/3YWX4/2D1P1A2C/3DWA4', 'Origin', 0, 0, 0, 0, 0, NOW(), 0),
+(NULL, 'Tutankhamun', '3w4b1/a1cpb5/3w1b4/b1x1y1b3/3D1Y1X1D/4D1W3/5DPA1C/1D4W3', 'Origin', 0, 0, 0, 0, 0, NOW(), 0),
+(NULL, 'Offla', '3c1pwb2/4cwb3/2X2x4/a4D3D/b3b4C/4X2x2/3DWA4/2DWP1A3', 'Origin', 0, 0, 0, 0, 0, NOW(), 0),
+(NULL, 'Ebana', '3xwpwb2/5x4/2DA6/a1CB5D/b5da1C/6cb2/4X5/2DWPWX3', 'Origin', 0, 0, 0, 0, 0, NOW(), 0),
+(NULL, 'Qa''a', '3xwpwb2/4cy4/8bD/3c2b2C/a2D2A3/bD8/4YA4/2DWPWX3', 'Origin', 0, 0, 0, 0, 0, NOW(), 0),
+(NULL, 'Qa''a 2', '3xwpwb2/4cy4/8bD/3c2b1hC/aH1D2A3/bD8/4YA4/2DWPWX3', 'Origin', 1, 0, 0, 0, 0, NOW(), 0),
+(NULL, 'Seti I', '1XB1cw1pb1/a4cwy1D/6b3/10/10/3D6/b1YWA4C/1DP1WA1dx1', 'Origin', 0, 0, 0, 0, 0, NOW(), 0),
+(NULL, 'Seti II', '1XB1cw1pb1/a4cwy1D/6b3/5i4/4I5/3D6/b1YWA4C/1DP1WA1dx1', 'Origin', 1, 0, 0, 0, 0, NOW(), 0),
+(NULL, 'Ay', '4cw1wbC/3CB5/5x4/a3Ypb3/3DPy3C/4X5/5da3/aDW1WA4', 'Origin', 0, 0, 0, 0, 0, NOW(), 0),
+(NULL, 'Horemheb 2', '3c3b2/4wpw3/3h1x1b2/a3c1b2D/b2D1A3C/2D1X1H3/3WPW4/2D3A3', 'Origin', 1, 0, 0, 0, 0, NOW(), 0),
+(NULL, 'Akhenaten 2', '1B1c1p1bc1/4cwb3/h1y7/4da1X1H/h1x1CB4/7Y1H/3DWA4/1AD1P1A1d1', 'Origin', 1, 0, 0, 0, 0, NOW(), 0),
+(NULL, 'Akhenaten', '1B1c1p1bc1/4cwb3/a1y7/4da1X1D/b1x1CB4/7Y1C/3DWA4/1AD1P1A1d1', 'Origin', 0, 0, 0, 0, 0, NOW(), 0),
+(NULL, 'Dendera', '2c4b2/1x2da2y1/3d2a3/2d1pi1a2/2C1IP1B2/3C2B3/1Y2CB2X1/2D4A2', 'Origin', 1, 0, 0, 0, 0, NOW(), 0),
+(NULL, 'Nefertiti B', '4w1w3/3c1pb3/a1C1cy1c2/b1Y7/7y1D/2A1YA1a1C/3DP1A3/3W1W4', 'Origin', 0, 0, 0, 0, 0, NOW(), 0),
+(NULL, 'Tutankhamun B', '4w3b1/a2cpb4/4w1b3/b2x1y1b2/2D1Y1X2D/3D1W4/4DPA2C/1D3W4', 'Origin', 0, 0, 0, 0, 0, NOW(), 0),
+(NULL, 'Setup No. 1', '4wpw3/5b4/4b1c2C/a4xy1bD/bD1YX4C/a2A1D4/4D5/3WPW4', 'Origin', 0, 0, 0, 0, 0, NOW(), 0),
+(NULL, 'Diamond', '3cwb4/4p5/3Dw5/aC2yx2cD/bA2XY2aC/5Wb3/5P4/4DWA3', 'Origin', 0, 0, 0, 0, 0, NOW(), 0),
+(NULL, 'Ivory', '2cpw1B2C/3w6/1a6c1/aC2x1X3/3x1X2aC/1A6C1/6W3/a2d1WPA2', 'Origin', 0, 0, 0, 0, 0, NOW(), 0);
 
 -- --------------------------------------------------------
 
