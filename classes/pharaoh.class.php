@@ -471,8 +471,8 @@ class Pharaoh {
 			}
 		}
 		else {
-			list($shoot_sphynx_idx, $shoot_sphynx_dir) = self::find_sphynx($board, ('silver' == $color));
-			list($hit_sphynx_idx, $hit_sphynx_dir) = self::find_sphynx($board, ('silver' != $color));
+			list($shoot_sphynx_idx, $shoot_sphynx_dir) = self::find_sphynx($board, ('silver' === $color));
+			list($hit_sphynx_idx, $hit_sphynx_dir) = self::find_sphynx($board, ('silver' !== $color));
 			$laser_path = array(array(array($shoot_sphynx_idx + $shoot_sphynx_dir, $shoot_sphynx_dir)));
 		}
 
@@ -485,8 +485,25 @@ class Pharaoh {
 		if ($long_wall || $short_wall) {
 			// we hit the wall...  just stop
 			$laser_path[0][0][0] = false;
-			return array('laser_path' => $laser_path, 'hits' => array( ), 'hit_laser' => false);
+			return array('laser_path' => $laser_path, 'hits' => array( ), 'laser_hit' => false);
+		}
 
+		// also check and make sure that the sphynx was not hit right out of the gate
+		$hit_silver = $hit_red = false;
+		$var_name = 'hit_'.(('silver' == $color) ? 'silver' : 'red');
+		if ($has_sphynx && ($hit_sphynx_idx == $current)) {
+			if ( ! $extra_info['battle_front_only']) {
+				${$var_name} = true;
+			}
+			elseif ($hit_sphynx_dir == -$dir) {
+				${$var_name} = true;
+			}
+		}
+
+		if ($hit_red || $hit_silver) {
+			// we hit the sphynx...  just stop
+			$laser_path[] = array(array(true, $dir));
+			return array('laser_path' => $laser_path, 'hits' => array( ), 'laser_hit' => true);
 		}
 
 		$i = 0; // infinite loop protection
@@ -515,7 +532,7 @@ class Pharaoh {
 				list($current, $dir) = $node;
 
 				// check the current location for a piece
-				if ('0' != ($piece = $board[$current])) {
+				if ('0' !== ($piece = $board[$current])) {
 					// check for hit or reflection
 					if ( ! isset($reflections[strtoupper($piece)][$dir])) {
 						// dont track the hit for the following situations:
