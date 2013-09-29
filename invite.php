@@ -10,6 +10,8 @@ Game::delete_inactive(Settings::read('expire_games'));
 Game::delete_finished(Settings::read('expire_finished_games'));
 
 if (isset($_POST['invite'])) {
+	call($_POST);
+
 	// make sure this user is not full
 	if ($GLOBALS['Player']->max_games && ($GLOBALS['Player']->max_games <= $GLOBALS['Player']->current_games)) {
 		Flash::store('You have reached your maximum allowed games !', false);
@@ -29,6 +31,7 @@ if (isset($_POST['invite'])) {
 // grab the full list of players
 $players_full = GamePlayer::get_list(true);
 $invite_players = array_shrink($players_full, 'player_id');
+$invite_players = ife($invite_players, array( ), false);
 
 // grab the players who's max game count has been reached
 $players_maxed = GamePlayer::get_maxed( );
@@ -92,7 +95,8 @@ if ($group_open) {
 $meta['title'] = 'Send Game Invitation';
 $meta['head_data'] = '
 	<link rel="stylesheet" type="text/css" media="screen" href="css/board.css" />
-
+';
+$meta['foot_data'] = '
 	<script type="text/javascript">//<![CDATA[
 		var setups = {
 			'.$setup_javascript.'

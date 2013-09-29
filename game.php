@@ -134,7 +134,7 @@ $meta['head_data'] = '
 	<link rel="stylesheet" type="text/css" media="screen" href="css/game.css" />
 
 	<script type="text/javascript" src="scripts/board.js"></script>
-	<script type="text/javascript">/*<![CDATA[*/
+	<script type="text/javascript">
 		var draw_offered = '.json_encode($Game->draw_offered($_SESSION['player_id'])).';
 		var undo_requested = '.json_encode($Game->undo_requested($_SESSION['player_id'])).';
 		var color = "'.(isset($players[$_SESSION['player_id']]) ? (('white' == $players[$_SESSION['player_id']]['color']) ? 'silver' : 'red') : '').'";
@@ -147,7 +147,7 @@ $meta['head_data'] = '
 		var move_index = (move_count - 1);
 		var laser_battle = '.json_encode( !! $extra_info['battle_dead']).';
 		var move_sphynx = '.json_encode( !! $extra_info['move_sphynx']).';
-	/*]]>*/</script>
+	</script>
 ';
 
 $meta['foot_data'] = '

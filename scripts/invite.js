@@ -85,7 +85,7 @@ $(document).ready( function( ) {
 	});
 
 	// hide the collapsable fieldsets
-	$('input.fieldset_box').change( function( ) {
+	$('input.fieldset_box').on('change', function( ) {
 		check_fieldset_box( );
 	});
 
