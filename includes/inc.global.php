@@ -149,14 +149,10 @@ if (Mysql::test( )) {
 
 if (defined('DEBUG') && DEBUG) {
 	ini_set('display_errors','On');
-	error_reporting(E_ALL | E_STRICT); // all errors, notices, and strict warnings
+	error_reporting(-1); // everything
 	if (isset($Mysql)) {
 		$Mysql->set_error(3);
 	}
-}
-else { // do not edit the following
-	ini_set('display_errors','Off');
-	error_reporting(E_ALL & ~ E_NOTICE); // show errors, but not notices
 }
 
 // log the player in
