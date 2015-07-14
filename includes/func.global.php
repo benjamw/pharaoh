@@ -229,7 +229,7 @@ function packFEN($xFEN, $row_length = 10)
 
 	$xFEN = trim(chunk_split($xFEN, $row_length, '/'), '/'); // add the row separators
 
-	// /e modifier got depricated in PHP 5.5.0
+	// /e modifier got deprecated in PHP 5.5.0
 	if (version_compare(PHP_VERSION, '5.5.0', '>=')) {
 		$FEN = preg_replace_callback('/(0+)/', function($m) { return strlen($m[1]); }, $xFEN); // pack the 0s
 	}
